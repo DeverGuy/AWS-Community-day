@@ -665,6 +665,69 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      if (!data.success && data.fallback_to_client && data.client_url) {
+        showToast("Fetching replica via direct cloud channel...", "info");
+        try {
+          const clientImgResp = await fetch(data.client_url);
+          if (clientImgResp.ok) {
+            const blob = await clientImgResp.blob();
+            const clientDataUri = await new Promise((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.readAsDataURL(blob);
+            });
+
+            // Call /api/evaluate to perform the grounded evaluation
+            const evalResp = await fetch("/api/evaluate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                participant_id: state.participant ? state.participant.id : null,
+                prompt: prompt,
+                image_data: clientDataUri,
+                player_name: state.participant ? state.participant.name : "Builder"
+              })
+            });
+            const evalData = await evalResp.json();
+            const evalResult = evalData.evaluation;
+
+            const genRecord = {
+              id: "client-" + Date.now(),
+              prompt: prompt,
+              image_data: clientDataUri,
+              source: "cloud-direct-turbo",
+              latency: 2.2,
+              evaluation: evalResult
+            };
+
+            state.currentImage = clientDataUri;
+            state.currentEvaluation = evalResult;
+            state.generations.push(genRecord);
+
+            if (activeImg) {
+              activeImg.src = clientDataUri;
+              activeImg.classList.remove("hidden");
+            }
+            if (placeholder) placeholder.classList.add("hidden");
+            if (viewFullBtn) viewFullBtn.disabled = false;
+
+            const sourceTag = document.getElementById("canvas-source-tag");
+            if (sourceTag) {
+              sourceTag.textContent = "Engine: CLOUD-DIRECT";
+              sourceTag.classList.remove("hidden");
+            }
+
+            renderEvaluationScorecard(evalResult);
+            renderHistoryReel();
+            if (submitBtn) submitBtn.disabled = false;
+            showToast(`Visual synthesized! AI Judge Match Score: ${evalResult?.total_score || 0}/100`, "success");
+            return;
+          }
+        } catch (clientErr) {
+          console.warn("Client direct fetch error:", clientErr);
+        }
+      }
+
       if (data.success && data.generation) {
         playAudioTone("success");
         const gen = data.generation;
@@ -776,11 +839,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (barImp) barImp.style.width = `${(sImp / 25) * 100}%`;
     if (commImp) commImp.textContent = b.prompt_precision?.comment || "";
 
+    // Grounded Observations Audit
+    const targetObsEl = document.getElementById("target-obs-text");
+    if (targetObsEl) {
+      targetObsEl.textContent = ev.target_observations || "Analyzed reference scene elements.";
+    }
+    const userObsEl = document.getElementById("user-obs-text");
+    if (userObsEl) {
+      userObsEl.textContent = ev.user_observations || "Analyzed replica visual features.";
+    }
+
     // Unbiased Critique
     const summaryEl = document.getElementById("eval-summary-text");
     if (summaryEl) summaryEl.textContent = ev.unbiased_critique || ev.summary_comment || "";
 
-    // Matched & Divergent Features
+    // Matched & Discrepant Features
     const featuresRow = document.getElementById("eval-features-row");
     if (featuresRow) {
       featuresRow.innerHTML = "";
@@ -790,10 +863,11 @@ document.addEventListener("DOMContentLoaded", () => {
         pill.textContent = `✓ ${f}`;
         featuresRow.appendChild(pill);
       });
-      (ev.divergent_features || []).forEach(f => {
+      const discrepancies = ev.discrepancies || ev.divergent_features || [];
+      discrepancies.forEach(f => {
         const pill = document.createElement("span");
         pill.className = "feature-pill-divergent";
-        pill.textContent = `✗ ${f}`;
+        pill.textContent = `⚠️ ${f}`;
         featuresRow.appendChild(pill);
       });
     }

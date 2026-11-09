@@ -1,230 +1,212 @@
 """
-Challenge Management for BUILD THE FUTURE - AI Prompt Battle
-Official Categories:
-- Future of Education
-- Smart Cities and Sustainable Living
-- Artificial Intelligence and Humanity
-- Space Exploration and Future Civilizations
-- Technology for Social Impact
-- Future of Work
-- Cloud-Powered Innovation
-- Robotics and Automation
+Real-Scenario Challenge Management for BUILD THE FUTURE - AI Prompt Battle
+Movie Scenes and High-Action Real-World Scenarios
 """
 
 import os
+import io
 import json
 import random
 import uuid
+import base64
+from PIL import Image
 
 OFFICIAL_CATEGORIES = [
-    "Future of Education",
-    "Smart Cities and Sustainable Living",
-    "Artificial Intelligence and Humanity",
-    "Space Exploration and Future Civilizations",
-    "Technology for Social Impact",
-    "Future of Work",
-    "Cloud-Powered Innovation",
-    "Robotics and Automation"
+    "Cinematic Movie Scenes",
+    "Dynamic Objects in Action"
 ]
 
 DEFAULT_CHALLENGES = [
-    # 1. Future of Education
+    # Category 1: Cinematic Movie Scenes
     {
-        "id": "edu-biosphere-campus",
-        "category": "Future of Education",
-        "title": "The Biosphere Hyper-Campus 2050",
-        "brief": "Envision an open-air, nature-integrated university campus where AI holographic mentors, floating interactive quantum diagrams, and collaborative student pods harmonize with a living botanical ecosystem. Show students exploring microscopic wonders or cosmic physics in real-time.",
-        "visual_goals": "Bioluminescent flora, floating interactive volumetric projections, solar-canopy glass pavilions, collaborative student builder circles, ambient warm sunrise illumination.",
-        "inspiration_keywords": ["Biophilic Architecture", "Volumetric Holograms", "Quantum Visualizations", "Solar Domes", "Collaborative Discovery"],
-        "evaluation_focus": "Integration of biological nature with advanced pedagogical tech; student collaboration atmosphere; visual clarity of learning tools.",
+        "id": "movie-vintage-ferrari",
+        "category": "Cinematic Movie Scenes",
+        "title": "The Riviera Coastal Cliff Drift",
+        "brief": "A classic cherry-red vintage sports car drifting around a sharp mountain hairpin curve on a coastal cliff road at golden hour, with white tire smoke curling and the deep blue Mediterranean sea below.",
+        "visual_goals": "Cherry-red vintage sports car, dynamic drift angle, white tire smoke, winding mountain asphalt road, rocky coastal cliff, golden hour sunlight flare, deep blue ocean.",
+        "inspiration_keywords": ["Vintage Red Sports Car", "Coastal Cliff Drift", "Golden Hour Flare", "Italian Riviera", "Tire Smoke", "Cinematic Film Still"],
+        "key_subjects": ["vintage red sports car", "mountain hairpin road", "ocean cliff", "tire smoke"],
+        "action": "drifting around a sharp hairpin curve at high speed",
+        "lighting_mood": "warm golden hour sunlight, low angle sun flare",
+        "evaluation_focus": "Accurate color of the vehicle, dynamic drifting motion and tire smoke, coastal cliff setting, and golden hour lighting.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "edu-neural-library",
-        "category": "Future of Education",
-        "title": "The Infinite Neural Archive",
-        "brief": "Design the futuristic reincarnation of the Library of Alexandria: an ethereal knowledge cathedral where students walk through visualized historical eras, touch streams of human thought rendered as glowing starlight nebulae, and co-create new scientific models.",
-        "visual_goals": "Towering crystalline archives, streams of data particles like floating golden dust, students walking inside holographic simulations of ancient and future worlds, soft ethereal lighting.",
-        "inspiration_keywords": ["Infinite Knowledge Cathedral", "Data Nebulae", "Time-Travel Learning", "Crystalline Data Shards", "Deep Immersion"],
-        "evaluation_focus": "Evocative scale of knowledge architecture; poetic balance of scholarship and futuristic vision.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # 2. Smart Cities and Sustainable Living
-    {
-        "id": "smart-floating-megacity",
-        "category": "Smart Cities and Sustainable Living",
-        "title": "Oceanic Solarpunk Archipelago",
-        "brief": "Imagine a zero-carbon, floating city floating on coastal waters. Powered by wave kinetic energy and transparent solar towers, the city features vertical permaculture gardens, drone-tended kelp forests, and clean magnetic pod transit across turquoise reefs.",
-        "visual_goals": "Terraced vertical gardens cascading into pristine ocean waters, transparent spiraling solar towers, silent maglev tube bridges, glowing underwater biosensors, vibrant solarpunk color palette.",
-        "inspiration_keywords": ["Solarpunk", "Floating Eco-Metropolis", "Kelp Carbon Sinks", "Wave Kinetic Dynamos", "Clean Maglev Pods"],
-        "evaluation_focus": "Harmony between oceanic ecosystem and urban engineering; believable renewable energy motifs; rich environmental details.",
+        "id": "movie-tokyo-rain-neon",
+        "category": "Cinematic Movie Scenes",
+        "title": "Midnight Rain in Neo-Tokyo",
+        "brief": "A moody, narrow Tokyo alley drenched in heavy nighttime rain with glowing neon signs, steam rising from street drains, and neon reflections shimmering across wet dark asphalt.",
+        "visual_goals": "Wet glistening asphalt street, vibrant neon signs (cyan, magenta, amber), pouring rain atmosphere, urban narrow alley, reflections in puddles.",
+        "inspiration_keywords": ["Rainy Tokyo Alley", "Vibrant Neon Signs", "Wet Asphalt Reflections", "Atmospheric Night Haze", "Cinematic Cyberpunk"],
+        "key_subjects": ["narrow Tokyo alley", "glowing neon signs", "wet asphalt street", "rain puddles"],
+        "action": "heavy rain pouring down, steam rising from street drains",
+        "lighting_mood": "dark night with vibrant cyan and magenta neon reflections",
+        "evaluation_focus": "Atmospheric rainy night mood, vivid neon lighting reflections on wet ground, narrow urban perspective.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "smart-vertical-forest-city",
-        "category": "Smart Cities and Sustainable Living",
-        "title": "Hyper-Vertical Oxygen Spire",
-        "brief": "Visualize a kilometer-tall eco-skyscraper designed to purify urban air. The exterior is wrapped in millions of genetic air-scrubbing ferns and mist cascades, connected by skybridges with autonomous electric sky-trams gliding between misty cloud layers.",
-        "visual_goals": "Massive biophilic tower rising through low clouds, cascading waterfall air purifiers, luminous skybridge walkways, airborne pollinator drones, atmospheric sunset glow.",
-        "inspiration_keywords": ["Hyper-Tower", "Cascading Water Mists", "Urban Reforestation", "Skybridges", "Clean Atmospheric Glow"],
-        "evaluation_focus": "Grand sense of architectural verticality; vivid texture of living vegetation integrated into engineering structures.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # 3. Artificial Intelligence and Humanity
-    {
-        "id": "ai-symbiotic-atelier",
-        "category": "Artificial Intelligence and Humanity",
-        "title": "The Symbiotic Art & Code Atelier",
-        "brief": "Portray a creative studio where a human builder and an ambient, light-woven sentient AI co-sculpt an impossible four-dimensional sculpture. The boundary between human intuition and machine intelligence blurs into a shared dance of sparks, thought-forms, and creative harmony.",
-        "visual_goals": "Flowing streams of neural thought ribbons connecting human hands to glowing AI entities, kinetic light sculptures, warm tactile wooden workspace contrasted with digital lattices, studio lighting.",
-        "inspiration_keywords": ["Symbiotic Creation", "Neural Light-Weaving", "Human-AI Partnership", "Kinetic Sculpture", "Warm Studio Ambient"],
-        "evaluation_focus": "Emotional warmth and mutual respect in human-AI collaboration; visual representation of non-threatening, collaborative intelligence.",
+        "id": "movie-astronaut-earth",
+        "category": "Cinematic Movie Scenes",
+        "title": "Spacewalk Over Earth Horizon",
+        "brief": "A breathtaking cinematic shot of an astronaut in a pressurized white EVA spacesuit floating in deep space outside a spacecraft, with the brilliant curved blue horizon of planet Earth glowing below.",
+        "visual_goals": "Detailed white spacesuit, gold-tinted visor reflection, deep black space background, glowing blue curvature of Earth, bright solar lens flare.",
+        "inspiration_keywords": ["Astronaut Spacewalk", "Curved Earth Horizon", "Deep Black Space", "Gold Visor Reflection", "Cinematic IMAX Scale"],
+        "key_subjects": ["astronaut in white EVA spacesuit", "curved planet Earth", "deep black space", "spacecraft hull"],
+        "action": "spacewalking and floating weightlessly in orbit",
+        "lighting_mood": "harsh direct sunlight with solar lens flare against jet-black void",
+        "evaluation_focus": "Scale of the earth curvature, detailed spacesuit textures, contrast between brilliant Earth and deep black void.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "ai-planetary-guardian",
-        "category": "Artificial Intelligence and Humanity",
-        "title": "The Earth Monitoring Synthesis Center",
-        "brief": "Depict a global sanctuary where Indigenous ecologists and planetary AI models analyze living Earth telemetry: real-time climate pulses, migratory bird paths, and tectonic shifts visualized on an enormous liquid-light planetary globe.",
-        "visual_goals": "Giant levitating holographic Earth pulsing with living climate data, diverse researchers interacting with fluid light gestures, serene high-tech glass sanctuary overlooking a protected wilderness valley.",
-        "inspiration_keywords": ["Planetary AI", "Ecological Stewardship", "Liquid-Light Globe", "Climate Telemetry", "Wisdom & Tech Unity"],
-        "evaluation_focus": "Sublime balance of technical planetary data and earth reverence; sense of stewardship rather than domination.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # 4. Space Exploration and Future Civilizations
-    {
-        "id": "space-martian-canyon-habitat",
-        "category": "Space Exploration and Future Civilizations",
-        "title": "The Terraforming Citadel of Valles Marineris",
-        "brief": "Design a permanent human civilization hub carved into the rust-red canyon walls of Mars. Massive pressurized geodesic canyon roof shields a thriving interior forest, while atmospheric ozone towers shoot blue ionization beams into the Martian night sky.",
-        "visual_goals": "Dramatic contrast between red Martian canyon cliffs and lush green pressurized biomes inside, soaring ionization laser beams, twin moons Phobos and Deimos visible, industrial rover tracks, cinematic wide angle.",
-        "inspiration_keywords": ["Martian Habitat", "Valles Marineris", "Geodesic Canyon Canopy", "Terraforming Beams", "Cosmic Frontier"],
-        "evaluation_focus": "Epic scale; geological realism of Mars merged with human architectural ingenuity; lighting contrasts.",
+        "id": "movie-gothic-rooftop",
+        "category": "Cinematic Movie Scenes",
+        "title": "The Gothic Rooftop Sentinel",
+        "brief": "A weathered stone gargoyle perched atop a soaring gothic cathedral rooftop, looking down upon a fog-shrouded modern city skyline at blue twilight hour with cinematic rolling clouds.",
+        "visual_goals": "Weathered stone gargoyle foreground, dramatic gothic spires, misty blue-hour city skyline below, moody dusk clouds, cinematic high-altitude perspective.",
+        "inspiration_keywords": ["Gothic Gargoyle", "Skyscraper Twilight", "Foggy City Skyline", "Blue Hour Mood", "Cinematic High Angle"],
+        "key_subjects": ["stone gargoyle", "gothic cathedral spires", "foggy modern skyline", "twilight clouds"],
+        "action": "perched motionless looking down over the sprawling metropolis",
+        "lighting_mood": "moody blue twilight hour, atmospheric fog, city night lights emerging",
+        "evaluation_focus": "Foreground stone sculpture vs background cityscape contrast, atmospheric blue hour fog, dramatic elevation.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "space-europa-subsurface-outpost",
-        "category": "Space Exploration and Future Civilizations",
-        "title": "Europa Sub-Oceanic Research Haven",
-        "brief": "Envision an expedition outpost anchored beneath the kilometers-thick ice shell of Jupiter's moon Europa. Thermal siphon engines illuminate alien hydro-thermal vent ecosystems where bioluminescent deep-sea life drifts past geodesic observation spheres.",
-        "visual_goals": "Deep abyssal teal and sapphire hues, glowing golden geothermal chimneys, submersible drones with high-beam projectors, towering overhead ice ceilings with luminous stress fractures.",
-        "inspiration_keywords": ["Europa Abyss", "Subsurface Ocean", "Bioluminescent Vent Life", "Submersible Explorers", "Ice Canopy Fractures"],
-        "evaluation_focus": "Underwater extraterrestrial mood; convincing hydrostatic pressure design language; striking color contrast.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # 5. Technology for Social Impact
-    {
-        "id": "impact-solar-water-restoration",
-        "category": "Technology for Social Impact",
-        "title": "The Atmospheric Water & Bloom Harvester",
-        "brief": "Showcase a breakthrough distributed water generation station in an arid desert community. Sculptural solar-powered condensation petals draw water directly from morning desert air, irrigating community orchards and providing clean drinkable mineral water to cheering villagers.",
-        "visual_goals": "Graceful petal-shaped condensing structures glistening with dew drops, thriving desert permaculture gardens, radiant smiling community members harvesting fresh crops, golden desert hour light.",
-        "inspiration_keywords": ["Atmospheric Water Generation", "Clean Water Justice", "Desert Greening", "Community Empowerment", "Golden Hour Hope"],
-        "evaluation_focus": "Human dignity and community triumph; elegant design of humanitarian technology; warm emotional storytelling.",
+        "id": "movie-desert-dunes",
+        "category": "Cinematic Movie Scenes",
+        "title": "Sahara Sandstorm Horizon",
+        "brief": "Vast, sweeping golden sand dunes carved by desert winds, with sharp crest shadows and fine sand grains blowing across the ridge under a blazing golden sun flare.",
+        "visual_goals": "Sinuous sand dune curves, dramatic light and shadow ridges, fine blowing sand dust, warm golden sand texture, blazing desert sun flare.",
+        "inspiration_keywords": ["Golden Sand Dunes", "Desert Wind Ridges", "Sun Flare Horizon", "Blowing Sand Grains", "Cinematic Dunescape"],
+        "key_subjects": ["sweeping golden sand dunes", "sharp ridge crests", "blowing sand plumes", "desert horizon"],
+        "action": "wind whipping fine sand grains across the knife-edge dune ridges",
+        "lighting_mood": "blazing golden sunlight with sharp diagonal shadows on dune faces",
+        "evaluation_focus": "Clean geometric curves of the sand ridges, contrast between sunlit and shadowed faces, golden desert atmosphere.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "impact-remote-mobile-clinic",
-        "category": "Technology for Social Impact",
-        "title": "Autonomous Healthcare Pods for Island Communities",
-        "brief": "Depict solar-electric hydrofoil clinic vessels arriving at remote archipelago shores, deploying AI diagnostic pods and surgical 3D printers that deliver world-class medical care and vaccines to underserved coastal families.",
-        "visual_goals": "Futuristic white-and-teal medical catamaran gliding over emerald shallows, deployable solar medical canopy on white sand beach, children and elders welcoming healthcare workers, lens flare, pristine natural environment.",
-        "inspiration_keywords": ["Solar Hydrofoil Clinic", "Telemedicine Pods", "Global Health Equity", "Emerald Lagoon", "Healing Technology"],
-        "evaluation_focus": "Clear humanitarian utility; compassionate interaction between technology and underserved populations.",
+        "id": "movie-cyberpunk-subway",
+        "category": "Cinematic Movie Scenes",
+        "title": "Subway Platform at Blue Hour",
+        "brief": "A high-speed modern underground metro train arriving at an illuminated urban station platform, motion blur streaking lights across sleek tiled pillars.",
+        "visual_goals": "Sleek subway train with motion blur trails, bright headlights, clean urban platform tiles, cool blue and yellow lighting, vanishing point perspective.",
+        "inspiration_keywords": ["Speeding Subway Train", "Motion Blur Lights", "Underground Platform", "Vanishing Point Perspective", "Urban Transit Action"],
+        "key_subjects": ["underground metro train", "station platform", "tiled pillars", "overhead yellow lights"],
+        "action": "train speeding into station with motion blur light trails",
+        "lighting_mood": "cool cyan and blue ambient lighting with warm yellow platform lights",
+        "evaluation_focus": "Dynamic speed motion blur, underground station geometry and perspective lines, contrasting headlight glow.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "movie-cyberpunk-market",
+        "category": "Cinematic Movie Scenes",
+        "title": "Neon Night Market Atmosphere",
+        "brief": "A lively outdoor night market filled with glowing lanterns, neon signage, bustling food stalls with rising steam, and vibrant nighttime street life.",
+        "visual_goals": "Glowing paper lanterns, neon signs, food stall steam clouds, narrow walkway, warm and cool color contrast, rich street textures.",
+        "inspiration_keywords": ["Neon Night Market", "Floating Steam Clouds", "Glowing Lanterns", "Vibrant Street Life", "Rich Urban Texture"],
+        "key_subjects": ["bustling night market stalls", "glowing paper lanterns", "neon signs", "rising food steam"],
+        "action": "crowds walking through market, vendors cooking with billowing steam",
+        "lighting_mood": "warm amber lantern illumination contrasted with cool neon glow",
+        "evaluation_focus": "Atmospheric street density, lighting from lanterns and neon, warm culinary steam.",
         "is_active": True,
         "created_by": "system"
     },
 
-    # 6. Future of Work
+    # Category 2: Dynamic Objects in Action
     {
-        "id": "work-holographic-cloud-collective",
-        "category": "Future of Work",
-        "title": "The Distributed Cloud Maker Commons",
-        "brief": "Visualize the workplace of 2040: a borderless collective of engineers, designers, and artisans collaborating in a hyper-flexible open space. Team members from five continents appear as life-sized photorealistic light holograms, assembling complex clean-energy turbine prototypes in shared space.",
-        "visual_goals": "Luminous life-sized volumetric telepresence colleagues, exploding 3D schematic blueprints of clean machinery, ergonomic bamboo modular desks, panoramic view of a mountain valley outside floor-to-ceiling windows.",
-        "inspiration_keywords": ["Volumetric Telepresence", "Global Collaboration", "Exploded CAD Hologram", "Ergonomic Eco-Office", "Borderless Teamwork"],
-        "evaluation_focus": "Seamless collaboration across physical and virtual realities; realistic future work tools; positive human work-life balance.",
+        "id": "action-coffee-splash",
+        "category": "Dynamic Objects in Action",
+        "title": "Exploding Coffee Cup Kinetics",
+        "brief": "A dramatic high-speed photograph capturing a cup of dark coffee exploding into the air, with frozen liquid arcs, coffee droplets suspended in mid-flight, and roasted coffee beans scattering.",
+        "visual_goals": "High-speed shutter freeze (1/8000s), dark coffee splash waves, floating roasted beans, ceramic mug, moody rustic backdrop, dramatic side lighting.",
+        "inspiration_keywords": ["High-Speed Liquid Splash", "Coffee Droplets Freeze", "Roasted Beans Mid-Air", "Rustic Ceramic Mug", "Dramatic Side Lighting"],
+        "key_subjects": ["ceramic coffee mug", "dark coffee liquid waves", "suspended roasted coffee beans", "liquid droplets"],
+        "action": "liquid bursting violently upwards in mid-air frozen motion",
+        "lighting_mood": "dramatic directional side lighting on dark rustic backdrop",
+        "evaluation_focus": "High-speed kinetic freeze effect, detailed liquid droplets and splash geometry, scattering coffee beans.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "work-bionic-craftsman",
-        "category": "Future of Work",
-        "title": "The Bionic Master Builder Workshop",
-        "brief": "Portray a master craftsperson wearing lightweight neural-assisted bionic gauntlets, hand-carving next-generation composite structures with nanometer precision. The workshop blends traditional woodworking tools with micro-plasma cutters and hovering drafting drones.",
-        "visual_goals": "Fine sawdust and glowing plasma sparks illuminated by focused workbench lamps, intricate carbon-fiber and reclaimed timber textures, neural haptic interface glowing on builder's arm, deep artisanal focus.",
-        "inspiration_keywords": ["Bionic Craftsmanship", "Neural Haptics", "Micro-Plasma Carving", "Artisan Meets Tech", "Intense Focus"],
-        "evaluation_focus": "Dignity of physical craftsmanship augmented rather than replaced by tech; rich tactile texture and lighting.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # 7. Cloud-Powered Innovation
-    {
-        "id": "cloud-planetary-nervous-system",
-        "category": "Cloud-Powered Innovation",
-        "title": "The Serverless Planetary Pulse",
-        "brief": "Create an artistic visualization of the global cloud infrastructure operating at sub-millisecond edge latency: underwater fiber cables pulsing with emerald light across oceanic trenches, satellite constellation mesh networks twinkling in orbit, and serverless edge data nodes powered by geothermal geysers.",
-        "visual_goals": "View from low Earth orbit showing illuminated global neural network data grid, fiber optic pulses rippling through deep blue oceans, orbital relay satellites, vibrant data stream ribbons, cinematic space photography style.",
-        "inspiration_keywords": ["Planetary Mesh Grid", "Subsea Light Fibers", "Geothermal Edge Compute", "Serverless Architecture", "Global Constellation"],
-        "evaluation_focus": "Abstract yet visceral representation of cloud architecture; planetary scale; dynamic energy and flow.",
+        "id": "action-chef-wok-flame",
+        "category": "Dynamic Objects in Action",
+        "title": "The Master Chef Wok Inferno",
+        "brief": "An intense culinary action shot of a master street chef tossing noodles in a seasoned iron carbon wok, with a towering column of orange flame erupting upward and green scallions flying in mid-air.",
+        "visual_goals": "Vibrant roaring orange fire column, seasoned iron wok, chef tossing noodles, flying green scallions, high contrast dark kitchen, motion freeze.",
+        "inspiration_keywords": ["Wok Fire Flare", "Noodle Toss Action", "Flying Scallions", "High Contrast Dark Kitchen", "Culinary Energy"],
+        "key_subjects": ["iron carbon wok", "roaring orange fire column", "tossed noodles", "green scallions"],
+        "action": "chef tossing noodles with a towering burst of cooking flame",
+        "lighting_mood": "high-contrast dark environment lit primarily by the roaring orange flame",
+        "evaluation_focus": "Intensity of the flame vortex, dynamic food motion mid-toss, focused culinary action.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "cloud-digital-twin-earth",
-        "category": "Cloud-Powered Innovation",
-        "title": "Real-Time Digital Twin Control Deck",
-        "brief": "Depict a student developer command room orchestrating a cloud-native digital twin of a continent's renewable energy grid. Thousands of wind turbines, hydro dams, and smart battery storage nodes synchronize in real-time, preventing blackouts through predictive serverless algorithms.",
-        "visual_goals": "Young builder teams standing around an interactive 3D illuminated topography table, graphs of real-time clean power flows, glowing blue-and-gold grid lines, focused collaborative energy, cutting-edge telemetry screens.",
-        "inspiration_keywords": ["Digital Twin", "Renewable Grid Telemetry", "Predictive Cloud AI", "Student Builders", "Control Deck Hologram"],
-        "evaluation_focus": "Builder mindset inspired by AWS Student Builders; tangible application of cloud compute to real-world infrastructure.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # 8. Robotics and Automation
-    {
-        "id": "robotics-autonomous-coral-reef-restorer",
-        "category": "Robotics and Automation",
-        "title": "Autonomous Bio-Reef Restoration Swarm",
-        "brief": "Envision an underwater fleet of autonomous biomimetic manta-ray robots carefully 3D-printing calcium carbonate reef foundations and planting resilient coral larvae in bleaching marine zones, bringing back vibrant aquatic life.",
-        "visual_goals": "Graceful robotic manta drones with glowing turquoise sonar sensors, micro-manipulator arms delicately placing baby coral polyps, curious schools of tropical reef fish swimming alongside, dappled underwater sunlight.",
-        "inspiration_keywords": ["Biomimetic Robotics", "Coral Restoration", "Underwater Swarm", "Turquoise Sonar", "Marine Regeneration"],
-        "evaluation_focus": "Robotics in service of ecological healing; biomimetic grace; rich marine lighting and texture.",
+        "id": "action-skateboard-jump",
+        "category": "Dynamic Objects in Action",
+        "title": "Sunset Stairway Kickflip Apex",
+        "brief": "A street skateboarder frozen in mid-air at the apex of a kickflip over an urban concrete stairway, silhouetted against a brilliant sunset sky with silhouette palm trees.",
+        "visual_goals": "Mid-air suspended skateboarder, deck rotating mid-kickflip, concrete stairs, warm sunset glow, urban architecture, low angle perspective.",
+        "inspiration_keywords": ["Mid-Air Kickflip", "Skater Apex Freeze", "Concrete Stair Set", "Warm Sunset Backlight", "Low Angle Urban Action"],
+        "key_subjects": ["skateboarder in mid-air", "spinning skateboard deck", "concrete stairway", "sunset sky"],
+        "action": "frozen at the highest apex of a kickflip over stairs",
+        "lighting_mood": "warm golden sunset backlight creating dynamic silhouettes",
+        "evaluation_focus": "Action pose frozen at apex, skateboard rotation, clear urban stairway context, warm backlight.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "robotics-search-rescue-exosuit",
-        "category": "Robotics and Automation",
-        "title": "Disaster Response Aerial Rescue Mech",
-        "brief": "Design a quadruped and biped transformable rescue robot navigating a mountain landslide zone in severe weather. The robotic guardian extends a protective thermo-insulated medical shelter while deploying micro-drone swarms to locate survivors.",
-        "visual_goals": "Rugged all-weather carbon-fiber robotic rescue chassis, piercing searchlight beams through stormy rain, deployable micro-drones buzzing like glowing fireflies, heroic posture, rescue team operator observing via telemetry.",
-        "inspiration_keywords": ["Search & Rescue Mech", "Micro-Drone Swarm", "Rugged Autonomous Chassis", "Heroic Shield", "Stormy Alpine Drama"],
-        "evaluation_focus": "Functional engineering believability; dramatic weather and light contrast; protective, heroic narrative.",
+        "id": "action-guitarist-stage",
+        "category": "Dynamic Objects in Action",
+        "title": "Stadium Rock Solo in Laser Fog",
+        "brief": "A passionate rock guitarist leaning back during an intense guitar solo on a stadium stage, engulfed in dense purple stage haze, piercing laser beams, and flying sweat droplets.",
+        "visual_goals": "Electric guitar in hands, dramatic back-bending posture, purple and magenta stage lighting, atmospheric smoke haze, laser light beams.",
+        "inspiration_keywords": ["Electric Guitar Solo", "Stadium Stage Fog", "Purple Laser Beams", "Intense Musical Action", "Concert Lighting"],
+        "key_subjects": ["electric guitarist", "electric guitar", "dense purple stage haze", "laser beams"],
+        "action": "leaning back in an aggressive, emotional guitar solo",
+        "lighting_mood": "intense purple and magenta concert spotlights cutting through stage smoke",
+        "evaluation_focus": "Musical energy and posture, dramatic concert stage lighting and atmospheric fog effects.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-hummingbird-flower",
+        "category": "Dynamic Objects in Action",
+        "title": "High-Speed Emerald Wingbeat",
+        "brief": "An extreme macro high-speed photograph of an iridescent emerald green hummingbird hovering with rapid wing blur at an exotic pink flower, with glistening morning dew droplets.",
+        "visual_goals": "Shimmering green feathers, wing blur motion, needle-like beak sipping nectar, vivid pink petals, glistening dew droplets, creamy bokeh background.",
+        "inspiration_keywords": ["Emerald Hummingbird Hover", "High-Speed Wing Blur", "Exotic Flower Blossom", "Glistening Dew Drops", "Macro Bokeh"],
+        "key_subjects": ["iridescent green hummingbird", "pink exotic flower blossom", "dew droplets", "creamy green bokeh"],
+        "action": "hovering precisely in mid-air with rapid wing motion blur",
+        "lighting_mood": "soft diffused morning sunlight highlighting iridescent feathers",
+        "evaluation_focus": "Precision of the hovering bird and beak position, wing motion blur vs frozen body, vibrant color contrast.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-water-splash",
+        "category": "Dynamic Objects in Action",
+        "title": "Crystalline Water Splash Crown",
+        "brief": "A crystal-clear macro photograph of a single water droplet hitting a surface, exploding into a perfectly symmetrical coronet water crown with suspended bead droplets.",
+        "visual_goals": "Symmetrical water splash crown, suspended micro droplets, concentric ripples, crystal refraction, pristine aquatic blue lighting.",
+        "inspiration_keywords": ["Water Droplet Crown", "High-Speed Liquid Freeze", "Concentric Ripples", "Crystalline Refraction", "Aquatic Macro"],
+        "key_subjects": ["water droplet splash crown", "suspended water beads", "concentric ripples", "aquatic blue surface"],
+        "action": "single droplet impact forming a high-speed coronet crown",
+        "lighting_mood": "clean studio light refracting through crystal-clear water droplets",
+        "evaluation_focus": "Symmetry of the splash crown, crystal liquid clarity, micro droplet suspension.",
         "is_active": True,
         "created_by": "system"
     }
 ]
 
-DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "challenges.json")
 
 class ChallengeManager:
-    def __init__(self, data_file=DATA_FILE):
+    def __init__(self, data_file="data/challenges.json"):
         self.data_file = data_file
         self.challenges = []
         self._load()
@@ -232,90 +214,99 @@ class ChallengeManager:
     def _load(self):
         if os.path.exists(self.data_file):
             try:
-                with open(self.data_file, "r", encoding="utf-8") as f:
+                with open(self.data_file, 'r', encoding='utf-8') as f:
                     self.challenges = json.load(f)
                     return
             except Exception as e:
                 print(f"[ChallengeManager] Error loading {self.data_file}: {e}")
-        # Default fallback
         self.challenges = [dict(c) for c in DEFAULT_CHALLENGES]
-        self._save()
 
     def _save(self):
+        os.makedirs(os.path.dirname(self.data_file), exist_ok=True)
         try:
-            with open(self.data_file, "w", encoding="utf-8") as f:
+            with open(self.data_file, 'w', encoding='utf-8') as f:
                 json.dump(self.challenges, f, indent=2)
         except Exception as e:
             print(f"[ChallengeManager] Error saving {self.data_file}: {e}")
 
-    def get_categories(self):
-        return list(OFFICIAL_CATEGORIES)
-
-    def get_all_challenges(self):
+    def get_all(self, active_only=False):
+        if active_only:
+            return [c for c in self.challenges if c.get("is_active", True)]
         return list(self.challenges)
 
-    def get_active_challenges(self, category=None):
-        active = [c for c in self.challenges if c.get("is_active", True)]
-        if category:
-            active = [c for c in active if c.get("category") == category]
-        return active
+    def get_by_category(self, category):
+        return [c for c in self.challenges if c.get("category") == category and c.get("is_active", True)]
 
-    def get_challenge_by_id(self, challenge_id):
+    def get_by_id(self, challenge_id):
         for c in self.challenges:
             if c.get("id") == challenge_id:
-                return c
+                return dict(c)
         return None
 
-    def get_random_challenge(self, category=None, exclude_ids=None):
-        active = self.get_active_challenges(category=category)
+    def get_challenge_by_id(self, challenge_id):
+        return self.get_by_id(challenge_id)
+
+    def get_random_challenge(self, category=None):
+        pool = self.get_by_category(category) if category else self.get_all(active_only=True)
+        if not pool:
+            pool = [c for c in DEFAULT_CHALLENGES if c.get("is_active", True)]
+        return dict(random.choice(pool))
+
+    def get_unique_target_challenge(self, user_seed: int = None, category: str = None, participant_id: str = None, exclude_ids: list = None, **kwargs) -> dict:
+        """
+        Assigns an authentic real-scenario reference image.
+        Loads from curated high-res photo assets in static/images/challenges/ in 0ms!
+        """
+        pool = self.get_by_category(category) if category else self.get_all(active_only=True)
         if exclude_ids:
-            candidates = [c for c in active if c.get("id") not in exclude_ids]
-            if candidates:
-                return random.choice(candidates)
-        if active:
-            return random.choice(active)
-        # If no active challenges in specified category, return any active challenge
-        all_active = self.get_active_challenges()
-        if all_active:
-            return random.choice(all_active)
-        # Fallback to default
-        return random.choice(DEFAULT_CHALLENGES)
+            pool = [c for c in pool if c.get("id") not in exclude_ids]
+        if not pool:
+            pool = [c for c in DEFAULT_CHALLENGES if c.get("is_active", True)]
 
-    def get_unique_target_challenge(self, participant_id: str = None, category: str = None, exclude_ids: list = None) -> dict:
-        """
-        Retrieves a challenge and generates a unique target reference image synthesized by the AI agent.
-        Ensures each participant receives a unique visual challenge.
-        """
-        import time
-        from image_generator import image_generator
+        # Determine seed from user_seed or participant_id
+        seed_val = user_seed
+        if seed_val is None and participant_id:
+            seed_val = sum(ord(c) for c in participant_id)
 
-        base_ch = self.get_random_challenge(category=category, exclude_ids=exclude_ids)
+        if seed_val is not None:
+            rng = random.Random(seed_val)
+            base_ch = dict(rng.choice(pool))
+        else:
+            base_ch = dict(random.choice(pool))
+
         target = dict(base_ch)
+        target["seed"] = seed_val if seed_val is not None else random.randint(1000, 999999)
+        challenge_id = target.get("id", "")
 
-        # Ensure a distinct seed per user session
-        user_seed = abs(hash(f"{participant_id or uuid.uuid4().hex}-{base_ch.get('id')}-{time.time()}")) % 999999
-        target["seed"] = user_seed
-        target["target_id"] = f"target-{uuid.uuid4().hex[:8]}"
+        # Look for local static photo asset
+        local_img_path = os.path.join("static", "images", "challenges", f"{challenge_id}.jpg")
+        if os.path.exists(local_img_path):
+            try:
+                with open(local_img_path, "rb") as f:
+                    b64_data = base64.b64encode(f.read()).decode("utf-8")
+                target["image_data"] = f"data:image/jpeg;base64,{b64_data}"
+                target["image_source"] = "cinematic-photo-bank"
+                target["static_url"] = f"/static/images/challenges/{challenge_id}.jpg"
+                target["hidden_prompt"] = f"{target['title']}: {target['brief']}"
+                return target
+            except Exception as e:
+                print(f"[ChallengeManager] Error loading local image {local_img_path}: {e}")
 
-        # Synthesize target image prompt
+        # Fallback to image generator if local file is missing
+        from image_generator import image_generator
         target_prompt = f"{base_ch['title']}, {base_ch['brief']}. {base_ch.get('visual_goals', '')}"
-
         gen = image_generator.generate(
             prompt=target_prompt,
             category=base_ch.get("category", ""),
             challenge_title=base_ch.get("title", ""),
             seed=user_seed
         )
-
         target["image_data"] = gen.get("image_data")
         target["image_source"] = gen.get("source", "agent-synthesizer")
         target["hidden_prompt"] = target_prompt
         return target
 
     def add_challenge(self, category, title, brief, visual_goals="", inspiration_keywords=None, evaluation_focus="", is_active=True, created_by="admin"):
-        if category not in OFFICIAL_CATEGORIES:
-            # Allow custom category if needed, but official ones are preferred
-            pass
         challenge_id = f"custom-{uuid.uuid4().hex[:8]}"
         if isinstance(inspiration_keywords, str):
             inspiration_keywords = [k.strip() for k in inspiration_keywords.split(",") if k.strip()]
@@ -329,7 +320,7 @@ class ChallengeManager:
             "brief": brief.strip(),
             "visual_goals": visual_goals.strip(),
             "inspiration_keywords": inspiration_keywords,
-            "evaluation_focus": evaluation_focus.strip() or f"Creative and futuristic interpretation of {category}.",
+            "evaluation_focus": evaluation_focus.strip() or f"Creative visual interpretation of {category}.",
             "is_active": bool(is_active),
             "created_by": created_by
         }
@@ -352,16 +343,6 @@ class ChallengeManager:
                     c["is_active"] = not c.get("is_active", True)
                 else:
                     c["is_active"] = bool(is_active)
-                self._save()
-                return c
-        return None
-
-    def update_challenge(self, challenge_id, **kwargs):
-        for c in self.challenges:
-            if c.get("id") == challenge_id:
-                for k, v in kwargs.items():
-                    if k in ["title", "brief", "visual_goals", "category", "evaluation_focus", "is_active", "inspiration_keywords"]:
-                        c[k] = v
                 self._save()
                 return c
         return None
@@ -389,4 +370,3 @@ class ChallengeManager:
         }
 
 challenge_manager = ChallengeManager()
-

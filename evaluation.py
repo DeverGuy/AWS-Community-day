@@ -1,18 +1,16 @@
 """
-Unbiased AI Dual-Image Judge & Evaluation Engine
+Unbiased, Highly Accurate AI Dual-Image Judge & Grounded Evaluation Engine
 For BUILD THE FUTURE - AI Prompt Battle
 
-Evaluates both images:
-1. Target Reference Image (Given to the user by the Agent)
-2. User's Generated Image (Synthesized from the user's typed prompt)
-
-Enforces strict anti-cheat rules:
-- No meta-prompts referring to "the image on screen", "same as above", etc.
-- Unbiased multimodal visual assessment across 4 standardized pillars:
-  1. Visual & Compositional Similarity (0 - 25 pts)
-  2. Subject & Key Elements Match (0 - 25 pts)
-  3. Style, Texture & Medium Match (0 - 25 pts)
-  4. Prompt Precision & Craft (0 - 25 pts)
+Performs Grounded 2-Pass Visual Audits:
+1. Itemizes visual ground-truth in Image 1 (Target Reference Image).
+2. Itemizes visual evidence in Image 2 (User's Generated Image).
+3. Identifies exact matched features and critical discrepancies.
+4. Produces calibrated, unbiased scoring across 4 objective pillars:
+   - Visual & Compositional Similarity (0 - 25 pts)
+   - Subject & Action Match (0 - 25 pts)
+   - Style, Texture & Realism Match (0 - 25 pts)
+   - Prompt Precision & Visual Faithfulness (0 - 25 pts)
 Total Match Score: 0 - 100 pts
 """
 
@@ -25,7 +23,7 @@ import requests
 from typing import Dict, Any, Tuple
 from PIL import Image
 
-# Strict Anti-Cheat Filter: Prevents meta-prompts referencing the screen or asking to copy
+# Anti-Cheat Filter: Prevents meta-prompts referencing the screen or asking to copy
 CHEAT_PATTERNS = [
     r"generate (an?|the)? image like",
     r"like (the )?(image|picture|photo|graphic) on (the )?screen",
@@ -69,8 +67,8 @@ def validate_prompt_anti_cheat(prompt: str) -> Tuple[bool, str]:
     Returns (is_valid, error_message).
     """
     cleaned = prompt.strip()
-    if len(cleaned) < 12:
-        return False, "Prompt is too short! Please write a detailed descriptive prompt (at least 12 characters) describing the scene."
+    if len(cleaned) < 10:
+        return False, "Prompt is too short! Please write a descriptive prompt (at least 10 characters) detailing the scene."
 
     p_lower = cleaned.lower()
     for pattern in CHEAT_PATTERNS:
@@ -78,13 +76,12 @@ def validate_prompt_anti_cheat(prompt: str) -> Tuple[bool, str]:
             return False, (
                 "Cheating / meta-prompts are strictly prohibited! You cannot refer to 'the image on screen' "
                 "or ask to copy it. You must observe the reference image and describe what you visually see "
-                "(subjects, colors, environment, architecture, lighting, camera angle, etc.)."
+                "(subjects, action, colors, environment, lighting, camera angle, etc.)."
             )
 
-    # Must contain at least 3 distinct alphanumeric words
     words = re.findall(r'\b[a-zA-Z0-9\-]+\b', p_lower)
     if len(words) < 3:
-        return False, "Please provide more descriptive details about what you see in the target image."
+        return False, "Please provide more descriptive details about what you visually observe in the target image."
 
     return True, ""
 
@@ -128,11 +125,11 @@ class DualImageJudge:
         player_name: str = "Builder"
     ) -> Dict[str, Any]:
         """
-        Unbiased AI evaluation comparing Target Image vs User Generated Image.
+        Unbiased, grounded AI evaluation comparing Target Image vs User Generated Image.
         """
         target_meta = target_meta or {}
         challenge_title = target_meta.get("title", "Visual Challenge")
-        category = target_meta.get("category", "Innovation")
+        category = target_meta.get("category", "Real Scenario")
 
         # 1. Anti-Cheat Pre-Check
         is_valid, cheat_err = validate_prompt_anti_cheat(user_prompt)
@@ -144,6 +141,10 @@ class DualImageJudge:
                 "tier_badge": "🚫 Disqualified",
                 "tier_color": "#DC2626",
                 "special_badges": ["🚫 Meta-Prompt Prohibited"],
+                "target_observations": "Target reference image was displayed on screen.",
+                "user_observations": "Disqualified: Attempted shortcut meta-prompt.",
+                "matched_features": [],
+                "discrepancies": ["Prohibited meta-prompt detected."],
                 "breakdown": {
                     "visual_similarity": {
                         "score": 0.0, "max": 25,
@@ -152,27 +153,25 @@ class DualImageJudge:
                     },
                     "subject_match": {
                         "score": 0.0, "max": 25,
-                        "title": "Subject & Key Elements Match",
+                        "title": "Subject & Action Match",
                         "comment": "Disqualified: Attempted shortcut prompt."
                     },
                     "style_match": {
                         "score": 0.0, "max": 25,
-                        "title": "Style, Texture & Medium",
+                        "title": "Style, Texture & Realism",
                         "comment": "Disqualified: Attempted shortcut prompt."
                     },
                     "prompt_precision": {
                         "score": 0.0, "max": 25,
-                        "title": "Prompt Precision & Craft",
+                        "title": "Prompt Precision & Faithfulness",
                         "comment": "Disqualified: Attempted shortcut prompt."
                     }
                 },
                 "summary_comment": f"DISQUALIFIED: {cheat_err}",
-                "unbiased_critique": f"DISQUALIFIED: {cheat_err}",
-                "matched_features": [],
-                "divergent_features": ["Prohibited meta-prompt detected."]
+                "unbiased_critique": f"DISQUALIFIED: {cheat_err}"
             }
 
-        # 2. Try Primary Judge: Gemini Multimodal Vision API
+        # 2. Primary Grounded Judge: Gemini Multimodal Vision API
         if self.gemini_api_key and self.gemini_api_key.startswith("AIzaSy"):
             gemini_result = self._evaluate_with_gemini(
                 target_image_data, user_image_data, user_prompt, challenge_title, category, player_name
@@ -180,7 +179,7 @@ class DualImageJudge:
             if gemini_result:
                 return gemini_result
 
-        # 3. Resilient Fallback: Computer Vision & Semantic Similarity Engine
+        # 3. Resilient Grounded Fallback: Computer Vision & Semantic Calibrated Engine
         return self._evaluate_with_cv_fallback(
             target_image_data, user_image_data, user_prompt, target_meta, player_name
         )
@@ -202,33 +201,44 @@ class DualImageJudge:
         if not t_b64 or not u_b64:
             return None
 
-        system_instruction = f"""You are an unbiased, expert visual judge at an AI Prompt Battle.
-Compare Image 1 (Target Reference Image given to user) and Image 2 (User's Generated Image).
-The theme is BUILD THE FUTURE - Category: {category} - Challenge: {challenge_title}.
-The user had to look at Image 1 and write a prompt to generate a matching replica.
+        system_instruction = f"""You are a rigorous, completely unbiased visual judge at an AI Prompt Battle.
+You are given two images:
+- Image 1: Target Reference Image (The scenario image given to the participant).
+- Image 2: User's Generated Image (Synthesized from the user's typed prompt).
+
+Category: {category} - Challenge: {challenge_title}
 The user's typed prompt was: "{user_prompt}"
 
-Evaluate strictly how closely Image 2 visually matches Image 1 across 4 objective criteria:
-1. visual_similarity (0-25 pts): Color palette, spatial balance, camera perspective, lighting direction, contrast.
-2. subject_match (0-25 pts): Accurate recreation of the core subjects, objects, structures, and environment.
-3. style_match (0-25 pts): Art style, medium, realism, rendering textures, mood.
-4. prompt_precision (0-25 pts): How well the user's prompt described these visual elements without shortcuts or vague filler.
+YOUR TASK: Perform a strict, objective, grounded visual comparison between Image 1 and Image 2.
 
-Total Score: sum of all 4 criteria (0 - 100).
-Be completely impartial, objective, and unbiased.
+Follow this exact 5-step evaluation protocol:
+1. TARGET AUDIT: Describe exactly what is visually depicted in Image 1 (Subject, action, environment/setting, colors, lighting, camera angle).
+2. USER AUDIT: Describe exactly what is visually depicted in Image 2.
+3. MATCHES: List the specific visual elements from Image 1 that Image 2 successfully recreated.
+4. DISCREPANCIES: List the critical differences, missing elements, or wrong subjects.
+5. STRICT CALIBRATED SCORING (0-25 each, sum = 0-100 total):
+   - visual_similarity (0-25): Color palette, spatial balance, camera perspective, lighting direction, contrast. (If background/setting is completely wrong, cap at 7/25).
+   - subject_match (0-25): Recreation of core subjects and actions. (CRITICAL RULE: If the main subject or action is completely different or missing, score MUST be capped at 5/25).
+   - style_match (0-25): Photographic realism, art style, textures, lighting mood.
+   - prompt_precision (0-25): How accurately the user's typed prompt described the visual reality of Image 1. (If the prompt described unrelated elements, cap at 5/25).
+
+Total Score = sum of all 4 criteria (0 - 100).
+DO NOT be overly generous. If the images depict different things, award a low score. If they closely match, award a high score.
 
 Output JSON ONLY with this exact schema:
 {{
+  "target_observations": "description of Image 1",
+  "user_observations": "description of Image 2",
+  "matched_features": ["list of matched visual features"],
+  "discrepancies": ["list of differences or missing elements"],
   "total_score": number,
-  "visual_similarity": {{"score": number, "comment": string}},
-  "subject_match": {{"score": number, "comment": string}},
-  "style_match": {{"score": number, "comment": string}},
-  "prompt_precision": {{"score": number, "comment": string}},
-  "unbiased_critique": string,
-  "tier_badge": string,
-  "matched_features": [string],
-  "divergent_features": [string],
-  "special_badges": [string]
+  "visual_similarity": {{"score": number, "comment": "string"}},
+  "subject_match": {{"score": number, "comment": "string"}},
+  "style_match": {{"score": number, "comment": "string"}},
+  "prompt_precision": {{"score": number, "comment": "string"}},
+  "unbiased_critique": "detailed paragraph explaining the evaluation based on visual evidence",
+  "tier_badge": "string",
+  "special_badges": ["string"]
 }}"""
 
         payload = {
@@ -245,20 +255,20 @@ Output JSON ONLY with this exact schema:
         }
 
         try:
-            resp = requests.post(url, json=payload, timeout=8)
+            resp = requests.post(url, json=payload, timeout=20)
             if resp.status_code == 200:
                 res_data = resp.json()
                 text = res_data["candidates"][0]["content"]["parts"][0]["text"]
                 parsed = json.loads(text)
 
-                total = float(parsed.get("total_score", 0))
-                total = max(20.0, min(100.0, round(total, 1)))
-
                 # Pillar scores
-                vs_score = min(25.0, max(0.0, float(parsed.get("visual_similarity", {}).get("score", total * 0.25))))
-                sm_score = min(25.0, max(0.0, float(parsed.get("subject_match", {}).get("score", total * 0.25))))
-                st_score = min(25.0, max(0.0, float(parsed.get("style_match", {}).get("score", total * 0.25))))
-                pp_score = min(25.0, max(0.0, float(parsed.get("prompt_precision", {}).get("score", total * 0.25))))
+                vs_score = min(25.0, max(0.0, float(parsed.get("visual_similarity", {}).get("score", 0))))
+                sm_score = min(25.0, max(0.0, float(parsed.get("subject_match", {}).get("score", 0))))
+                st_score = min(25.0, max(0.0, float(parsed.get("style_match", {}).get("score", 0))))
+                pp_score = min(25.0, max(0.0, float(parsed.get("prompt_precision", {}).get("score", 0))))
+
+                total = float(parsed.get("total_score", vs_score + sm_score + st_score + pp_score))
+                total = max(0.0, min(100.0, round(total, 1)))
 
                 # Grade Tier
                 tier, tier_badge, tier_color = self._calculate_tier(total)
@@ -274,35 +284,37 @@ Output JSON ONLY with this exact schema:
                     "tier_badge": tier_badge,
                     "tier_color": tier_color,
                     "special_badges": badges[:3],
+                    "target_observations": parsed.get("target_observations", "Analyzed target reference visual elements."),
+                    "user_observations": parsed.get("user_observations", "Analyzed user replica visual elements."),
+                    "matched_features": parsed.get("matched_features", []),
+                    "discrepancies": parsed.get("discrepancies", []),
                     "breakdown": {
                         "visual_similarity": {
                             "score": round(vs_score, 1), "max": 25,
                             "title": "Visual & Compositional Similarity",
-                            "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated spatial and color alignment.")
+                            "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated spatial balance, lighting and palette.")
                         },
                         "subject_match": {
                             "score": round(sm_score, 1), "max": 25,
-                            "title": "Subject & Key Elements Match",
-                            "comment": parsed.get("subject_match", {}).get("comment", "Evaluated core entities and objects.")
+                            "title": "Subject & Action Match",
+                            "comment": parsed.get("subject_match", {}).get("comment", "Evaluated primary entities and dynamic action.")
                         },
                         "style_match": {
                             "score": round(st_score, 1), "max": 25,
-                            "title": "Style, Texture & Medium",
-                            "comment": parsed.get("style_match", {}).get("comment", "Evaluated medium and lighting mood.")
+                            "title": "Style, Texture & Realism",
+                            "comment": parsed.get("style_match", {}).get("comment", "Evaluated realism and artistic medium.")
                         },
                         "prompt_precision": {
                             "score": round(pp_score, 1), "max": 25,
-                            "title": "Prompt Precision & Craft",
-                            "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive accuracy.")
+                            "title": "Prompt Precision & Faithfulness",
+                            "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive accuracy against reference.")
                         }
                     },
                     "summary_comment": parsed.get("unbiased_critique", f"{player_name} scored {total}/100 in visual recreation accuracy."),
-                    "unbiased_critique": parsed.get("unbiased_critique", ""),
-                    "matched_features": parsed.get("matched_features", []),
-                    "divergent_features": parsed.get("divergent_features", [])
+                    "unbiased_critique": parsed.get("unbiased_critique", "")
                 }
         except Exception as e:
-            print(f"[AIJudge] Gemini vision evaluation error ({e}). Using computer vision fallback...")
+            print(f"[AIJudge] Gemini vision evaluation error ({e}). Using calibrated CV fallback...")
             return None
 
     def _evaluate_with_cv_fallback(
@@ -313,11 +325,14 @@ Output JSON ONLY with this exact schema:
         target_meta: Dict[str, Any],
         player_name: str
     ) -> Dict[str, Any]:
-        """Deterministic Computer Vision & Semantic evaluation fallback"""
-        visual_score = 15.0
-        subject_score = 14.0
-        style_score = 15.0
-        precision_score = 14.0
+        """Calibrated Computer Vision & Semantic evaluation fallback"""
+        visual_score = 5.0
+        subject_score = 5.0
+        style_score = 5.0
+        precision_score = 5.0
+
+        matched_tokens = []
+        discrepancies = []
 
         try:
             # Color histogram similarity between target and user image
@@ -335,32 +350,49 @@ Output JSON ONLY with this exact schema:
             total_pixels = sum(t_hist)
             hist_ratio = intersection / max(total_pixels, 1)
 
-            visual_score = round(10.0 + min(hist_ratio * 14.0, 14.0), 1)
+            # Palette match scaled 0 - 25
+            visual_score = round(hist_ratio * 25.0, 1)
         except Exception:
-            visual_score = 16.0
+            visual_score = 8.0
 
-        # Semantic keywords overlap
+        # Semantic keywords analysis
         prompt_lower = user_prompt.lower()
-        target_tokens = set()
-        for field in ["title", "brief", "visual_goals"]:
-            text = target_meta.get(field, "")
-            target_tokens.update(re.findall(r'\b[a-z]{4,}\b', text.lower()))
+        key_subjects = target_meta.get("key_subjects", [])
+        action_text = target_meta.get("action", "")
+
+        target_anchors = set()
+        for subj in key_subjects:
+            target_anchors.update(re.findall(r'\b[a-z]{3,}\b', subj.lower()))
+        target_anchors.update(re.findall(r'\b[a-z]{3,}\b', action_text.lower()))
         for kw in target_meta.get("inspiration_keywords", []):
-            target_tokens.update(re.findall(r'\b[a-z]{3,}\b', kw.lower()))
+            target_anchors.update(re.findall(r'\b[a-z]{3,}\b', kw.lower()))
 
-        matched = [tok for tok in target_tokens if tok in prompt_lower]
-        match_ratio = len(matched) / max(len(target_tokens), 8)
-        subject_score = round(10.0 + min(match_ratio * 14.0, 14.0), 1)
+        matched = [tok for tok in target_anchors if tok in prompt_lower]
+        match_ratio = len(matched) / max(len(target_anchors), 6)
 
-        # Style & Prompt Craft
-        word_count = len(user_prompt.split())
-        precision_score = round(12.0 + min(word_count / 30.0 * 8.0, 11.0), 1)
-        style_score = round(13.0 + (min(len(matched), 5) * 2.0), 1)
+        # If user didn't mention core subject or action, subject score is strictly capped
+        if len(matched) >= 4:
+            subject_score = round(16.0 + min(match_ratio * 9.0, 9.0), 1)
+            style_score = round(15.0 + min(len(matched) * 1.8, 9.0), 1)
+            precision_score = round(14.0 + min(len(user_prompt.split()) / 20.0 * 9.0, 10.0), 1)
+            matched_tokens = matched[:5]
+        elif len(matched) >= 2:
+            subject_score = round(10.0 + (len(matched) * 2.5), 1)
+            style_score = 12.0
+            precision_score = 11.0
+            matched_tokens = matched
+            discrepancies.append("Partial subject match: several key visual details from the reference scene are missing.")
+        else:
+            # Low match / wrong prompt
+            subject_score = round(2.0 + (len(matched) * 2.0), 1)
+            style_score = 8.0
+            precision_score = round(min(len(user_prompt.split()) * 0.5, 6.0), 1)
+            discrepancies.append("Subject mismatch: prompt does not describe the core subject or action depicted in the target scene.")
 
-        visual_score = min(max(visual_score, 8.0), 24.5)
-        subject_score = min(max(subject_score, 8.0), 24.5)
-        style_score = min(max(style_score, 8.0), 24.5)
-        precision_score = min(max(precision_score, 8.0), 24.5)
+        visual_score = min(max(visual_score, 0.0), 25.0)
+        subject_score = min(max(subject_score, 0.0), 25.0)
+        style_score = min(max(style_score, 0.0), 25.0)
+        precision_score = min(max(precision_score, 0.0), 25.0)
 
         total_score = round(visual_score + subject_score + style_score + precision_score, 1)
         tier, tier_badge, tier_color = self._calculate_tier(total_score)
@@ -371,7 +403,11 @@ Output JSON ONLY with this exact schema:
             "tier": tier,
             "tier_badge": tier_badge,
             "tier_color": tier_color,
-            "special_badges": [tier_badge, "🎨 Palette Evaluated"],
+            "special_badges": [tier_badge, "🎯 Grounded CV"],
+            "target_observations": f"Target scene: {target_meta.get('title', 'Reference')} ({target_meta.get('brief', '')})",
+            "user_observations": f"User prompt generated visual: '{user_prompt}'",
+            "matched_features": matched_tokens if matched_tokens else ["Photographic medium"],
+            "discrepancies": discrepancies if discrepancies else ["Minor variances in lighting angle and particle geometry."],
             "breakdown": {
                 "visual_similarity": {
                     "score": visual_score, "max": 25,
@@ -380,24 +416,26 @@ Output JSON ONLY with this exact schema:
                 },
                 "subject_match": {
                     "score": subject_score, "max": 25,
-                    "title": "Subject & Key Elements Match",
-                    "comment": f"Recreated {len(matched)} key scene anchors ({', '.join(matched[:3]) if matched else 'core elements'})."
+                    "title": "Subject & Action Match",
+                    "comment": f"Matched {len(matched_tokens)} key scene anchors ({', '.join(matched_tokens[:3]) if matched_tokens else 'minimal overlap'})."
                 },
                 "style_match": {
                     "score": style_score, "max": 25,
-                    "title": "Style, Texture & Medium",
-                    "comment": "Atmosphere and lighting aesthetics analyzed against reference."
+                    "title": "Style, Texture & Realism",
+                    "comment": "Atmosphere and lighting aesthetics analyzed against reference image."
                 },
                 "prompt_precision": {
                     "score": precision_score, "max": 25,
-                    "title": "Prompt Precision & Craft",
-                    "comment": f"Prompt contains {word_count} descriptive words detailing the visual scene."
+                    "title": "Prompt Precision & Faithfulness",
+                    "comment": f"Prompt evaluated for visual faithfulness to target scene ({len(user_prompt.split())} words)."
                 }
             },
             "summary_comment": f"{player_name}'s prompt achieved an objective {total_score}/100 match with the target reference image.",
-            "unbiased_critique": f"Objective analysis: The generated visual shares key color temperature and thematic elements with the target image. Word count and descriptive fidelity scored {precision_score}/25.",
-            "matched_features": matched[:4],
-            "divergent_features": ["Subtle variances in spatial geometry and lighting intensity."]
+            "unbiased_critique": (
+                f"Objective audit: The generated visual scored {total_score}/100. "
+                f"Subject match was {subject_score}/25 based on {len(matched_tokens)} key matched elements. "
+                f"Visual color alignment was {visual_score}/25."
+            )
         }
 
     def _calculate_tier(self, score: float) -> Tuple[str, str, str]:
@@ -407,10 +445,10 @@ Output JSON ONLY with this exact schema:
             return "Precision Builder", "✨ PRECISION BUILDER", "#3b82f6"
         elif score >= 60:
             return "Accurate Approximator", "🚀 ACCURATE APPROXIMATOR", "#f59e0b"
-        elif score >= 45:
+        elif score >= 40:
             return "Visual Explorer", "💡 VISUAL EXPLORER", "#8b5cf6"
         else:
-            return "Apprentice Observer", "🌱 APPRENTICE OBSERVER", "#64748b"
+            return "Apprentice Observer", "🌱 APPRENTICE OBSERVER", "#ef4444"
 
 
 ai_evaluator = DualImageJudge()

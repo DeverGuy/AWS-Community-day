@@ -413,8 +413,23 @@
             </div>
           </div>
 
+          <!-- Grounded Visual Observations & Evidence Audit -->
+          <div class="eval-observations-box" id="eval-observations-box" style="margin-top: 14px; padding: 12px; background-color: var(--aws-bg-subtle); border-radius: var(--radius-sm); border: 1px solid var(--aws-border-subtle);">
+            <div style="font-size: 11.5px; font-weight: 700; color: var(--aws-text-primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">🔍 Visual Ground-Truth Evidence Audit</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 11.5px; line-height: 1.5; color: var(--aws-text-secondary);" id="eval-obs-grid">
+              <div style="background: #FFF; padding: 8px 10px; border-radius: var(--radius-sm); border-left: 3px solid var(--sbg-purple);">
+                <strong style="color: var(--sbg-purple-dark); display: block; margin-bottom: 2px;">🎯 Target Image Observations:</strong>
+                <span id="target-obs-text">Analyzing reference features...</span>
+              </div>
+              <div style="background: #FFF; padding: 8px 10px; border-radius: var(--radius-sm); border-left: 3px solid var(--aws-orange);">
+                <strong style="color: var(--aws-orange-hover); display: block; margin-bottom: 2px;">🎨 Your Replica Observations:</strong>
+                <span id="user-obs-text">Analyzing generated features...</span>
+              </div>
+            </div>
+          </div>
+
           <!-- Objective Critique & Feature Comparison -->
-          <div class="eval-footer-critique">
+          <div class="eval-footer-critique" style="margin-top: 12px;">
             <p class="critique-text" id="eval-summary-text"></p>
             <div class="features-comparison-row" id="eval-features-row"></div>
             <div class="badges-flex" id="eval-badges-row" style="margin-top: 10px;"></div>

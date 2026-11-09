@@ -215,6 +215,13 @@ def generate():
     gen_result = image_generator.generate(prompt, category=category, challenge_title=challenge_title)
 
     if not gen_result.get("success"):
+        if gen_result.get("rate_limited") and gen_result.get("client_url"):
+            return jsonify({
+                "success": False,
+                "fallback_to_client": True,
+                "client_url": gen_result.get("client_url"),
+                "message": "Server IP limit reached. Direct client fetch initiated."
+            }), 200
         return jsonify({
             "success": False,
             "error": gen_result.get("error", "Image generation failed")
