@@ -414,6 +414,14 @@ class ChallengeManager:
             return [c for c in self.challenges if c.get("is_active", True)]
         return list(self.challenges)
 
+    def get_all_challenges(self):
+        return self.get_all(active_only=False)
+
+    def get_active_challenges(self, category=None):
+        if category:
+            return self.get_by_category(category)
+        return self.get_all(active_only=True)
+
     def get_by_category(self, category):
         return [c for c in self.challenges if c.get("category") == category and c.get("is_active", True)]
 

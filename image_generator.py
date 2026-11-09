@@ -18,6 +18,9 @@ import random
 import urllib.parse
 import requests
 from PIL import Image, ImageDraw, ImageFont
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class ImageGenerator:
     def __init__(self):
@@ -35,9 +38,10 @@ class ImageGenerator:
         """
         start_time = time.time()
         clean_prompt = prompt.strip()
+        self.gemini_api_key = self.gemini_api_key or os.getenv("GEMINI_API_KEY")
 
         # Tier 1: Try Google Gemini Pro / Imagen 3 if key is present
-        if self.gemini_api_key and self.gemini_api_key.startswith("AIzaSy"):
+        if self.gemini_api_key and len(self.gemini_api_key.strip()) > 10:
             gemini_res = self._generate_gemini_pro(clean_prompt)
             if gemini_res.get("success"):
                 gemini_res["latency"] = round(time.time() - start_time, 2)
@@ -66,20 +70,22 @@ class ImageGenerator:
             pollinations_result["latency"] = round(time.time() - start_time, 2)
             return pollinations_result
 
-        # If Pollinations was rate-limited on the server IP, fall back to procedural and attach client URL
-        client_fallback_url = None
+        # If Pollinations was rate-limited on the server IP, return client pass-through
         if pollinations_result.get("rate_limited"):
-            print("[ImageGenerator] Server IP rate limited on Pollinations. Attaching client fallback URL...")
-            client_fallback_url = pollinations_result.get("client_url")
+            print(f"[ImageGenerator] Server IP hit 45s limit. Handing off direct browser fetch ({pollinations_result.get('client_url')})...")
+            return {
+                "success": False,
+                "rate_limited": True,
+                "retry_after": pollinations_result.get("retry_after", 10),
+                "client_url": pollinations_result.get("client_url"),
+                "error": "Server IP rate-limited. Direct browser fetch available."
+            }
 
-        print(f"[ImageGenerator] Cloud cascade completed. Generating fallback canvas...")
+        print(f"[ImageGenerator] Cloud cascade completed. Generating offline fallback canvas...")
 
-        # Tier 5: Standalone Scene Semantic Digital Compositor (Guarantees success: True)
+        # Tier 5: Standalone Scene Semantic Digital Compositor (Offline Fallback)
         procedural_result = self._generate_procedural(clean_prompt, category=category, challenge_title=challenge_title, seed=seed)
         procedural_result["latency"] = round(time.time() - start_time, 2)
-        if client_fallback_url:
-            procedural_result["client_url"] = client_fallback_url
-            procedural_result["rate_limited"] = True
         return procedural_result
 
     def _generate_gemini_pro(self, prompt: str) -> dict:
@@ -233,8 +239,12 @@ class ImageGenerator:
             encoded_prompt = urllib.parse.quote(prompt[:300])
             gen_seed = seed if seed is not None else random.randint(1000, 999999)
             url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?model=turbo&width=512&height=512&nologo=true&seed={gen_seed}"
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Referer": "https://builder.aws.com/community/student-builder-groups"
+            }
 
-            resp = requests.get(url, timeout=15)
+            resp = requests.get(url, headers=headers, timeout=18)
             if resp.status_code == 200 and len(resp.content) > 1000:
                 b64 = base64.b64encode(resp.content).decode("utf-8")
                 mime = "image/jpeg" if resp.content.startswith(b'\xff\xd8') else "image/png"
@@ -246,15 +256,40 @@ class ImageGenerator:
                 }
             elif resp.status_code == 402:
                 # Rate limited on server IP (1 image per 45s per IP)
+                retry_after = 12
+                try:
+                    err_json = resp.json()
+                    msg = err_json.get("error", {}).get("message", "")
+                    match = re.search(r"Retry after (\d+)s", msg)
+                    if match:
+                        retry_after = int(match.group(1))
+                except Exception:
+                    pass
+
+                # If wait is very short (<= 4s), automatically wait and retry once!
+                if retry_after <= 4:
+                    time.sleep(retry_after + 1)
+                    retry_resp = requests.get(url, headers=headers, timeout=15)
+                    if retry_resp.status_code == 200 and len(retry_resp.content) > 1000:
+                        b64 = base64.b64encode(retry_resp.content).decode("utf-8")
+                        mime = "image/jpeg" if retry_resp.content.startswith(b'\xff\xd8') else "image/png"
+                        return {
+                            "success": True,
+                            "image_data": f"data:{mime};base64,{b64}",
+                            "source": "pollinations-turbo",
+                            "error": None
+                        }
+
                 return {
                     "success": False,
                     "rate_limited": True,
+                    "retry_after": retry_after,
                     "client_url": url,
-                    "error": "Server IP hit free tier rate limit. Client direct fetch available."
+                    "error": f"Server IP rate-limited ({retry_after}s cooldown). Client direct fetch available."
                 }
             return {"success": False, "error": f"Pollinations returned status {resp.status_code}"}
         except requests.exceptions.Timeout:
-            return {"success": False, "error": "Pollinations request timed out (15s)"}
+            return {"success": False, "error": "Pollinations request timed out (18s)"}
         except Exception as e:
             return {"success": False, "error": f"Pollinations error: {str(e)}"}
 

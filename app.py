@@ -229,6 +229,7 @@ def generate():
                 "success": False,
                 "fallback_to_client": True,
                 "client_url": gen_result.get("client_url"),
+                "retry_after": gen_result.get("retry_after", 10),
                 "message": "Server IP limit reached. Direct client fetch initiated."
             }), 200
         return jsonify({

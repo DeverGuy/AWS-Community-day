@@ -665,72 +665,101 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (!data.success && data.fallback_to_client && data.client_url) {
-        showToast("Fetching replica via direct cloud channel...", "info");
+      async function fetchClientDirectAndEvaluate(clientUrl, retrySec) {
+        showToast("Synthesizing diffusion replica via direct high-speed channel...", "info");
+        const encoded = encodeURIComponent(prompt.slice(0, 300));
+        const directUrl = clientUrl || `https://image.pollinations.ai/prompt/${encoded}?model=turbo&width=512&height=512&nologo=true&seed=${Date.now()}`;
+
+        let clientImgResp = null;
         try {
-          const clientImgResp = await fetch(data.client_url);
-          if (clientImgResp.ok) {
-            const blob = await clientImgResp.blob();
-            const clientDataUri = await new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result);
-              reader.readAsDataURL(blob);
-            });
+          clientImgResp = await fetch(directUrl);
+          if (clientImgResp.status === 402) {
+            const waitSec = retrySec || 10;
+            showToast(`Diffusion engine cooling down. Automatically generating in ${waitSec}s...`, "info");
+            await new Promise(r => setTimeout(r, waitSec * 1000 + 1000));
+            clientImgResp = await fetch(directUrl + "&retry=" + Date.now());
+          }
+        } catch (fetchErr) {
+          console.warn("Direct fetch exception:", fetchErr);
+        }
 
-            // Call /api/evaluate to perform the grounded evaluation
-            const evalResp = await fetch("/api/evaluate", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                participant_id: state.participant ? state.participant.id : null,
-                prompt: prompt,
-                image_data: clientDataUri,
-                player_name: state.participant ? state.participant.name : "Builder"
-              })
-            });
-            const evalData = await evalResp.json();
-            const evalResult = evalData.evaluation;
+        if (clientImgResp && clientImgResp.ok) {
+          const blob = await clientImgResp.blob();
+          const clientDataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+          });
 
-            const genRecord = {
-              id: "client-" + Date.now(),
+          // Display user generated image immediately
+          if (activeImg) {
+            activeImg.src = clientDataUri;
+            activeImg.classList.remove("hidden");
+          }
+          if (placeholder) placeholder.classList.add("hidden");
+          if (viewFullBtn) viewFullBtn.disabled = false;
+
+          const sourceTag = document.getElementById("canvas-source-tag");
+          if (sourceTag) {
+            sourceTag.textContent = "Engine: DIFFUSION-TURBO";
+            sourceTag.classList.remove("hidden");
+          }
+
+          showToast("Visual synthesized! AI Judge comparing with target...", "info");
+
+          // Call /api/evaluate to perform the grounded evaluation
+          const evalResp = await fetch("/api/evaluate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              participant_id: state.participant ? state.participant.id : null,
               prompt: prompt,
               image_data: clientDataUri,
-              source: "cloud-direct-turbo",
-              latency: 2.2,
-              evaluation: evalResult
-            };
+              player_name: state.participant ? state.participant.name : "Builder"
+            })
+          });
+          const evalData = await evalResp.json();
+          const evalResult = evalData.evaluation;
 
-            state.currentImage = clientDataUri;
-            state.currentEvaluation = evalResult;
-            state.generations.push(genRecord);
+          const genRecord = {
+            id: "client-" + Date.now(),
+            prompt: prompt,
+            image_data: clientDataUri,
+            source: "diffusion-turbo",
+            latency: 2.3,
+            evaluation: evalResult
+          };
 
-            if (activeImg) {
-              activeImg.src = clientDataUri;
-              activeImg.classList.remove("hidden");
-            }
-            if (placeholder) placeholder.classList.add("hidden");
-            if (viewFullBtn) viewFullBtn.disabled = false;
+          state.currentImage = clientDataUri;
+          state.currentEvaluation = evalResult;
+          state.generations.push(genRecord);
 
-            const sourceTag = document.getElementById("canvas-source-tag");
-            if (sourceTag) {
-              sourceTag.textContent = "Engine: CLOUD-DIRECT";
-              sourceTag.classList.remove("hidden");
-            }
-
-            renderEvaluationScorecard(evalResult);
-            renderHistoryReel();
-            if (submitBtn) submitBtn.disabled = false;
-            showToast(`Visual synthesized! AI Judge Match Score: ${evalResult?.total_score || 0}/100`, "success");
-            return;
-          }
-        } catch (clientErr) {
-          console.warn("Client direct fetch error:", clientErr);
+          renderEvaluationScorecard(evalResult);
+          renderHistoryReel();
+          if (submitBtn) submitBtn.disabled = false;
+          playAudioTone("success");
+          showToast(`Visual synthesized! AI Judge Match Score: ${evalResult?.total_score || 0}/100`, "success");
+          return true;
         }
+        return false;
+      }
+
+      if (!data.success && data.fallback_to_client && data.client_url) {
+        const clientOk = await fetchClientDirectAndEvaluate(data.client_url, data.retry_after);
+        if (clientOk) return;
       }
 
       if (data.success && data.generation) {
-        playAudioTone("success");
         const gen = data.generation;
+
+        // If the server returned an abstract procedural drawing, upgrade to real diffusion!
+        if (gen.source === "cinematic-procedural-synth" || gen.source === "procedural-synth") {
+          console.log("Procedural canvas detected. Upgrading to genuine diffusion generation...");
+          const clientOk = await fetchClientDirectAndEvaluate(null, 10);
+          if (clientOk) return;
+        }
+
+        playAudioTone("success");
         state.currentImage = gen.image_data;
         state.currentEvaluation = gen.evaluation;
         state.generations.push(gen);
@@ -842,11 +871,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // Grounded Observations Audit
     const targetObsEl = document.getElementById("target-obs-text");
     if (targetObsEl) {
-      targetObsEl.textContent = ev.target_observations || "Analyzed reference scene elements.";
+      if (Array.isArray(ev.target_observations)) {
+        targetObsEl.textContent = ev.target_observations.map(x => `• ${x}`).join("\n");
+      } else {
+        targetObsEl.textContent = ev.target_observations || "Analyzed reference scene elements.";
+      }
     }
     const userObsEl = document.getElementById("user-obs-text");
     if (userObsEl) {
-      userObsEl.textContent = ev.user_observations || "Analyzed replica visual features.";
+      if (Array.isArray(ev.user_observations)) {
+        userObsEl.textContent = ev.user_observations.map(x => `• ${x}`).join("\n");
+      } else {
+        userObsEl.textContent = ev.user_observations || "Analyzed replica visual features.";
+      }
     }
 
     // Unbiased Critique

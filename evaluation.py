@@ -22,6 +22,9 @@ import base64
 import requests
 from typing import Dict, Any, Tuple
 from PIL import Image
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Anti-Cheat Filter: Prevents meta-prompts referencing the screen or asking to copy
 CHEAT_PATTERNS = [
@@ -172,7 +175,7 @@ class DualImageJudge:
             }
 
         # 2. Primary Grounded Judge: Gemini Multimodal Vision API
-        if self.gemini_api_key and self.gemini_api_key.startswith("AIzaSy"):
+        if self.gemini_api_key and len(self.gemini_api_key.strip()) > 10:
             gemini_result = self._evaluate_with_gemini(
                 target_image_data, user_image_data, user_prompt, challenge_title, category, player_name
             )
@@ -193,9 +196,6 @@ class DualImageJudge:
         category: str,
         player_name: str
     ) -> Dict[str, Any]:
-        model = os.getenv("GEMINI_JUDGE_MODEL", "gemini-2.5-flash")
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_api_key}"
-
         t_b64, t_mime = prepare_image_for_vision(target_image_data)
         u_b64, u_mime = prepare_image_for_vision(user_image_data)
 
@@ -255,68 +255,112 @@ Output JSON ONLY with this exact schema:
             }
         }
 
-        try:
-            resp = requests.post(url, json=payload, timeout=20)
-            if resp.status_code == 200:
-                res_data = resp.json()
-                text = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                parsed = json.loads(text)
+        candidate_models = [
+            os.getenv("GEMINI_JUDGE_MODEL", "").strip(),
+            "gemini-flash-lite-latest",
+            "gemini-2.5-flash",
+            "gemini-pro-latest",
+            "gemini-flash-latest"
+        ]
+        candidate_models = [m for m in candidate_models if m]
+        seen_models = set()
+        models = []
+        for m in candidate_models:
+            if m not in seen_models:
+                seen_models.add(m)
+                models.append(m)
 
-                # Pillar scores
-                vs_score = min(25.0, max(0.0, float(parsed.get("visual_similarity", {}).get("score", 0))))
-                sm_score = min(25.0, max(0.0, float(parsed.get("subject_match", {}).get("score", 0))))
-                st_score = min(25.0, max(0.0, float(parsed.get("style_match", {}).get("score", 0))))
-                pp_score = min(25.0, max(0.0, float(parsed.get("prompt_precision", {}).get("score", 0))))
+        for model_name in models:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={self.gemini_api_key}"
+            try:
+                resp = requests.post(url, json=payload, timeout=20)
+                if resp.status_code == 200:
+                    res_data = resp.json()
+                    candidates = res_data.get("candidates", [])
+                    if not candidates:
+                        continue
+                    parts = candidates[0].get("content", {}).get("parts", [])
+                    if not parts or "text" not in parts[0]:
+                        continue
+                    text = parts[0]["text"]
+                    parsed = json.loads(text)
 
-                total = float(parsed.get("total_score", vs_score + sm_score + st_score + pp_score))
-                total = max(0.0, min(100.0, round(total, 1)))
+                    # Pillar scores
+                    vs_score = min(25.0, max(0.0, float(parsed.get("visual_similarity", {}).get("score", 0))))
+                    sm_score = min(25.0, max(0.0, float(parsed.get("subject_match", {}).get("score", 0))))
+                    st_score = min(25.0, max(0.0, float(parsed.get("style_match", {}).get("score", 0))))
+                    pp_score = min(25.0, max(0.0, float(parsed.get("prompt_precision", {}).get("score", 0))))
 
-                # Grade Tier
-                tier, tier_badge, tier_color = self._calculate_tier(total)
+                    total = float(parsed.get("total_score", vs_score + sm_score + st_score + pp_score))
+                    total = max(0.0, min(100.0, round(total, 1)))
 
-                badges = parsed.get("special_badges", [])
-                if not badges:
-                    badges = [tier_badge]
+                    # Grade Tier
+                    tier, tier_badge, tier_color = self._calculate_tier(total)
 
-                return {
-                    "is_cheating": False,
-                    "total_score": total,
-                    "tier": tier,
-                    "tier_badge": tier_badge,
-                    "tier_color": tier_color,
-                    "special_badges": badges[:3],
-                    "target_observations": parsed.get("target_observations", "Analyzed target reference visual elements."),
-                    "user_observations": parsed.get("user_observations", "Analyzed user replica visual elements."),
-                    "matched_features": parsed.get("matched_features", []),
-                    "discrepancies": parsed.get("discrepancies", []),
-                    "breakdown": {
-                        "visual_similarity": {
-                            "score": round(vs_score, 1), "max": 25,
-                            "title": "Visual & Compositional Similarity",
-                            "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated spatial balance, lighting and palette.")
+                    badges = parsed.get("special_badges", [])
+                    if not badges:
+                        badges = [tier_badge]
+
+                    # Observations formatting
+                    t_obs = parsed.get("target_observations", "Analyzed target reference visual elements.")
+                    if isinstance(t_obs, list):
+                        t_obs = " • " + "\n• ".join(str(x) for x in t_obs)
+
+                    u_obs = parsed.get("user_observations", "Analyzed user replica visual elements.")
+                    if isinstance(u_obs, list):
+                        u_obs = " • " + "\n• ".join(str(x) for x in u_obs)
+
+                    m_feats = parsed.get("matched_features", [])
+                    if isinstance(m_feats, str):
+                        m_feats = [m_feats]
+
+                    discreps = parsed.get("discrepancies", [])
+                    if isinstance(discreps, str):
+                        discreps = [discreps]
+
+                    return {
+                        "is_cheating": False,
+                        "total_score": total,
+                        "tier": tier,
+                        "tier_badge": tier_badge,
+                        "tier_color": tier_color,
+                        "special_badges": badges[:3],
+                        "target_observations": t_obs,
+                        "user_observations": u_obs,
+                        "matched_features": m_feats,
+                        "discrepancies": discreps,
+                        "breakdown": {
+                            "visual_similarity": {
+                                "score": round(vs_score, 1), "max": 25,
+                                "title": "Visual & Compositional Similarity",
+                                "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated spatial balance, lighting and palette.")
+                            },
+                            "subject_match": {
+                                "score": round(sm_score, 1), "max": 25,
+                                "title": "Subject & Action Match",
+                                "comment": parsed.get("subject_match", {}).get("comment", "Evaluated primary entities and dynamic action.")
+                            },
+                            "style_match": {
+                                "score": round(st_score, 1), "max": 25,
+                                "title": "Style, Texture & Realism",
+                                "comment": parsed.get("style_match", {}).get("comment", "Evaluated realism and artistic medium.")
+                            },
+                            "prompt_precision": {
+                                "score": round(pp_score, 1), "max": 25,
+                                "title": "Prompt Precision & Faithfulness",
+                                "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive accuracy against reference.")
+                            }
                         },
-                        "subject_match": {
-                            "score": round(sm_score, 1), "max": 25,
-                            "title": "Subject & Action Match",
-                            "comment": parsed.get("subject_match", {}).get("comment", "Evaluated primary entities and dynamic action.")
-                        },
-                        "style_match": {
-                            "score": round(st_score, 1), "max": 25,
-                            "title": "Style, Texture & Realism",
-                            "comment": parsed.get("style_match", {}).get("comment", "Evaluated realism and artistic medium.")
-                        },
-                        "prompt_precision": {
-                            "score": round(pp_score, 1), "max": 25,
-                            "title": "Prompt Precision & Faithfulness",
-                            "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive accuracy against reference.")
-                        }
-                    },
-                    "summary_comment": parsed.get("unbiased_critique", f"{player_name} scored {total}/100 in visual recreation accuracy."),
-                    "unbiased_critique": parsed.get("unbiased_critique", "")
-                }
-        except Exception as e:
-            print(f"[AIJudge] Gemini vision evaluation error ({e}). Using calibrated CV fallback...")
-            return None
+                        "summary_comment": parsed.get("unbiased_critique", f"{player_name} scored {total}/100 in visual recreation accuracy."),
+                        "unbiased_critique": parsed.get("unbiased_critique", "")
+                    }
+                else:
+                    print(f"[AIJudge] Gemini model {model_name} returned status {resp.status_code}. Trying next model...")
+            except Exception as e:
+                print(f"[AIJudge] Gemini model {model_name} exception: {e}. Trying next model...")
+
+        print("[AIJudge] All Gemini vision models exhausted. Using calibrated CV fallback...")
+        return None
 
     def _evaluate_with_cv_fallback(
         self,
