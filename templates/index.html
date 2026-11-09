@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BUILD THE FUTURE | AWS Student Builder Groups - AI Prompt Battle</title>
+  
+  <!-- AWS Builder Typography: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  
+  <!-- Socket.IO Client: Local Flask-SocketIO endpoint with CDN fallback -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    if (typeof io === 'undefined') {
+      document.write('<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"><\/script>');
+    }
+  </script>
+</head>
+<body class="awsui-visual-refresh">
+
+  <!-- =====================================================================
+       TOP NAVIGATION BAR (Clean AWS Builder Center Header)
+       ===================================================================== -->
+  <header class="awsui-top-navigation">
+    <div class="awsui-nav-inner">
+      
+      <!-- Brand & Community Identity -->
+      <div class="awsui-brand-block">
+        <svg class="awsui-builder-logo-svg" viewBox="0 0 32 32" fill="none">
+          <rect x="2" y="2" width="12" height="12" rx="2" fill="#AD5CFF"/>
+          <rect x="18" y="2" width="12" height="12" rx="2" fill="#EC7211"/>
+          <rect x="2" y="18" width="12" height="12" rx="2" fill="#0073BB"/>
+          <rect x="18" y="18" width="12" height="12" rx="2" fill="#161D26"/>
+        </svg>
+        <div class="awsui-brand-text">
+          <span class="awsui-center-title">AWS Builder Center</span>
+          <span class="awsui-community-crumb">Community &gt; <strong>Student Builder Groups</strong></span>
+        </div>
+      </div>
+
+      <!-- Right Utility Bar -->
+      <div class="awsui-nav-utilities">
+        
+        <!-- Builder Profile Badge (Revealed once identified) -->
+        <div class="awsui-user-profile-pill hidden" id="top-nav-user-pill">
+          <span class="user-avatar-circle" id="user-avatar-initials">SB</span>
+          <div class="user-profile-meta">
+            <span class="user-handle-text" id="top-nav-user-name">Builder</span>
+            <span class="user-email-text" id="top-nav-user-email">email@domain.com</span>
+          </div>
+          <button class="btn-change-user" id="change-user-btn" title="Sign out / switch builder">Switch</button>
+        </div>
+
+        <!-- Leaderboard Link -->
+        <button class="awsui-tab-link" id="nav-leaderboard-btn">
+          <span>🏆 Leaderboard</span>
+        </button>
+
+        <!-- Admin Access -->
+        <button class="awsui-button-subtle" id="open-admin-btn">
+          <span>⚙️ Admin</span>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Toast Notification Center -->
+  <div id="toast-container" class="awsui-toast-container"></div>
+
+  <!-- =====================================================================
+       MAIN VIEWPORT
+       ===================================================================== -->
+  <main class="awsui-main-viewport">
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 1: IDENTIFIER PAGE (Name & Email Registration)             -->
+    <!-- ================================================================= -->
+    <section id="identifier-screen" class="view-screen active">
+      <div class="identifier-center-layout">
+        
+        <!-- Clean Centered Identifier Card -->
+        <div class="awsui-card identifier-card">
+          
+          <!-- Banner Graphic Ribbon -->
+          <div class="identifier-banner-ribbon">
+            <div class="ribbon-badge">
+              <span class="ribbon-icon">⚡</span>
+              <span>AWS STUDENT BUILDER GROUPS</span>
+            </div>
+          </div>
+
+          <!-- Official Required Theme Header -->
+          <div class="identifier-hero-text">
+            <h1 class="theme-hero-title">BUILD THE FUTURE</h1>
+            <h2 class="theme-hero-tagline">IMAGINE. INNOVATE. CREATE.</h2>
+            <p class="theme-hero-community">An AI-powered creative challenge at AWS Community Day.</p>
+          </div>
+
+          <!-- Philosophy Callout -->
+          <div class="identifier-philosophy-strip">
+            <span class="strip-icon">💡</span>
+            <p>
+              Inspired by the <strong>AWS Student Builder Groups</strong> philosophy of empowering students to explore cloud technology, develop technical skills, collaborate, and build innovative solutions.
+            </p>
+          </div>
+
+          <div class="identifier-divider"></div>
+
+          <!-- The Registration Form -->
+          <form id="identifier-form" class="identifier-form">
+            
+            <div class="form-title-group">
+              <h3>Student Builder Identification</h3>
+              <p>Enter your details below to register your session and store your scores under your profile.</p>
+            </div>
+
+            <!-- Name Input -->
+            <div class="awsui-form-group">
+              <label for="identifier-name" class="awsui-label">
+                Full Name / Builder Alias <span class="required-star">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="identifier-name" 
+                class="awsui-text-input" 
+                placeholder="e.g. Alex Morgan or CloudPioneer" 
+                maxlength="40" 
+                autocomplete="name"
+                autofocus
+              >
+            </div>
+
+            <!-- Email Input -->
+            <div class="awsui-form-group">
+              <label for="identifier-email" class="awsui-label">
+                Email Address <span class="required-star">*</span>
+                <span class="label-hint">(Used to store your score and submission)</span>
+              </label>
+              <input 
+                type="email" 
+                id="identifier-email" 
+                class="awsui-text-input" 
+                placeholder="name@university.edu or your personal email" 
+                autocomplete="email"
+              >
+            </div>
+
+            <!-- Error message container -->
+            <div id="identifier-error" class="identifier-error-msg hidden"></div>
+
+            <!-- Submit Button -->
+            <div class="form-action-group">
+              <button type="button" class="awsui-btn-primary" id="start-game-btn">
+                <span>Enter Main Game &amp; Reveal Challenge</span>
+                <span class="btn-arrow">→</span>
+              </button>
+            </div>
+
+            <p class="identifier-footer-info">
+              🔒 All participants compete under the overarching theme. You will receive one randomly assigned challenge across the 8 categories upon entry.
+            </p>
+
+          </form>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 2: MAIN GAME (Workbench: Challenge + Prompt Studio)       -->
+    <!-- ================================================================= -->
+    <section id="game-screen" class="view-screen">
+      <div class="game-container-layout">
+        
+        <!-- Top Status Strip -->
+        <div class="game-header-strip">
+          <div class="builder-welcome-meta">
+            <span class="meta-label">PARTICIPANT:</span>
+            <strong class="builder-display-name" id="game-builder-name">Student Builder</strong>
+            <span class="builder-display-email" id="game-builder-email">(email@domain.com)</span>
+          </div>
+
+          <div class="game-theme-pill">
+            <span>THEME: <strong>BUILD THE FUTURE</strong></span>
+          </div>
+        </div>
+
+        <!-- Main Studio Grid -->
+        <div class="studio-two-col">
+          
+          <!-- LEFT: Assigned Challenge Card -->
+          <div class="studio-left-col">
+            
+            <div class="awsui-card challenge-box" id="assigned-challenge-card">
+              
+              <div class="challenge-top-meta">
+                <span class="challenge-theme-label">BUILD THE FUTURE</span>
+                <button class="btn-reroll-challenge" id="reroll-challenge-btn" title="Re-roll for another random challenge in this theme">
+                  🔄 Re-roll Challenge
+                </button>
+              </div>
+
+              <!-- Category Badge -->
+              <div class="category-tag-pill" id="player-cat-badge">
+                <span class="cat-dot"></span>
+                <span id="player-cat-name">Category Loading...</span>
+              </div>
+
+              <!-- Challenge Title -->
+              <h2 class="challenge-main-title" id="player-challenge-title">The Biosphere Hyper-Campus 2050</h2>
+
+              <!-- Mission Brief -->
+              <div class="mission-brief-block">
+                <span class="block-subtitle">CHALLENGE BRIEF</span>
+                <p id="player-challenge-brief">Envision an open-air, nature-integrated university campus where AI holographic mentors and student pods harmonize with a living ecosystem.</p>
+              </div>
+
+              <!-- Visual Targets -->
+              <div class="visual-targets-block">
+                <span class="block-subtitle">TARGET VISUAL ELEMENTS</span>
+                <p id="player-visual-goals">Bioluminescent flora, floating interactive volumetric projections, solar-canopy glass pavilions.</p>
+              </div>
+
+              <!-- Inspiration Keywords -->
+              <div class="keywords-block">
+                <span class="block-subtitle">INSPIRATION CONCEPTS (Click to append to prompt)</span>
+                <div class="chips-flex-row" id="player-keywords-container">
+                  <!-- Chips injected via JS -->
+                </div>
+              </div>
+
+              <!-- AI Evaluation Rubric Information -->
+              <div class="rubric-mini-box">
+                <div class="rubric-header-row">
+                  <span>AI EVALUATION RUBRIC (100 PTS)</span>
+                  <span class="std-badge">Consistent Standard</span>
+                </div>
+                <div class="rubric-grid-2x2">
+                  <div class="rubric-pill-cell">
+                    <span class="cell-label">Relevance to Challenge</span>
+                    <strong class="cell-pts">25 pts</strong>
+                  </div>
+                  <div class="rubric-pill-cell">
+                    <span class="cell-label">Creativity &amp; Imagination</span>
+                    <strong class="cell-pts">25 pts</strong>
+                  </div>
+                  <div class="rubric-pill-cell">
+                    <span class="cell-label">Prompt Engineering</span>
+                    <strong class="cell-pts">25 pts</strong>
+                  </div>
+                  <div class="rubric-pill-cell">
+                    <span class="cell-label">Future &amp; Social Impact</span>
+                    <strong class="cell-pts">25 pts</strong>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Session Generation Reel -->
+            <div class="awsui-card history-reel-box">
+              <div class="history-reel-header">
+                <h5>Session Generations</h5>
+                <span class="history-count" id="history-count">0</span>
+              </div>
+              <div class="history-reel-scroll" id="history-reel-container">
+                <p class="history-empty">No images generated yet. Formulate your first prompt!</p>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- RIGHT: Prompt Studio Canvas & Controls -->
+          <div class="studio-right-col">
+            
+            <!-- Canvas Display Card -->
+            <div class="awsui-card canvas-card">
+              
+              <div class="canvas-top-bar">
+                <div class="canvas-status-tags">
+                  <span class="canvas-state-label" id="canvas-state-label">Studio Canvas Ready</span>
+                  <span class="engine-badge hidden" id="canvas-source-tag">Engine: Cloud AI</span>
+                  <span class="latency-badge hidden" id="canvas-latency-tag">0.0s</span>
+                </div>
+                <button class="awsui-btn-secondary btn-sm" id="view-full-image-btn" disabled>Full Screen</button>
+              </div>
+
+              <!-- The Image Viewport -->
+              <div class="canvas-viewport" id="image-viewport">
+                
+                <div class="canvas-empty-state" id="canvas-placeholder">
+                  <div class="empty-icon">🎨</div>
+                  <h4>Visual Synthesizer Ready</h4>
+                  <p>Read your assigned challenge on the left, formulate your descriptive prompt below, and click <strong>Generate Visual</strong>.</p>
+                  <span class="canvas-theme-watermark">BUILD THE FUTURE – Imagine. Innovate. Create.</span>
+                </div>
+
+                <img id="active-generated-image" class="canvas-image-output hidden" alt="Generated Vision">
+
+                <!-- Loading Overlay -->
+                <div class="canvas-loading-overlay hidden" id="generating-overlay">
+                  <div class="awsui-spinner"></div>
+                  <h4 id="gen-status-text">Synthesizing Future Vision...</h4>
+                  <p id="gen-sub-text">Interpreting prompt semantics &amp; rendering atmospheric lighting</p>
+                  <div class="progress-track">
+                    <div class="progress-fill"></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- AI Evaluation Scorecard (Appears after generation) -->
+              <div class="eval-scorecard-card hidden" id="ai-eval-preview-card">
+                
+                <div class="eval-card-top">
+                  <div class="eval-judge-info">
+                    <span class="judge-badge-icon">🤖</span>
+                    <div>
+                      <h5>AI Judge Scorecard</h5>
+                      <span class="eval-sub" id="eval-challenge-name">Challenge: Oceanic Solarpunk Archipelago</span>
+                    </div>
+                  </div>
+
+                  <div class="eval-score-total">
+                    <span class="score-num" id="eval-total-score">88.5</span>
+                    <span class="score-max">/100</span>
+                    <span class="tier-pill" id="eval-tier-pill">🏆 Grandmaster Builder</span>
+                  </div>
+                </div>
+
+                <!-- 4 Pillars Grid -->
+                <div class="eval-pillars-row">
+                  <div class="pillar-box">
+                    <div class="pillar-label-line">
+                      <span>1. Challenge Relevance</span>
+                      <strong id="score-rel">23 / 25</strong>
+                    </div>
+                    <div class="pillar-bar"><div class="fill" id="bar-rel" style="width: 92%"></div></div>
+                  </div>
+
+                  <div class="pillar-box">
+                    <div class="pillar-label-line">
+                      <span>2. Creativity &amp; Imagination</span>
+                      <strong id="score-cre">21 / 25</strong>
+                    </div>
+                    <div class="pillar-bar"><div class="fill" id="bar-cre" style="width: 84%"></div></div>
+                  </div>
+
+                  <div class="pillar-box">
+                    <div class="pillar-label-line">
+                      <span>3. Prompt Craft Quality</span>
+                      <strong id="score-tec">22 / 25</strong>
+                    </div>
+                    <div class="pillar-bar"><div class="fill" id="bar-tec" style="width: 88%"></div></div>
+                  </div>
+
+                  <div class="pillar-box">
+                    <div class="pillar-label-line">
+                      <span>4. Future &amp; Social Impact</span>
+                      <strong id="score-imp">22.5 / 25</strong>
+                    </div>
+                    <div class="pillar-bar"><div class="fill" id="bar-imp" style="width: 90%"></div></div>
+                  </div>
+                </div>
+
+                <!-- Critique & Badges -->
+                <div class="eval-footer-critique">
+                  <p class="critique-text" id="eval-summary-text"></p>
+                  <div class="badges-flex" id="eval-badges-row"></div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Prompt Console Card -->
+            <div class="awsui-card prompt-card">
+              
+              <div class="prompt-header-row">
+                <span class="prompt-title">Prompt Engineering Console</span>
+                <span class="char-counter" id="char-counter">0 chars / 0 words</span>
+              </div>
+
+              <!-- Quick Modifiers -->
+              <div class="prompt-modifiers-row">
+                <span class="mod-label">Quick Modifiers:</span>
+                <button class="mod-pill-tag" data-insert=", cinematic volumetric lighting, atmospheric depth">💡 Volumetric Light</button>
+                <button class="mod-pill-tag" data-insert=", bioluminescent flora, ambient glow">✨ Bioluminescence</button>
+                <button class="mod-pill-tag" data-insert=", wide-angle cinematic establishing shot">📷 Wide Angle</button>
+                <button class="mod-pill-tag" data-insert=", solarpunk clean architecture, lush nature">🌿 Solarpunk Eco</button>
+                <button class="mod-pill-tag" data-insert=", holographic interactive data interface">🔮 Holographic</button>
+                <button class="mod-pill-tag" data-insert=", photorealistic 8k render, hyper-detailed">💎 8K Render</button>
+              </div>
+
+              <!-- Textarea -->
+              <div class="prompt-input-box">
+                <textarea 
+                  id="prompt-input" 
+                  class="awsui-textarea" 
+                  rows="3" 
+                  placeholder="Describe your vision for this challenge with specific architectural elements, materials, lighting, and composition..."
+                ></textarea>
+              </div>
+
+              <!-- Actions -->
+              <div class="prompt-actions-bar">
+                <button class="awsui-btn-secondary" id="clear-prompt-btn">Clear</button>
+                <button class="awsui-btn-primary" id="generate-image-btn">
+                  <span>⚡ Generate Visual</span>
+                </button>
+                <button class="awsui-btn-dark" id="submit-masterpiece-btn" disabled>
+                  <span>🏆 Submit &amp; Save Score</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SCREEN 3: LEADERBOARD (Accessible via Top Nav)                    -->
+    <!-- ================================================================= -->
+    <section id="leaderboard-screen" class="view-screen">
+      <div class="leaderboard-layout">
+        
+        <div class="leaderboard-top-bar">
+          <div>
+            <h2 class="leaderboard-title">Hall of Future Builders</h2>
+            <p class="leaderboard-sub">Scores stored under builder name &amp; email from the AI evaluation engine.</p>
+          </div>
+          
+          <div class="leaderboard-actions">
+            <button class="awsui-btn-secondary" id="back-to-game-btn">← Back to Main Game</button>
+            <select id="leaderboard-cat-filter" class="awsui-select">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div class="awsui-card table-card">
+          <table class="awsui-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Student Builder</th>
+                <th>Email</th>
+                <th>Category &amp; Challenge</th>
+                <th>AI Score</th>
+                <th>Total Score</th>
+                <th>Badges</th>
+                <th>Inspect</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <tr>
+                <td colspan="8" class="table-empty">No submissions locked in yet. Be the first to submit from the Prompt Studio!</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       ADMIN MODAL
+       ===================================================================== -->
+  <div class="modal-backdrop hidden" id="admin-modal">
+    <div class="awsui-modal-card">
+      
+      <div class="awsui-modal-header">
+        <div class="modal-header-title">
+          <span class="modal-cog">⚙️</span>
+          <h3>Admin Command Center</h3>
+        </div>
+        <button class="modal-close-btn" id="close-admin-modal">✕</button>
+      </div>
+
+      <!-- Auth -->
+      <div id="admin-auth-panel" class="modal-auth-body">
+        <p>Enter the competition administrator code to manage challenges and rounds.</p>
+        <div class="modal-auth-row">
+          <input type="password" id="admin-code-input" class="awsui-text-input" placeholder="Admin Access Code..." autocomplete="off">
+          <button class="awsui-btn-primary" id="admin-login-btn">Authenticate</button>
+        </div>
+        <p class="auth-error-text hidden" id="admin-auth-error">Incorrect admin code.</p>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="admin-dashboard-panel" class="modal-dashboard-body hidden">
+        
+        <div class="awsui-modal-tabs">
+          <button class="modal-tab-btn active" data-tab="tab-challenges">Challenge Management (8 Categories)</button>
+          <button class="modal-tab-btn" data-tab="tab-competition">Competition Controls</button>
+        </div>
+
+        <!-- Tab 1: Challenges -->
+        <div class="modal-tab-content active" id="tab-challenges">
+          
+          <div class="admin-stats-strip">
+            <div class="admin-stat-cell">
+              <span class="stat-big-num" id="stat-total-challenges">16</span>
+              <span class="stat-mini-label">Total Challenges</span>
+            </div>
+            <div class="admin-stat-cell">
+              <span class="stat-big-num" id="stat-active-challenges">16</span>
+              <span class="stat-mini-label">Active Challenges</span>
+            </div>
+            <div class="admin-stat-cell">
+              <span class="stat-big-num" id="stat-categories-count">8</span>
+              <span class="stat-mini-label">Official Categories</span>
+            </div>
+          </div>
+
+          <!-- Add Challenge Form -->
+          <div class="awsui-card add-challenge-box">
+            <div class="accordion-head" id="toggle-add-challenge-form">
+              <h4>+ Create &amp; Add New Challenge</h4>
+              <span class="accordion-carat">▼</span>
+            </div>
+            <div class="accordion-content hidden" id="add-challenge-form-body">
+              <div class="form-grid-two">
+                <div class="form-cell">
+                  <label class="awsui-label">Category *</label>
+                  <select id="new-challenge-category" class="awsui-select"></select>
+                </div>
+                <div class="form-cell">
+                  <label class="awsui-label">Challenge Title *</label>
+                  <input type="text" id="new-challenge-title" class="awsui-text-input" placeholder="e.g. Floating Clean Energy Megacity">
+                </div>
+                <div class="form-cell full-width">
+                  <label class="awsui-label">Challenge Brief / Scenario *</label>
+                  <textarea id="new-challenge-brief" class="awsui-textarea" rows="2" placeholder="Describe the creative futuristic scenario for participants to imagine..."></textarea>
+                </div>
+                <div class="form-cell full-width">
+                  <label class="awsui-label">Visual Goals / Cues</label>
+                  <input type="text" id="new-challenge-visual" class="awsui-text-input" placeholder="e.g. Terraced vertical gardens, cascading clear waterfalls, solar towers">
+                </div>
+                <div class="form-cell">
+                  <label class="awsui-label">Inspiration Keywords (comma separated)</label>
+                  <input type="text" id="new-challenge-keywords" class="awsui-text-input" placeholder="e.g. Solarpunk, Clean Maglev, Wave Dynamos">
+                </div>
+                <div class="form-cell">
+                  <label class="awsui-label">Evaluation Focus</label>
+                  <input type="text" id="new-challenge-focus" class="awsui-text-input" placeholder="e.g. Believable renewable energy motifs and environmental harmony">
+                </div>
+              </div>
+              <div class="form-actions-bar">
+                <button class="awsui-btn-primary" id="save-new-challenge-btn">Save &amp; Activate Challenge</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Catalog Table -->
+          <div class="catalog-table-box">
+            <div class="catalog-top-toolbar">
+              <h5>Challenge Catalog &amp; Activations</h5>
+              <div class="catalog-actions-group">
+                <select id="admin-cat-filter" class="awsui-select-sm">
+                  <option value="">All Categories</option>
+                </select>
+                <button class="awsui-btn-secondary btn-sm" id="reset-challenges-btn">Reset to Defaults</button>
+              </div>
+            </div>
+            <div class="catalog-table-scroll">
+              <table class="awsui-table compact-table">
+                <thead>
+                  <tr>
+                    <th>Status</th>
+                    <th>Category</th>
+                    <th>Title &amp; Brief</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-challenges-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab 2: Competition -->
+        <div class="modal-tab-content" id="tab-competition">
+          <div class="admin-control-cards-grid">
+            <div class="admin-panel-card danger-panel">
+              <h4>Reset Competition</h4>
+              <p>Clears participants, generations, and locked-in submissions:</p>
+              <button class="awsui-btn-danger" id="reset-comp-btn">RESET ALL DATA</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Image Zoom Modal -->
+  <div class="modal-backdrop hidden" id="image-modal">
+    <div class="awsui-image-modal-card">
+      <button class="modal-close-btn" id="close-image-modal">✕</button>
+      <img id="modal-full-image" src="" alt="Full resolution view">
+      <div class="image-modal-caption" id="modal-image-caption"></div>
+    </div>
+  </div>
+
+  <!-- Client Script Engine -->
+  <script src="/static/js/battle.js"></script>
+</body>
+</html>
