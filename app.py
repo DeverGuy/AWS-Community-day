@@ -107,6 +107,7 @@ def join_competition():
 
     # Generate or assign a unique target challenge from agents under "BUILD THE FUTURE"
     target_challenge = challenge_manager.get_unique_target_challenge(participant_id=participant_id)
+    seen_set = set([target_challenge["id"]])
 
     participant = {
         "id": participant_id,
@@ -115,6 +116,7 @@ def join_competition():
         "joined_at": time.time(),
         "assigned_challenge": target_challenge,
         "target_challenge": target_challenge,
+        "seen_challenges": seen_set,
         "generations": [],
         "submission": None,
         "status": "ready"
@@ -126,6 +128,7 @@ def join_competition():
     # Public client target object (strips hidden_prompt to prevent cheating)
     client_target = {k: v for k, v in target_challenge.items() if k != "hidden_prompt"}
     client_participant = dict(participant)
+    client_participant["seen_challenges"] = list(participant.get("seen_challenges", []))
     client_participant["assigned_challenge"] = client_target
     client_participant["target_challenge"] = client_target
 
@@ -143,6 +146,7 @@ def get_participant(participant_id):
     if not participant:
         return jsonify({"error": "Participant not found"}), 404
     client_p = dict(participant)
+    client_p["seen_challenges"] = list(client_p.get("seen_challenges", []))
     if "target_challenge" in client_p and client_p["target_challenge"]:
         client_p["target_challenge"] = {k: v for k, v in client_p["target_challenge"].items() if k != "hidden_prompt"}
     if "assigned_challenge" in client_p and client_p["assigned_challenge"]:
@@ -162,11 +166,16 @@ def reroll_challenge():
         return jsonify({"error": "Participant not found"}), 404
 
     current_id = participant.get("assigned_challenge", {}).get("id")
+    seen_set = participant.setdefault("seen_challenges", set())
+    if current_id:
+        seen_set.add(current_id)
+
     new_target = challenge_manager.get_unique_target_challenge(
         participant_id=participant_id,
         category=category,
-        exclude_ids=[current_id] if current_id else None
+        exclude_ids=list(seen_set)
     )
+    seen_set.add(new_target["id"])
     participant["assigned_challenge"] = new_target
     participant["target_challenge"] = new_target
 

@@ -1,6 +1,7 @@
 """
 Real-Scenario Challenge Management for BUILD THE FUTURE - AI Prompt Battle
 Movie Scenes and High-Action Real-World Scenarios
+Zero Repetition Engine (Dealt without replacement)
 """
 
 import os
@@ -116,6 +117,90 @@ DEFAULT_CHALLENGES = [
         "is_active": True,
         "created_by": "system"
     },
+    {
+        "id": "movie-samurai-duel",
+        "category": "Cinematic Movie Scenes",
+        "title": "Samurai Duel in Moonlit Cherry Blossoms",
+        "brief": "A dramatic cinematic confrontation between two samurai in traditional armor standing poised with katanas beneath blowing pink cherry blossom petals under a giant full moon.",
+        "visual_goals": "Silhouetted samurai warriors, traditional battle armor, katana blade glint, swirling pink sakura petals, giant luminous white moon, atmospheric night fog.",
+        "inspiration_keywords": ["Samurai Duel", "Moonlit Sakura", "Katana Blade Glint", "Cherry Blossom Blizzard", "Cinematic Japanese Period"],
+        "key_subjects": ["two samurai warriors", "katana swords", "cherry blossom petals", "giant full moon"],
+        "action": "poised in tension moments before a deadly katana strike",
+        "lighting_mood": "cool silver moonlight contrasting with dark shadowy silhouettes",
+        "evaluation_focus": "Silhouette composition, moonlit contrast, dynamic petal motion, period battle atmosphere.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "movie-aurora-cabin",
+        "category": "Cinematic Movie Scenes",
+        "title": "Snowy Mountain Cabin Under Northern Lights",
+        "brief": "A cozy, warm timber cabin nestled deep in snowy alpine pines, with glowing orange windows contrasting against ethereal green and purple Aurora Borealis dancing across the arctic night sky.",
+        "visual_goals": "Luminous emerald green aurora ribbons, starry arctic sky, warm glowing cabin windows, heavy snowdrifts on roof, silhouetted evergreen pine trees.",
+        "inspiration_keywords": ["Aurora Borealis", "Snowy Log Cabin", "Warm Window Glow", "Starry Arctic Sky", "Emerald Ribbons"],
+        "key_subjects": ["wooden snow cabin", "dancing green aurora borealis", "snow-covered pine trees", "warm window light"],
+        "action": "emerald light ribbons rippling dynamically across the night sky",
+        "lighting_mood": "cold celestial green aurora light contrasting with cozy warm amber indoor glow",
+        "evaluation_focus": "Vibrant aurora colors, stark temperature contrast between snow and warm windows.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "movie-steam-train",
+        "category": "Cinematic Movie Scenes",
+        "title": "The Highland Viaduct Steam Locomotive",
+        "brief": "A historic black steam locomotive pulling vintage red passenger coaches across a soaring curved stone arched viaduct, billowing dense white steam over a misty Scottish glen at sunrise.",
+        "visual_goals": "Majestic curved stone viaduct, classic steam locomotive, massive plumes of white steam, rolling green hills and heather, morning mountain mist.",
+        "inspiration_keywords": ["Vintage Steam Locomotive", "Arched Stone Viaduct", "Billowing White Steam", "Scottish Highlands", "Morning Glen Mist"],
+        "key_subjects": ["black steam locomotive", "curved stone viaduct bridge", "white steam clouds", "misty green valley"],
+        "action": "train powering across the high bridge with billowing steam plumes",
+        "lighting_mood": "soft morning sunrise rays breaking through mountain valley mist",
+        "evaluation_focus": "Curving architectural perspective of the bridge, volume of steam, highland landscape depth.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "movie-paris-rain",
+        "category": "Cinematic Movie Scenes",
+        "title": "Rainy Paris Café Terrace & Cobblestones",
+        "brief": "A romantic vintage Paris street café with small round tables under a dark green canvas awning, looking out onto wet glistening cobblestone streets with classic Haussmann architecture in the rain.",
+        "visual_goals": "Wet glistening cobblestones, vintage café tables, green bistro awning, blurred car headlights in rain, historic Parisian apartment facades, warm streetlamps.",
+        "inspiration_keywords": ["Rainy Paris Bistro", "Wet Cobblestone Reflections", "Haussmann Architecture", "Warm Bistro Awning", "Vintage French Cinema"],
+        "key_subjects": ["Paris café terrace", "wet cobblestone street", "classic Parisian buildings", "glowing streetlamps"],
+        "action": "gentle rain falling, creating shimmering puddles and reflections",
+        "lighting_mood": "moody rainy daylight mixed with glowing warm amber streetlights",
+        "evaluation_focus": "Cobblestone surface reflections, Parisian architectural authenticity, cozy café foreground.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "movie-deep-sea",
+        "category": "Cinematic Movie Scenes",
+        "title": "Abyssal Submersible & Bioluminescent Titan",
+        "brief": "An deep-ocean research submersible shining twin halogen beam spotlights through pitch-black waters, illuminating an enormous glowing bioluminescent deep-sea siphonophore.",
+        "visual_goals": "Deep sapphire and jet-black water, bright yellow submersible spotlights, glowing translucent azure and violet bioluminescent tentacles, floating marine snow particles.",
+        "inspiration_keywords": ["Deep Sea Submersible", "Bioluminescent Organism", "High-Beam Spotlights", "Abyssal Trench", "Marine Snow"],
+        "key_subjects": ["research submarine with spotlights", "giant glowing bioluminescent creature", "pitch black ocean", "floating particles"],
+        "action": "spotlights cutting through darkness to reveal ethereal floating alien creature",
+        "lighting_mood": "high-contrast underwater spotlights cutting through deep black abyssal void",
+        "evaluation_focus": "Spotlight volumetric beams, glowing translucent bioluminescence, deep sea mystery.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "movie-mars-explorer",
+        "category": "Cinematic Movie Scenes",
+        "title": "Red Planet Crater Explorer",
+        "brief": "A solitary astronaut in an orange-and-white high-tech planetary exploration suit standing on the rocky rim of a massive Martian crater, looking across rust-red plains toward an atmospheric dust storm.",
+        "visual_goals": "Rugged rust-red terrain, crater rim vista, detailed planetary EVA suit with reflective visor, distant swirling orange dust storm, pale blue Martian sunset.",
+        "inspiration_keywords": ["Mars Crater Rim", "Planetary Astronaut", "Rust Red Plains", "Martian Dust Storm", "Pale Blue Sunset"],
+        "key_subjects": ["astronaut on cliff edge", "massive impact crater", "rust-red Martian soil", "swirling dust clouds"],
+        "action": "astronaut gazing across the vast alien expanse of Mars",
+        "lighting_mood": "harsh low-angle sunlight casting long dramatic shadows across red rocks",
+        "evaluation_focus": "Geological Martian terrain texture, solitude of astronaut scale, red and orange palette fidelity.",
+        "is_active": True,
+        "created_by": "system"
+    },
 
     # Category 2: Dynamic Objects in Action
     {
@@ -201,6 +286,90 @@ DEFAULT_CHALLENGES = [
         "evaluation_focus": "Symmetry of the splash crown, crystal liquid clarity, micro droplet suspension.",
         "is_active": True,
         "created_by": "system"
+    },
+    {
+        "id": "action-surfer-barrel",
+        "category": "Dynamic Objects in Action",
+        "title": "Inside the Giant Ocean Wave Barrel",
+        "brief": "A dramatic wide-angle shot taken from inside the curving hollow barrel of a massive turquoise ocean wave, with a surfer carving the water face surrounded by frozen spray.",
+        "visual_goals": "Curving translucent turquoise wave wall, water spray droplets frozen in air, surfer in athletic stance, bright sunlight shining through wave lip.",
+        "inspiration_keywords": ["Surfer Wave Barrel", "Turquoise Tube", "Water Spray Freeze", "Pacific Surf", "Extreme Watersports"],
+        "key_subjects": ["surfer carving wave face", "curving hollow wave barrel", "translucent turquoise water", "white sea foam"],
+        "action": "carving at high speed inside a roaring hollow ocean wave tube",
+        "lighting_mood": "backlit by brilliant tropical sun illuminating translucent blue water",
+        "evaluation_focus": "Wave curvature and water translucency, surfer position, frozen droplet dynamics.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-eagle-flight",
+        "category": "Dynamic Objects in Action",
+        "title": "Bald Eagle Talons Strike",
+        "brief": "A razor-sharp action photograph of a massive bald eagle swooping down low over mountain lake water, yellow talons extended and ready to strike with water wake behind.",
+        "visual_goals": "Massive wingspan with individual feather definition, fierce yellow eyes, outstretched talons, water droplets kicked up by wingtips, alpine mountain background.",
+        "inspiration_keywords": ["Eagle Talons Strike", "Predator Strike", "Feather Definition", "Lake Water Spray", "Wildlife Action"],
+        "key_subjects": ["bald eagle with open wings", "extended yellow talons", "water wake", "mountain lake"],
+        "action": "swooping inches above water surface at full attack speed",
+        "lighting_mood": "crisp morning mountain light highlighting wing feathers",
+        "evaluation_focus": "Eagle wing sharpness, extended talon focus, dynamic water surface interaction.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-formula1-speed",
+        "category": "Dynamic Objects in Action",
+        "title": "Formula 1 High-Speed Apex Drift",
+        "brief": "An ultra-dynamic racing photograph of a modern open-wheel Formula 1 racing car hitting the curbs of a chicane at 200 mph, with smoking tire rubber, sparks from titanium skid blocks, and blur.",
+        "visual_goals": "Aerodynamic F1 car in motion, red-and-white track kerbs, bright shower of golden skid block sparks, tire smoke puffs, background motion blur.",
+        "inspiration_keywords": ["Formula 1 Racing", "Apex Kerb Strike", "Skid Block Sparks", "Tire Smoke", "High-Speed Motorsport"],
+        "key_subjects": ["Formula 1 race car", "track kerbs", "shower of titanium sparks", "motion-blurred grandstands"],
+        "action": "car hammering over track kerbs at 200 mph showering sparks",
+        "lighting_mood": "bright trackside sunlight with intense golden sparks flying underneath",
+        "evaluation_focus": "Sense of extreme speed motion, bright spark shower, vehicle detail and livery.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-flamenco-dance",
+        "category": "Dynamic Objects in Action",
+        "title": "Flamenco Dancer Swirling Crimson Dress",
+        "brief": "A passionate flamenco dancer captured mid-spin on a dark wooden stage, her layered crimson ruffles swirling in dynamic circular arcs under a warm theatrical overhead spotlight.",
+        "visual_goals": "Swirling tiers of vibrant red fabric, graceful expressive arm posture, dark rustic stage, airborne dust and motion trails in warm spotlight cone.",
+        "inspiration_keywords": ["Flamenco Swirl", "Crimson Ruffle Dress", "Theatrical Spotlight", "Dynamic Spin Freeze", "Spanish Cultural Passion"],
+        "key_subjects": ["flamenco dancer", "swirling red ruffle dress", "wooden dance floor", "theatrical spotlight"],
+        "action": "spinning rapidly in a passionate traditional dance movement",
+        "lighting_mood": "intense golden overhead stage spotlight against velvety black background",
+        "evaluation_focus": "Fabric flow and circular swirl motion, intense color saturation of red dress.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-lava-ocean",
+        "category": "Dynamic Objects in Action",
+        "title": "Molten Lava Exploding Into Crashing Waves",
+        "brief": "Glowing red-orange molten basaltic lava pouring off black coastal volcanic rock directly into crashing ocean surf, triggering explosive steam plumes and black sand eruptions.",
+        "visual_goals": "Incandescent glowing lava streams, billowing white and grey steam clouds, violent crashing dark blue sea waves, black volcanic rock contrast.",
+        "inspiration_keywords": ["Molten Lava Ocean Entry", "Steam Plume Explosion", "Volcanic Black Rock", "Crashing Pacific Waves", "Elemental Fire & Water"],
+        "key_subjects": ["glowing red molten lava", "crashing ocean waves", "towering steam plumes", "black volcanic cliffs"],
+        "action": "red-hot lava hitting cold seawater with violent steam eruptions",
+        "lighting_mood": "twilight blue hour illuminated by the fiery orange volcanic glow",
+        "evaluation_focus": "Contrast between glowing orange heat and cold sea foam, dramatic steam dynamics.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "action-lightning-city",
+        "category": "Dynamic Objects in Action",
+        "title": "Lightning Bolt Striking Skyscraper Spire",
+        "brief": "A branch of intense purple and white lightning striking the antenna spire of a massive city skyscraper during a nighttime thunderstorm, illuminating ominous storm clouds.",
+        "visual_goals": "Forked lightning branches radiating across dark sky, bright electrical impact on spire, illuminated city towers in silhouette, heavy rain streaks.",
+        "inspiration_keywords": ["Lightning Strike Spire", "Skyscraper Thunderstorm", "Forked Electrical Discharge", "Purple Storm Clouds", "City Skyline Thunder"],
+        "key_subjects": ["lightning bolt strike", "skyscraper antenna spire", "dark storm clouds", "city skyline at night"],
+        "action": "millisecond electrical discharge branching down from clouds onto the spire",
+        "lighting_mood": "flash of brilliant electrical white and violet lighting up dark cityscape",
+        "evaluation_focus": "Branching lightning geometry, high-contrast city illumination, electric intensity.",
+        "is_active": True,
+        "created_by": "system"
     }
 ]
 
@@ -209,7 +378,12 @@ class ChallengeManager:
     def __init__(self, data_file="data/challenges.json"):
         self.data_file = data_file
         self.challenges = []
+        # Non-repeating deck state
+        self.participant_seen = {}       # participant_id -> set of seen challenge IDs
+        self.global_deck_order = []       # Shuffled global IDs
+        self.global_deck_index = 0
         self._load()
+        self._init_deck()
 
     def _load(self):
         if os.path.exists(self.data_file):
@@ -228,6 +402,12 @@ class ChallengeManager:
                 json.dump(self.challenges, f, indent=2)
         except Exception as e:
             print(f"[ChallengeManager] Error saving {self.data_file}: {e}")
+
+    def _init_deck(self):
+        ids = [c["id"] for c in self.challenges if c.get("is_active", True)]
+        random.shuffle(ids)
+        self.global_deck_order = ids
+        self.global_deck_index = 0
 
     def get_all(self, active_only=False):
         if active_only:
@@ -252,31 +432,61 @@ class ChallengeManager:
             pool = [c for c in DEFAULT_CHALLENGES if c.get("is_active", True)]
         return dict(random.choice(pool))
 
-    def get_unique_target_challenge(self, user_seed: int = None, category: str = None, participant_id: str = None, exclude_ids: list = None, **kwargs) -> dict:
+    def get_unique_target_challenge(
+        self,
+        participant_id: str = None,
+        category: str = None,
+        exclude_ids: list = None,
+        **kwargs
+    ) -> dict:
         """
         Assigns an authentic real-scenario reference image.
-        Loads from curated high-res photo assets in static/images/challenges/ in 0ms!
+        Guarantees ZERO REPETITIONS:
+        - Tracks seen challenges per participant.
+        - Dealt without replacement from a shuffled deck.
+        - Loads curated high-res photo assets in static/images/challenges/ in 0ms!
         """
+        exclude_set = set(exclude_ids or [])
+        if participant_id:
+            seen_set = self.participant_seen.setdefault(participant_id, set())
+            exclude_set.update(seen_set)
+
         pool = self.get_by_category(category) if category else self.get_all(active_only=True)
-        if exclude_ids:
-            pool = [c for c in pool if c.get("id") not in exclude_ids]
         if not pool:
             pool = [c for c in DEFAULT_CHALLENGES if c.get("is_active", True)]
 
-        # Determine seed from user_seed or participant_id
-        seed_val = user_seed
-        if seed_val is None and participant_id:
-            seed_val = sum(ord(c) for c in participant_id)
+        # Filter out already seen / excluded challenges
+        unseen_pool = [c for c in pool if c.get("id") not in exclude_set]
 
-        if seed_val is not None:
-            rng = random.Random(seed_val)
-            base_ch = dict(rng.choice(pool))
-        else:
-            base_ch = dict(random.choice(pool))
+        # If participant has seen ALL challenges in the pool, reset their history so they can cycle through fresh
+        if not unseen_pool:
+            if participant_id:
+                self.participant_seen[participant_id] = set()
+            unseen_pool = list(pool)
 
-        target = dict(base_ch)
-        target["seed"] = seed_val if seed_val is not None else random.randint(1000, 999999)
+        # Draw the next unique card using global deck or randomized unseen
+        selected_ch = None
+        for _ in range(len(self.global_deck_order)):
+            if self.global_deck_index >= len(self.global_deck_order):
+                self._init_deck()
+            candidate_id = self.global_deck_order[self.global_deck_index]
+            self.global_deck_index += 1
+            if candidate_id not in exclude_set:
+                candidate_ch = self.get_by_id(candidate_id)
+                if candidate_ch and (not category or candidate_ch.get("category") == category):
+                    selected_ch = candidate_ch
+                    break
+
+        if not selected_ch:
+            selected_ch = random.choice(unseen_pool)
+
+        # Record this challenge as seen by this participant
+        if participant_id:
+            self.participant_seen[participant_id].add(selected_ch["id"])
+
+        target = dict(selected_ch)
         challenge_id = target.get("id", "")
+        target["seed"] = random.randint(100000, 999999)
 
         # Look for local static photo asset
         local_img_path = os.path.join("static", "images", "challenges", f"{challenge_id}.jpg")
@@ -294,12 +504,12 @@ class ChallengeManager:
 
         # Fallback to image generator if local file is missing
         from image_generator import image_generator
-        target_prompt = f"{base_ch['title']}, {base_ch['brief']}. {base_ch.get('visual_goals', '')}"
+        target_prompt = f"{target['title']}, {target['brief']}. {target.get('visual_goals', '')}"
         gen = image_generator.generate(
             prompt=target_prompt,
-            category=base_ch.get("category", ""),
-            challenge_title=base_ch.get("title", ""),
-            seed=user_seed
+            category=target.get("category", ""),
+            challenge_title=target.get("title", ""),
+            seed=target["seed"]
         )
         target["image_data"] = gen.get("image_data")
         target["image_source"] = gen.get("source", "agent-synthesizer")
@@ -325,6 +535,7 @@ class ChallengeManager:
             "created_by": created_by
         }
         self.challenges.append(new_challenge)
+        self._init_deck()
         self._save()
         return new_challenge
 
@@ -332,6 +543,7 @@ class ChallengeManager:
         initial_len = len(self.challenges)
         self.challenges = [c for c in self.challenges if c.get("id") != challenge_id]
         if len(self.challenges) != initial_len:
+            self._init_deck()
             self._save()
             return True
         return False
@@ -343,12 +555,14 @@ class ChallengeManager:
                     c["is_active"] = not c.get("is_active", True)
                 else:
                     c["is_active"] = bool(is_active)
+                self._init_deck()
                 self._save()
                 return c
         return None
 
     def reset_to_defaults(self):
         self.challenges = [dict(c) for c in DEFAULT_CHALLENGES]
+        self._init_deck()
         self._save()
         return self.challenges
 

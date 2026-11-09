@@ -35,15 +35,22 @@ class TestReversePromptBattle(unittest.TestCase):
             self.assertTrue(is_valid, f"Falsely rejected valid prompt: '{vp}' - {msg}")
 
     def test_unique_target_challenge_generation(self):
-        # Rule 3: Each user should have a unique image given
-        t1 = challenge_manager.get_unique_target_challenge(participant_id="user-alpha-1")
-        t2 = challenge_manager.get_unique_target_challenge(participant_id="user-beta-2")
-        self.assertIsNotNone(t1.get("image_data"))
-        self.assertIsNotNone(t2.get("image_data"))
-        self.assertIn(t1["category"], OFFICIAL_CATEGORIES)
-        self.assertIn(t2["category"], OFFICIAL_CATEGORIES)
-        # Seeds should be different
-        self.assertNotEqual(t1["seed"], t2["seed"])
+        # Rule 3: Each user should have a unique image given with zero repetitions
+        seen_ids = set()
+        for i in range(10):
+            t = challenge_manager.get_unique_target_challenge(participant_id=f"user-unique-{i}")
+            self.assertIsNotNone(t.get("image_data"))
+            self.assertIn(t["category"], OFFICIAL_CATEGORIES)
+            self.assertNotIn(t["id"], seen_ids, f"Repetition detected for {t['id']}!")
+            seen_ids.add(t["id"])
+
+        # Also test sequential rerolls for the same user
+        reroll_seen = set()
+        single_user = "persistent-tester"
+        for i in range(8):
+            t = challenge_manager.get_unique_target_challenge(participant_id=single_user, exclude_ids=list(reroll_seen))
+            self.assertNotIn(t["id"], reroll_seen, f"Reroll repetition detected: {t['id']}")
+            reroll_seen.add(t["id"])
 
     def test_end_to_end_reverse_prompt_workflow(self):
         # 1. User joins on Identifier page with Name & Email
