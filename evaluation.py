@@ -193,7 +193,8 @@ class DualImageJudge:
         category: str,
         player_name: str
     ) -> Dict[str, Any]:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.gemini_api_key}"
+        model = os.getenv("GEMINI_JUDGE_MODEL", "gemini-2.5-flash")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_api_key}"
 
         t_b64, t_mime = prepare_image_for_vision(target_image_data)
         u_b64, u_mime = prepare_image_for_vision(user_image_data)

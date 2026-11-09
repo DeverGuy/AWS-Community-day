@@ -21,6 +21,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 class ImageGenerator:
     def __init__(self):
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
         self.nvidia_api_key = os.getenv("NVIDIA_API_KEY")
         self.nvidia_model = os.getenv("NVIDIA_MODEL", "black-forest-labs/flux.1-dev")
         self.aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
@@ -35,40 +36,113 @@ class ImageGenerator:
         start_time = time.time()
         clean_prompt = prompt.strip()
 
-        # Tier 1: Try AWS Bedrock if credentials exist
+        # Tier 1: Try Google Gemini Pro / Imagen 3 if key is present
+        if self.gemini_api_key and self.gemini_api_key.startswith("AIzaSy"):
+            gemini_res = self._generate_gemini_pro(clean_prompt)
+            if gemini_res.get("success"):
+                gemini_res["latency"] = round(time.time() - start_time, 2)
+                return gemini_res
+            print(f"[ImageGenerator] Gemini Pro generation skipped/failed: {gemini_res.get('error')}. Cascading to Tier 2...")
+
+        # Tier 2: Try AWS Bedrock if credentials exist
         if self.aws_access_key and self.aws_secret_key:
             bedrock_res = self._generate_bedrock(clean_prompt, seed=seed)
             if bedrock_res.get("success"):
                 bedrock_res["latency"] = round(time.time() - start_time, 2)
                 return bedrock_res
-            print(f"[ImageGenerator] Bedrock skipped/failed: {bedrock_res.get('error')}. Cascading...")
+            print(f"[ImageGenerator] Bedrock skipped/failed: {bedrock_res.get('error')}. Cascading to Tier 3...")
 
-        # Tier 2: Try NVIDIA NIM API if key is present
+        # Tier 3: Try NVIDIA NIM API if key is present
         if self.nvidia_api_key and self.nvidia_api_key.startswith("nvapi-"):
             result = self._generate_nvidia(clean_prompt)
             if result.get("success"):
                 result["latency"] = round(time.time() - start_time, 2)
                 return result
-            print(f"[ImageGenerator] NVIDIA skipped/failed: {result.get('error')}. Cascading to Tier 3...")
+            print(f"[ImageGenerator] NVIDIA skipped/failed: {result.get('error')}. Cascading to Tier 4...")
 
-        # Tier 3: Try Pollinations AI Cloud (Turbo model, 512x512 for high speed)
+        # Tier 4: Try Pollinations AI Cloud (Turbo model, 512x512 for high speed)
         pollinations_result = self._generate_pollinations(clean_prompt, seed=seed)
         if pollinations_result.get("success"):
             pollinations_result["latency"] = round(time.time() - start_time, 2)
             return pollinations_result
 
-        # If Pollinations is rate-limited on the server IP, provide client URL for direct browser fetch
+        # If Pollinations was rate-limited on the server IP, fall back to procedural and attach client URL
+        client_fallback_url = None
         if pollinations_result.get("rate_limited"):
-            print("[ImageGenerator] Server IP rate limited on Pollinations. Providing client fallback URL...")
-            pollinations_result["latency"] = round(time.time() - start_time, 2)
-            return pollinations_result
+            print("[ImageGenerator] Server IP rate limited on Pollinations. Attaching client fallback URL...")
+            client_fallback_url = pollinations_result.get("client_url")
 
-        print(f"[ImageGenerator] Cloud cascade failed: {pollinations_result.get('error')}. Cascading to Tier 4 Procedural...")
+        print(f"[ImageGenerator] Cloud cascade completed. Generating fallback canvas...")
 
-        # Tier 4: Standalone Scene Semantic Digital Compositor
+        # Tier 5: Standalone Scene Semantic Digital Compositor (Guarantees success: True)
         procedural_result = self._generate_procedural(clean_prompt, category=category, challenge_title=challenge_title, seed=seed)
         procedural_result["latency"] = round(time.time() - start_time, 2)
+        if client_fallback_url:
+            procedural_result["client_url"] = client_fallback_url
+            procedural_result["rate_limited"] = True
         return procedural_result
+
+    def _generate_gemini_pro(self, prompt: str) -> dict:
+        """
+        Generates hyper-realistic studio-grade imagery using Gemini Pro / Imagen 3.
+        Supports both Imagen 3 Predict and Gemini Multimodal Image Generation.
+        """
+        # 1. Try Imagen 3 (Google's premier photorealistic text-to-image engine)
+        imagen_url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key={self.gemini_api_key}"
+        imagen_payload = {
+            "instances": [{"prompt": prompt[:480]}],
+            "parameters": {
+                "sampleCount": 1,
+                "aspectRatio": "1:1",
+                "outputMimeType": "image/jpeg"
+            }
+        }
+        try:
+            resp = requests.post(imagen_url, json=imagen_payload, timeout=18)
+            if resp.status_code == 200:
+                data = resp.json()
+                preds = data.get("predictions", [])
+                if preds and "bytesBase64Encoded" in preds[0]:
+                    b64 = preds[0]["bytesBase64Encoded"]
+                    return {
+                        "success": True,
+                        "image_data": f"data:image/jpeg;base64,{b64}",
+                        "source": "google-imagen-3-pro",
+                        "error": None
+                    }
+        except Exception as e:
+            print(f"[GeminiPro] Imagen 3 exception: {e}")
+
+        # 2. Try Gemini Native Multimodal Image Models
+        for model in ["gemini-2.5-flash-image", "gemini-3-pro-image-preview", "gemini-3.1-flash-image"]:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.gemini_api_key}"
+            payload = {
+                "contents": [{
+                    "parts": [{"text": f"Generate a cinematic, photorealistic image: {prompt[:300]}"}]
+                }]
+            }
+            try:
+                resp = requests.post(url, json=payload, timeout=18)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        for p in parts:
+                            inline = p.get("inline_data") or p.get("inlineData")
+                            if inline and inline.get("data"):
+                                b64 = inline.get("data")
+                                mime = inline.get("mime_type") or inline.get("mimeType") or "image/jpeg"
+                                return {
+                                    "success": True,
+                                    "image_data": f"data:{mime};base64,{b64}",
+                                    "source": f"gemini-pro-{model}",
+                                    "error": None
+                                }
+            except Exception as e:
+                print(f"[GeminiPro] {model} exception: {e}")
+
+        return {"success": False, "error": "Gemini Pro / Imagen 3 quota unavailable on current key."}
 
     def _generate_bedrock(self, prompt: str, seed: int = None) -> dict:
         """Invokes Amazon Titan Image Generator G1 on AWS Bedrock"""
