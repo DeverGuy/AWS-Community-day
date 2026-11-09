@@ -1,7 +1,10 @@
 /**
  * BUILD THE FUTURE - AI Prompt Battle Client Engine
- * Clean, Streamlined Flow: Identifier Page (Name + Email) -> Main Game
- * Inspired by AWS Student Builder Groups
+ * Reverse-Engineering Challenge:
+ * 1. Agent generates unique Target Image
+ * 2. User inspects Target Image on screen and types descriptive prompt (no copy-paste, no meta-prompts)
+ * 3. System generates image from prompt as it is
+ * 4. Unbiased AI Judge compares BOTH images and scores visual similarity
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const state = {
     participant: null,
     currentChallenge: null,
+    targetImage: null,
     currentImage: null,
     currentEvaluation: null,
     generations: [],
@@ -36,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   } catch (err) {
-    console.warn("[Socket.IO] Note: Real-time socket not available, standard REST mode active:", err);
+    console.warn("[Socket.IO] Real-time socket not available; standard REST mode active:", err);
   }
 
   // Subtle Web Audio Feedback (Lazy initialized inside user gestures)
@@ -71,9 +75,16 @@ document.addEventListener("DOMContentLoaded", () => {
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
         osc.start(now);
         osc.stop(now + 0.2);
+      } else if (type === "error") {
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.15);
+        gain.gain.setValueAtTime(0.09, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+        osc.start(now);
+        osc.stop(now + 0.15);
       }
     } catch (e) {
-      // Audio autoplay policy or device without audio
+      // Audio autoplay policy
     }
   }
 
@@ -88,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       toast.style.opacity = "0";
       setTimeout(() => toast.remove(), 300);
-    }, 3800);
+    }, 4000);
   }
 
   // Screen Navigation
@@ -144,11 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       state.participant = null;
       state.currentChallenge = null;
+      state.targetImage = null;
+      state.currentImage = null;
+      state.currentEvaluation = null;
       state.generations = [];
-      
+
       const userPill = document.getElementById("top-nav-user-pill");
       if (userPill) userPill.classList.add("hidden");
-      
+
       showScreen("identifier");
       showToast("Signed out. Please enter identification to continue.", "info");
     });
@@ -212,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startBtn.disabled = true;
       startBtn.innerHTML = `
         <span class="awsui-spinner-inline"></span>
-        <span>Registering &amp; Assigning Challenge...</span>
+        <span>Registering &amp; Agent Synthesizing Target...</span>
       `;
     }
 
@@ -227,7 +241,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (resp.ok && data.success && data.participant) {
         playAudioTone("success");
         state.participant = data.participant;
-        state.currentChallenge = data.challenge;
+
+        const target = data.target_challenge || data.challenge;
+        state.currentChallenge = target;
+        state.targetImage = target ? target.image_data : null;
 
         // Save to localStorage safely
         try {
@@ -245,12 +262,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (gName) gName.textContent = name;
         if (gEmail) gEmail.textContent = `(${email})`;
 
-        // Populate Assigned Challenge
-        renderAssignedChallenge(data.challenge);
+        // Populate Assigned Unique Target Challenge & Image
+        renderTargetChallenge(target);
 
         // Transition to Main Game Screen
         showScreen("game");
-        showToast(`Welcome, ${name}! Assigned challenge: "${data.challenge.title}"`, "success");
+        showToast(`Welcome, ${name}! Your unique target challenge has been assigned.`, "success");
       } else {
         showIdentifierError(data.error || "Unable to register session. Please try again.");
       }
@@ -302,7 +319,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (nameEl) nameEl.textContent = name;
     if (emailEl) emailEl.textContent = email;
 
-    // Generate clean 2-letter initials
     if (avatarEl) {
       const parts = name.trim().split(/\s+/);
       const initials = parts.length >= 2 
@@ -325,29 +341,39 @@ document.addEventListener("DOMContentLoaded", () => {
       if (savedEmail && identifierEmailInput) {
         identifierEmailInput.value = savedEmail;
       }
-    } catch (e) {
-      // Storage unavailable
-    }
+    } catch (e) {}
   }
 
   // ---------------------------------------------------------------------------
-  // 2. MAIN GAME: CHALLENGE RENDERING
+  // 2. MAIN GAME: TARGET CHALLENGE RENDERING
   // ---------------------------------------------------------------------------
-  function renderAssignedChallenge(ch) {
+  const targetImg = document.getElementById("target-reference-image");
+  const targetOverlay = document.getElementById("target-loading-overlay");
+  const viewTargetBtn = document.getElementById("view-target-image-btn");
+
+  function renderTargetChallenge(ch) {
     if (!ch) return;
     state.currentChallenge = ch;
+    state.targetImage = ch.image_data;
 
     const catNameEl = document.getElementById("player-cat-name");
     const titleEl = document.getElementById("player-challenge-title");
-    const briefEl = document.getElementById("player-challenge-brief");
-    const visualEl = document.getElementById("player-visual-goals");
     const kwContainer = document.getElementById("player-keywords-container");
 
-    if (catNameEl) catNameEl.textContent = ch.category;
-    if (titleEl) titleEl.textContent = ch.title;
-    if (briefEl) briefEl.textContent = ch.brief;
-    if (visualEl) visualEl.textContent = ch.visual_goals || "Emphasize futuristic realism and storytelling composition.";
+    if (catNameEl) catNameEl.textContent = ch.category || "Innovation";
+    if (titleEl) titleEl.textContent = ch.title || "Visual Target";
 
+    // Set Target Reference Image
+    if (targetImg && ch.image_data) {
+      targetImg.src = ch.image_data;
+      targetImg.classList.remove("hidden");
+    }
+
+    if (viewTargetBtn) {
+      viewTargetBtn.disabled = !ch.image_data;
+    }
+
+    // Inspiration Concepts / Scene Elements
     if (kwContainer) {
       kwContainer.innerHTML = "";
       const keywords = ch.inspiration_keywords || [];
@@ -366,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Re-roll Challenge
+  // Re-roll / Synthesize New Target Challenge
   const rerollBtn = document.getElementById("reroll-challenge-btn");
   if (rerollBtn) {
     rerollBtn.addEventListener("click", async () => {
@@ -376,35 +402,69 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       playAudioTone("click");
       rerollBtn.disabled = true;
-      rerollBtn.textContent = "🔄 Rolling...";
+      rerollBtn.textContent = "🔄 Synthesizing...";
+      if (targetOverlay) targetOverlay.classList.remove("hidden");
 
       try {
-        const resp = await fetch("/api/reroll-challenge", {
+        const resp = await fetch("/api/target-challenge/new", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ participant_id: state.participant.id })
         });
         const data = await resp.json();
-        if (data.success && data.challenge) {
-          renderAssignedChallenge(data.challenge);
-          showToast(`Assigned New Challenge: "${data.challenge.title}"`, "info");
+        const newTarget = data.target_challenge || data.challenge;
+        if (data.success && newTarget) {
+          renderTargetChallenge(newTarget);
+          showToast(`Agent Synthesized New Target: "${newTarget.title}"`, "info");
+          // Reset current user guess state for fresh challenge
+          resetUserGuessState();
         } else {
-          showToast(data.error || "Could not re-roll challenge.", "error");
+          showToast(data.error || "Could not synthesize new target challenge.", "error");
         }
       } catch (e) {
-        showToast("Network error re-rolling challenge.", "error");
+        showToast("Network error creating target challenge.", "error");
       } finally {
         rerollBtn.disabled = false;
-        rerollBtn.textContent = "🔄 Re-roll Challenge";
+        rerollBtn.textContent = "🔄 New Target Image";
+        if (targetOverlay) targetOverlay.classList.add("hidden");
       }
     });
   }
 
+  function resetUserGuessState() {
+    state.currentImage = null;
+    state.currentEvaluation = null;
+    if (activeImg) {
+      activeImg.classList.add("hidden");
+      activeImg.src = "";
+    }
+    if (placeholder) placeholder.classList.remove("hidden");
+    if (viewFullBtn) viewFullBtn.disabled = true;
+    if (submitBtn) submitBtn.disabled = true;
+    const evalCard = document.getElementById("ai-eval-preview-card");
+    if (evalCard) evalCard.classList.add("hidden");
+  }
+
   // ---------------------------------------------------------------------------
-  // 3. PROMPT CONSOLE & MODIFIERS
+  // 3. PROMPT CONSOLE & ANTI-CHEAT ENFORCEMENT
   // ---------------------------------------------------------------------------
   const promptInput = document.getElementById("prompt-input");
   const charCounter = document.getElementById("char-counter");
+  const promptError = document.getElementById("prompt-error-msg");
+
+  function showPromptError(msg) {
+    if (promptError) {
+      promptError.textContent = msg;
+      promptError.classList.remove("hidden");
+    }
+  }
+
+  function hidePromptError() {
+    if (promptError) {
+      promptError.textContent = "";
+      promptError.classList.add("hidden");
+    }
+  }
 
   function updateCharCount() {
     if (!promptInput || !charCounter) return;
@@ -413,8 +473,98 @@ document.addEventListener("DOMContentLoaded", () => {
     charCounter.textContent = `${text.length} chars / ${words} words`;
   }
 
+  // Client-side Anti-Cheat Patterns (Rule 5: No meta-prompts like "generate an image like the one on screen")
+  const CHEAT_PATTERNS = [
+    /generate (an?|the)? image like/i,
+    /like (the )?(image|picture|photo|graphic) on (the )?screen/i,
+    /like (the )?(one|target|reference) on (the )?screen/i,
+    /same as (the )?(image|picture|target|one|reference|above)/i,
+    /same (image|picture|photo|render) as/i,
+    /copy (of )?(the )?(image|picture|target|screen)/i,
+    /recreate (the )?(image|picture|target|one on screen)/i,
+    /make it look like (the )?(image|picture|target|screen)/i,
+    /identical to (the )?(image|picture|target|reference|screen)/i,
+    /duplicate (the )?(image|picture|screen)/i,
+    /image on screen/i,
+    /picture on screen/i,
+    /photo on screen/i,
+    /the one on screen/i,
+    /the screen image/i,
+    /the target image/i,
+    /the reference image/i,
+    /show me the same/i,
+    /give me the same/i,
+    /generate this image/i,
+    /clone the image/i,
+    /reproduce the image/i,
+    /mimic the image/i,
+    /replicate the image/i,
+    /copy this/i,
+    /like above/i,
+    /as above/i,
+    /like on screen/i,
+    /as seen on screen/i,
+    /what is on screen/i,
+    /what is shown/i,
+    /shown on screen/i,
+    /displayed on screen/i,
+    /the visual on screen/i
+  ];
+
+  function validateClientAntiCheat(text) {
+    const trimmed = text.trim();
+    if (trimmed.length < 12) {
+      return {
+        isValid: false,
+        msg: "Prompt is too short! Please write a descriptive prompt (at least 12 characters) detailing the scene."
+      };
+    }
+    for (const pat of CHEAT_PATTERNS) {
+      if (pat.test(trimmed)) {
+        return {
+          isValid: false,
+          msg: "🚫 Cheat phrase detected! You cannot ask the AI to copy 'the image on screen'. You must observe the reference image and describe what you see (subjects, colors, environment, lighting, etc.)."
+        };
+      }
+    }
+    return { isValid: true, msg: "" };
+  }
+
   if (promptInput) {
-    promptInput.addEventListener("input", updateCharCount);
+    promptInput.addEventListener("input", () => {
+      updateCharCount();
+      hidePromptError();
+    });
+
+    // RULE 1: Block copy-pasting prompts
+    promptInput.addEventListener("paste", (e) => {
+      e.preventDefault();
+      playAudioTone("error");
+      showToast("🚫 Copy-pasting prompts is disabled for fair competition! You must type your visual description.", "error");
+      showPromptError("Copy-pasting is strictly disabled for fair play! Please type your prompt manually.");
+    });
+
+    // Block drag and drop text
+    promptInput.addEventListener("drop", (e) => {
+      e.preventDefault();
+      playAudioTone("error");
+      showToast("🚫 Drag and drop is disabled! Please type your prompt manually.", "error");
+    });
+
+    // Intercept keyboard paste shortcuts: Ctrl+V, Cmd+V, Shift+Insert
+    promptInput.addEventListener("keydown", (e) => {
+      if (((e.ctrlKey || e.metaKey) && (e.key === "v" || e.key === "V")) || (e.shiftKey && e.key === "Insert")) {
+        e.preventDefault();
+        playAudioTone("error");
+        showToast("🚫 Keyboard paste is disabled! Please type your prompt manually.", "error");
+        showPromptError("Keyboard paste shortcut is disabled. Please type your prompt manually.");
+      }
+    });
+
+    // Disable right-click context menu on textarea to prevent right-click Paste
+    promptInput.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
   }
 
   function appendModifier(modifier) {
@@ -427,6 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
       promptInput.value = current + cleanMod;
     }
     updateCharCount();
+    hidePromptError();
     promptInput.focus();
   }
 
@@ -443,13 +594,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (promptInput) {
         promptInput.value = "";
         updateCharCount();
+        hidePromptError();
         promptInput.focus();
       }
     });
   }
 
   // ---------------------------------------------------------------------------
-  // 4. IMAGE GENERATION & AI EVALUATION
+  // 4. IMAGE GENERATION (AS IT IS) & DUAL-IMAGE AI JUDGE
   // ---------------------------------------------------------------------------
   const generateBtn = document.getElementById("generate-image-btn");
   const submitBtn = document.getElementById("submit-masterpiece-btn");
@@ -461,18 +613,37 @@ document.addEventListener("DOMContentLoaded", () => {
   async function handleGenerate() {
     const prompt = promptInput ? promptInput.value.trim() : "";
     if (!prompt) {
-      showToast("Please formulate a prompt for your assigned challenge.", "error");
+      showToast("Please type a descriptive prompt to recreate the target image.", "error");
+      showPromptError("Prompt cannot be empty. Describe the target image.");
       if (promptInput) promptInput.focus();
       return;
     }
 
+    // Client-side anti-cheat check
+    const antiCheat = validateClientAntiCheat(prompt);
+    if (!antiCheat.isValid) {
+      playAudioTone("error");
+      showToast(antiCheat.msg, "error");
+      showPromptError(antiCheat.msg);
+      if (promptInput) promptInput.focus();
+      return;
+    }
+
+    hidePromptError();
+
     if (!state.currentChallenge) {
-      showToast("No challenge assigned. Please identify or re-roll.", "error");
+      showToast("No target challenge assigned. Please identify or re-roll.", "error");
       return;
     }
 
     playAudioTone("click");
-    if (generateBtn) generateBtn.disabled = true;
+    if (generateBtn) {
+      generateBtn.disabled = true;
+      generateBtn.innerHTML = `
+        <span class="awsui-spinner-inline"></span>
+        <span>Synthesizing &amp; AI Judge Comparing...</span>
+      `;
+    }
     if (overlay) overlay.classList.remove("hidden");
 
     try {
@@ -487,6 +658,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const data = await resp.json();
 
+      if (!resp.ok && data.is_cheating) {
+        playAudioTone("error");
+        showPromptError(data.error || "Cheat phrase detected.");
+        showToast(data.error || "Cheat phrase detected.", "error");
+        return;
+      }
+
       if (data.success && data.generation) {
         playAudioTone("success");
         const gen = data.generation;
@@ -494,7 +672,7 @@ document.addEventListener("DOMContentLoaded", () => {
         state.currentEvaluation = gen.evaluation;
         state.generations.push(gen);
 
-        // Display image
+        // Display user generated image
         if (activeImg) {
           activeImg.src = gen.image_data;
           activeImg.classList.remove("hidden");
@@ -515,15 +693,15 @@ document.addEventListener("DOMContentLoaded", () => {
           latencyTag.classList.remove("hidden");
         }
 
-        // Display AI Evaluation Scorecard
+        // Render AI Evaluation Scorecard (Dual-Image Comparison)
         renderEvaluationScorecard(gen.evaluation);
 
-        // Update history reel
+        // Update Attempt Reel
         renderHistoryReel();
 
         // Enable Submit button
         if (submitBtn) submitBtn.disabled = false;
-        showToast("Visual synthesized! AI evaluation ready.", "success");
+        showToast(`Visual synthesized! AI Judge Match Score: ${gen.evaluation?.total_score || 0}/100`, "success");
       } else {
         showToast(data.error || "Generation error. Please retry.", "error");
       }
@@ -531,7 +709,10 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(err);
       showToast("Network error generating visual.", "error");
     } finally {
-      if (generateBtn) generateBtn.disabled = false;
+      if (generateBtn) {
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = `<span>⚡ Generate My Image &amp; Judge Match</span>`;
+      }
       if (overlay) overlay.classList.add("hidden");
     }
   }
@@ -539,7 +720,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (generateBtn) generateBtn.addEventListener("click", handleGenerate);
 
   // ---------------------------------------------------------------------------
-  // 5. RENDER AI EVALUATION SCORECARD
+  // 5. RENDER UNBIASED AI EVALUATION SCORECARD
   // ---------------------------------------------------------------------------
   function renderEvaluationScorecard(ev) {
     if (!ev) return;
@@ -548,46 +729,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const chName = document.getElementById("eval-challenge-name");
     if (chName && state.currentChallenge) {
-      chName.textContent = `Challenge: ${state.currentChallenge.title} (${state.currentChallenge.category})`;
+      chName.textContent = `Visual Comparison: "${state.currentChallenge.title}" (${state.currentChallenge.category})`;
     }
 
     const totalEl = document.getElementById("eval-total-score");
     if (totalEl) totalEl.textContent = ev.total_score;
 
     const tierPill = document.getElementById("eval-tier-pill");
-    if (tierPill) tierPill.textContent = ev.tier_badge;
+    if (tierPill) {
+      tierPill.textContent = ev.tier_badge || "🎯 MATCH EVALUATED";
+      if (ev.tier_color) tierPill.style.backgroundColor = ev.tier_color;
+    }
 
-    // 4 Pillars
+    // 4 Objective Pillars
     const b = ev.breakdown || {};
-    const sRel = b.thematic_relevance?.score || 0;
-    const sCre = b.creativity_originality?.score || 0;
-    const sTec = b.prompt_engineering?.score || 0;
-    const sImp = b.future_impact?.score || 0;
+    const sRel = b.visual_similarity?.score ?? 0;
+    const sCre = b.subject_match?.score ?? 0;
+    const sTec = b.style_match?.score ?? 0;
+    const sImp = b.prompt_precision?.score ?? 0;
 
     const elRel = document.getElementById("score-rel");
     const barRel = document.getElementById("bar-rel");
+    const commRel = document.getElementById("comm-rel");
     if (elRel) elRel.textContent = `${sRel} / 25`;
     if (barRel) barRel.style.width = `${(sRel / 25) * 100}%`;
+    if (commRel) commRel.textContent = b.visual_similarity?.comment || "";
 
     const elCre = document.getElementById("score-cre");
     const barCre = document.getElementById("bar-cre");
+    const commCre = document.getElementById("comm-cre");
     if (elCre) elCre.textContent = `${sCre} / 25`;
     if (barCre) barCre.style.width = `${(sCre / 25) * 100}%`;
+    if (commCre) commCre.textContent = b.subject_match?.comment || "";
 
     const elTec = document.getElementById("score-tec");
     const barTec = document.getElementById("bar-tec");
+    const commTec = document.getElementById("comm-tec");
     if (elTec) elTec.textContent = `${sTec} / 25`;
     if (barTec) barTec.style.width = `${(sTec / 25) * 100}%`;
+    if (commTec) commTec.textContent = b.style_match?.comment || "";
 
     const elImp = document.getElementById("score-imp");
     const barImp = document.getElementById("bar-imp");
+    const commImp = document.getElementById("comm-imp");
     if (elImp) elImp.textContent = `${sImp} / 25`;
     if (barImp) barImp.style.width = `${(sImp / 25) * 100}%`;
+    if (commImp) commImp.textContent = b.prompt_precision?.comment || "";
 
-    // Commentary & Badges
+    // Unbiased Critique
     const summaryEl = document.getElementById("eval-summary-text");
-    if (summaryEl) summaryEl.textContent = ev.summary_comment || "";
+    if (summaryEl) summaryEl.textContent = ev.unbiased_critique || ev.summary_comment || "";
 
+    // Matched & Divergent Features
+    const featuresRow = document.getElementById("eval-features-row");
+    if (featuresRow) {
+      featuresRow.innerHTML = "";
+      (ev.matched_features || []).forEach(f => {
+        const pill = document.createElement("span");
+        pill.className = "feature-pill-matched";
+        pill.textContent = `✓ ${f}`;
+        featuresRow.appendChild(pill);
+      });
+      (ev.divergent_features || []).forEach(f => {
+        const pill = document.createElement("span");
+        pill.className = "feature-pill-divergent";
+        pill.textContent = `✗ ${f}`;
+        featuresRow.appendChild(pill);
+      });
+    }
+
+    // Badges
     const badgeRow = document.getElementById("eval-badges-row");
     if (badgeRow) {
       badgeRow.innerHTML = "";
@@ -600,7 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // History Reel
+  // Attempt Reel
   function renderHistoryReel() {
     const reel = document.getElementById("history-reel-container");
     const countBadge = document.getElementById("history-count");
@@ -612,7 +823,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const img = document.createElement("img");
       img.src = gen.image_data;
       img.className = `history-thumb ${idx === state.generations.length - 1 ? "selected" : ""}`;
-      img.title = `Prompt: ${gen.prompt.slice(0, 50)}... (Score: ${gen.evaluation?.total_score || 'N/A'})`;
+      img.title = `Attempt #${idx + 1} - Score: ${gen.evaluation?.total_score || 'N/A'}/100`;
       img.addEventListener("click", () => {
         playAudioTone("click");
         document.querySelectorAll(".history-thumb").forEach(t => t.classList.remove("selected"));
@@ -647,7 +858,7 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.disabled = true;
       submitBtn.innerHTML = `
         <span class="awsui-spinner-inline"></span>
-        <span>Submitting...</span>
+        <span>Locking In Score...</span>
       `;
 
       try {
@@ -663,7 +874,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await resp.json();
 
         if (data.success) {
-          showToast(`Masterpiece locked in with AI Score: ${data.submission.ai_score}! Stored under ${state.participant.name} (${state.participant.email}).`, "success");
+          showToast(`Score locked in! AI Judge Match: ${data.submission.ai_score}/100 under ${state.participant.name}.`, "success");
           showScreen("leaderboard");
         } else {
           showToast(data.error || "Submission failed.", "error");
@@ -672,13 +883,13 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast("Error submitting masterpiece.", "error");
       } finally {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = `<span>🏆 Submit &amp; Save Score</span>`;
+        submitBtn.innerHTML = `<span>🏆 Lock In &amp; Save Score</span>`;
       }
     });
   }
 
   // ---------------------------------------------------------------------------
-  // 7. LEADERBOARD
+  // 7. LEADERBOARD (WITH DUAL-IMAGE INSPECTION)
   // ---------------------------------------------------------------------------
   const leaderboardBody = document.getElementById("leaderboard-table-body");
   const leaderboardFilter = document.getElementById("leaderboard-cat-filter");
@@ -716,11 +927,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <td class="table-score">${entry.ai_score}</td>
           <td style="font-weight:800; font-size:14px;">${entry.composite_score}</td>
           <td><span class="badge-tag">${entry.tier_badge}</span></td>
-          <td><button class="awsui-btn-secondary btn-sm inspect-entry-btn">Inspect</button></td>
+          <td><button class="awsui-btn-secondary btn-sm inspect-entry-btn">Inspect Match</button></td>
         `;
 
         tr.querySelector(".inspect-entry-btn").addEventListener("click", () => {
-          openImageModal(entry.image_data, `"${entry.prompt}" — ${entry.player_name} (${entry.player_email || ''}) | Score: ${entry.composite_score} pts`);
+          openDualImageModal(
+            entry.target_image,
+            entry.image_data,
+            `"${entry.prompt}" — ${entry.player_name} (${entry.player_email || ''}) | Match Score: ${entry.ai_score}/100 pts\nJudge: ${entry.unbiased_critique || ''}`
+          );
         });
 
         leaderboardBody.appendChild(tr);
@@ -735,18 +950,50 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------------------------------------------------------------------
-  // 8. IMAGE ZOOM MODAL
+  // 8. IMAGE ZOOM & DUAL INSPECTION MODAL
   // ---------------------------------------------------------------------------
   const imageModal = document.getElementById("image-modal");
-  const modalImg = document.getElementById("modal-full-image");
+  const modalSingleView = document.getElementById("modal-single-view");
+  const modalFullImage = document.getElementById("modal-full-image");
+  const modalDualView = document.getElementById("modal-dual-view");
+  const modalDualTarget = document.getElementById("modal-dual-target");
+  const modalDualUser = document.getElementById("modal-dual-user");
   const modalCaption = document.getElementById("modal-image-caption");
   const closeImageModal = document.getElementById("close-image-modal");
 
-  function openImageModal(src, caption) {
-    if (!imageModal || !modalImg) return;
-    modalImg.src = src;
+  function openSingleImageModal(src, caption) {
+    if (!imageModal || !modalFullImage) return;
+    if (modalSingleView) modalSingleView.classList.remove("hidden");
+    if (modalDualView) modalDualView.classList.add("hidden");
+    modalFullImage.src = src;
     if (modalCaption) modalCaption.textContent = caption || "";
     imageModal.classList.remove("hidden");
+  }
+
+  function openDualImageModal(targetSrc, userSrc, caption) {
+    if (!imageModal || !modalDualView) return;
+    if (modalSingleView) modalSingleView.classList.add("hidden");
+    if (modalDualView) modalDualView.classList.remove("hidden");
+    if (modalDualTarget) modalDualTarget.src = targetSrc || "";
+    if (modalDualUser) modalDualUser.src = userSrc || "";
+    if (modalCaption) modalCaption.textContent = caption || "";
+    imageModal.classList.remove("hidden");
+  }
+
+  if (viewTargetBtn) {
+    viewTargetBtn.addEventListener("click", () => {
+      if (state.targetImage) {
+        openSingleImageModal(state.targetImage, `Target Reference: "${state.currentChallenge?.title || ''}" (${state.currentChallenge?.category || ''})`);
+      }
+    });
+  }
+
+  if (viewFullBtn) {
+    viewFullBtn.addEventListener("click", () => {
+      if (state.currentImage) {
+        openSingleImageModal(state.currentImage, `Your Replica Prompt: "${promptInput ? promptInput.value : ''}"`);
+      }
+    });
   }
 
   if (closeImageModal) {
@@ -763,14 +1010,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (adminModal && !adminModal.classList.contains("hidden")) adminModal.classList.add("hidden");
     }
   });
-
-  if (viewFullBtn) {
-    viewFullBtn.addEventListener("click", () => {
-      if (state.currentImage) {
-        openImageModal(state.currentImage, `Prompt: ${promptInput ? promptInput.value : ''}`);
-      }
-    });
-  }
 
   // ---------------------------------------------------------------------------
   // 9. ADMIN MODAL & CONTROLS

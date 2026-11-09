@@ -281,6 +281,37 @@ class ChallengeManager:
         # Fallback to default
         return random.choice(DEFAULT_CHALLENGES)
 
+    def get_unique_target_challenge(self, participant_id: str = None, category: str = None, exclude_ids: list = None) -> dict:
+        """
+        Retrieves a challenge and generates a unique target reference image synthesized by the AI agent.
+        Ensures each participant receives a unique visual challenge.
+        """
+        import time
+        from image_generator import image_generator
+
+        base_ch = self.get_random_challenge(category=category, exclude_ids=exclude_ids)
+        target = dict(base_ch)
+
+        # Ensure a distinct seed per user session
+        user_seed = abs(hash(f"{participant_id or uuid.uuid4().hex}-{base_ch.get('id')}-{time.time()}")) % 999999
+        target["seed"] = user_seed
+        target["target_id"] = f"target-{uuid.uuid4().hex[:8]}"
+
+        # Synthesize target image prompt
+        target_prompt = f"{base_ch['title']}, {base_ch['brief']}. {base_ch.get('visual_goals', '')}"
+
+        gen = image_generator.generate(
+            prompt=target_prompt,
+            category=base_ch.get("category", ""),
+            challenge_title=base_ch.get("title", ""),
+            seed=user_seed
+        )
+
+        target["image_data"] = gen.get("image_data")
+        target["image_source"] = gen.get("source", "agent-synthesizer")
+        target["hidden_prompt"] = target_prompt
+        return target
+
     def add_challenge(self, category, title, brief, visual_goals="", inspiration_keywords=None, evaluation_focus="", is_active=True, created_by="admin"):
         if category not in OFFICIAL_CATEGORIES:
             # Allow custom category if needed, but official ones are preferred

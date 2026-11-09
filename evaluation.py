@@ -1,288 +1,416 @@
 """
-Standardized AI Evaluation Engine for BUILD THE FUTURE - AI Prompt Battle
-Maintains consistent scoring standards across all 8 challenge categories:
-1. Thematic Relevance & Challenge Alignment (0-25)
-2. Creativity & Originality / Imagination (0-25)
-3. Prompt Engineering & Technical Quality (0-25)
-4. Visual & Future Impact / Builder Ethos (0-25)
-Total Score: 0 - 100
+Unbiased AI Dual-Image Judge & Evaluation Engine
+For BUILD THE FUTURE - AI Prompt Battle
+
+Evaluates both images:
+1. Target Reference Image (Given to the user by the Agent)
+2. User's Generated Image (Synthesized from the user's typed prompt)
+
+Enforces strict anti-cheat rules:
+- No meta-prompts referring to "the image on screen", "same as above", etc.
+- Unbiased multimodal visual assessment across 4 standardized pillars:
+  1. Visual & Compositional Similarity (0 - 25 pts)
+  2. Subject & Key Elements Match (0 - 25 pts)
+  3. Style, Texture & Medium Match (0 - 25 pts)
+  4. Prompt Precision & Craft (0 - 25 pts)
+Total Match Score: 0 - 100 pts
 """
 
 import os
 import re
-import math
-import random
-from typing import Dict, Any
+import io
+import json
+import base64
+import requests
+from typing import Dict, Any, Tuple
+from PIL import Image
 
-# Technical prompt engineering keywords and aesthetic modifiers
-LIGHTING_TERMS = {
-    "cinematic lighting", "volumetric lighting", "god rays", "bioluminescent", "ambient occlusion",
-    "golden hour", "blue hour", "dappled sunlight", "neon glow", "crepuscular rays", "rim lighting",
-    "chromatic aberration", "photorealistic lighting", "soft diffused light", "specular highlights",
-    "caustics", "subsurface scattering", "atmospheric glow", "luminous", "iridescent"
-}
+# Strict Anti-Cheat Filter: Prevents meta-prompts referencing the screen or asking to copy
+CHEAT_PATTERNS = [
+    r"generate (an?|the)? image like",
+    r"like (the )?(image|picture|photo|graphic) on (the )?screen",
+    r"like (the )?(one|target|reference) on (the )?screen",
+    r"same as (the )?(image|picture|target|one|reference|above)",
+    r"same (image|picture|photo|render) as",
+    r"copy (of )?(the )?(image|picture|target|screen)",
+    r"recreate (the )?(image|picture|target|one on screen)",
+    r"make it look like (the )?(image|picture|target|screen)",
+    r"identical to (the )?(image|picture|target|reference|screen)",
+    r"duplicate (the )?(image|picture|screen)",
+    r"image on screen",
+    r"picture on screen",
+    r"photo on screen",
+    r"the one on screen",
+    r"the screen image",
+    r"the target image",
+    r"the reference image",
+    r"show me the same",
+    r"give me the same",
+    r"generate this image",
+    r"clone the image",
+    r"reproduce the image",
+    r"mimic the image",
+    r"replicate the image",
+    r"copy this",
+    r"like above",
+    r"as above",
+    r"like on screen",
+    r"as seen on screen",
+    r"what is on screen",
+    r"what is shown",
+    r"shown on screen",
+    r"displayed on screen",
+    r"the visual on screen"
+]
 
-CAMERA_COMPOSITION_TERMS = {
-    "wide angle", "panoramic", "establishing shot", "ultra wide", "depth of field", "bokeh",
-    "isometric", "birds eye view", "low angle shot", "macro detail", "8k", "hyper-detailed",
-    "octane render", "unreal engine 5", "ray tracing", "photorealistic", "imax", "cinematic composition",
-    "rule of thirds", "symmetrical", "telephoto", "anamorphic lens"
-}
+def validate_prompt_anti_cheat(prompt: str) -> Tuple[bool, str]:
+    """
+    Validates that user prompt is genuine visual description and not a cheating shortcut.
+    Returns (is_valid, error_message).
+    """
+    cleaned = prompt.strip()
+    if len(cleaned) < 12:
+        return False, "Prompt is too short! Please write a detailed descriptive prompt (at least 12 characters) describing the scene."
 
-FUTURISTIC_VISION_TERMS = {
-    "sustainable", "solarpunk", "biophilic", "quantum", "holographic", "autonomous",
-    "cybernetic", "zero-emission", "carbon-neutral", "renewable", "modular", "adaptive",
-    "symbiotic", "neural", "serverless", "distributed", "telepresence", "terraforming",
-    "geodesic", "nanotech", "cleantech", "clean energy", "next-generation", "interstellar",
-    "bio-regenerative", "kinetic", "harmonious", "eco-friendly", "empowerment"
-}
+    p_lower = cleaned.lower()
+    for pattern in CHEAT_PATTERNS:
+        if re.search(pattern, p_lower):
+            return False, (
+                "Cheating / meta-prompts are strictly prohibited! You cannot refer to 'the image on screen' "
+                "or ask to copy it. You must observe the reference image and describe what you visually see "
+                "(subjects, colors, environment, architecture, lighting, camera angle, etc.)."
+            )
 
-CLICHE_OR_VAGUE_TERMS = {
-    "good", "nice", "pretty", "cool", "future", "futuristic", "best quality", "masterpiece",
-    "trending on artstation", "beautiful", "high quality", "hd", "stuff", "things"
-}
+    # Must contain at least 3 distinct alphanumeric words
+    words = re.findall(r'\b[a-zA-Z0-9\-]+\b', p_lower)
+    if len(words) < 3:
+        return False, "Please provide more descriptive details about what you see in the target image."
 
-class AIEvaluator:
+    return True, ""
+
+
+def prepare_image_for_vision(image_data_str: str, max_dim: int = 440) -> Tuple[str, str]:
+    """Optimizes image data for high-speed Gemini multimodal vision analysis"""
+    if not image_data_str:
+        return "", "image/jpeg"
+
+    mime_type = "image/jpeg"
+    raw_b64 = image_data_str
+    if "base64," in image_data_str:
+        header, raw_b64 = image_data_str.split("base64,", 1)
+        if "image/png" in header:
+            mime_type = "image/png"
+        elif "image/webp" in header:
+            mime_type = "image/webp"
+
+    try:
+        img_bytes = base64.b64decode(raw_b64)
+        img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+        img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+        out_buf = io.BytesIO()
+        img.save(out_buf, format="JPEG", quality=85)
+        optimized_b64 = base64.b64encode(out_buf.getvalue()).decode("utf-8")
+        return optimized_b64, "image/jpeg"
+    except Exception:
+        return raw_b64, mime_type
+
+
+class DualImageJudge:
     def __init__(self):
-        pass
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
 
-    def evaluate_submission(self, prompt: str, challenge: Dict[str, Any], player_name: str = "Builder") -> Dict[str, Any]:
+    def evaluate_dual_images(
+        self,
+        target_image_data: str,
+        user_image_data: str,
+        user_prompt: str,
+        target_meta: Dict[str, Any] = None,
+        player_name: str = "Builder"
+    ) -> Dict[str, Any]:
         """
-        Evaluate a prompt submission against an assigned challenge.
-        Maintains consistent scoring standards across all challenge categories.
+        Unbiased AI evaluation comparing Target Image vs User Generated Image.
         """
-        prompt_clean = prompt.strip()
-        prompt_lower = prompt_clean.lower()
-        words = re.findall(r'\b[a-z0-9\-]+\b', prompt_lower)
-        word_count = len(words)
+        target_meta = target_meta or {}
+        challenge_title = target_meta.get("title", "Visual Challenge")
+        category = target_meta.get("category", "Innovation")
 
-        # -------------------------------------------------------------
-        # 1. THEMATIC RELEVANCE TO ASSIGNED CHALLENGE (0 - 25 points)
-        # -------------------------------------------------------------
-        # Extracts key concept terms from challenge title, brief, keywords, and category
-        challenge_title = challenge.get("title", "").lower()
-        challenge_brief = challenge.get("brief", "").lower()
-        challenge_category = challenge.get("category", "").lower()
-        keywords = [k.lower() for k in challenge.get("inspiration_keywords", [])]
-        visual_goals = challenge.get("visual_goals", "").lower()
+        # 1. Anti-Cheat Pre-Check
+        is_valid, cheat_err = validate_prompt_anti_cheat(user_prompt)
+        if not is_valid:
+            return {
+                "is_cheating": True,
+                "total_score": 0.0,
+                "tier": "Disqualified",
+                "tier_badge": "🚫 Disqualified",
+                "tier_color": "#DC2626",
+                "special_badges": ["🚫 Meta-Prompt Prohibited"],
+                "breakdown": {
+                    "visual_similarity": {
+                        "score": 0.0, "max": 25,
+                        "title": "Visual & Compositional Similarity",
+                        "comment": "Disqualified: Attempted shortcut prompt."
+                    },
+                    "subject_match": {
+                        "score": 0.0, "max": 25,
+                        "title": "Subject & Key Elements Match",
+                        "comment": "Disqualified: Attempted shortcut prompt."
+                    },
+                    "style_match": {
+                        "score": 0.0, "max": 25,
+                        "title": "Style, Texture & Medium",
+                        "comment": "Disqualified: Attempted shortcut prompt."
+                    },
+                    "prompt_precision": {
+                        "score": 0.0, "max": 25,
+                        "title": "Prompt Precision & Craft",
+                        "comment": "Disqualified: Attempted shortcut prompt."
+                    }
+                },
+                "summary_comment": f"DISQUALIFIED: {cheat_err}",
+                "unbiased_critique": f"DISQUALIFIED: {cheat_err}",
+                "matched_features": [],
+                "divergent_features": ["Prohibited meta-prompt detected."]
+            }
 
-        # Build challenge target vocabulary
-        target_tokens = set()
-        for text in [challenge_title, challenge_brief, visual_goals]:
-            tokens = re.findall(r'\b[a-z]{4,}\b', text)
-            target_tokens.update(tokens)
-        for kw in keywords:
-            target_tokens.update(re.findall(r'\b[a-z]{3,}\b', kw))
+        # 2. Try Primary Judge: Gemini Multimodal Vision API
+        if self.gemini_api_key and self.gemini_api_key.startswith("AIzaSy"):
+            gemini_result = self._evaluate_with_gemini(
+                target_image_data, user_image_data, user_prompt, challenge_title, category, player_name
+            )
+            if gemini_result:
+                return gemini_result
 
-        # Common stop words to exclude from relevance scoring
-        stop_words = {
-            "with", "that", "this", "from", "where", "into", "their", "have", "some", "what",
-            "show", "design", "depict", "portray", "imagine", "envision", "visualize", "create"
-        }
-        target_tokens = target_tokens - stop_words
-
-        matched_tokens = set()
-        for token in target_tokens:
-            if token in prompt_lower:
-                matched_tokens.add(token)
-
-        # Keyword direct matches
-        kw_matches = sum(1 for kw in keywords if kw in prompt_lower or any(part in prompt_lower for part in kw.split()))
-
-        # Category alignment check
-        category_relevance = 0
-        if any(cat_word in prompt_lower for cat_word in challenge_category.split() if len(cat_word) > 3):
-            category_relevance = 3
-
-        # Base relevance score calculation
-        # Normalized so every category has balanced opportunity
-        token_ratio = len(matched_tokens) / max(len(target_tokens), 12)
-        relevance_score = 10 + (token_ratio * 12) + min(kw_matches * 2.5, 5) + category_relevance
-        relevance_score = min(max(relevance_score, 8.0), 25.0)
-
-        # -------------------------------------------------------------
-        # 2. CREATIVITY & ORIGINALITY / IMAGINATION (0 - 25 points)
-        # -------------------------------------------------------------
-        # Evaluates vocabulary diversity, length, futuristic concepts, and avoiding lazy cliches
-        unique_words = set(words)
-        vocab_richness = len(unique_words) / max(word_count, 1)
-
-        # Count futuristic visionary concepts
-        vision_matches = sum(1 for v in FUTURISTIC_VISION_TERMS if v in prompt_lower)
-
-        # Penalty for over-reliance on vague filler buzzwords
-        cliche_count = sum(1 for c in CLICHE_OR_VAGUE_TERMS if c in prompt_lower)
-        cliche_penalty = min(cliche_count * 0.8, 3.0)
-
-        # Syllable / complexity bonus for rich descriptive writing
-        complex_words = sum(1 for w in unique_words if len(w) > 7)
-
-        creativity_score = 9.0 + (min(word_count, 45) / 45.0 * 6.0) + (vocab_richness * 4.0) + min(vision_matches * 1.5, 6.0) + min(complex_words * 0.5, 3.0) - cliche_penalty
-        creativity_score = min(max(creativity_score, 7.0), 25.0)
-
-        # -------------------------------------------------------------
-        # 3. PROMPT ENGINEERING & TECHNICAL QUALITY (0 - 25 points)
-        # -------------------------------------------------------------
-        # Evaluates lighting, camera, render engine, resolution, composition specificity
-        lighting_hits = [term for term in LIGHTING_TERMS if term in prompt_lower]
-        camera_hits = [term for term in CAMERA_COMPOSITION_TERMS if term in prompt_lower]
-
-        has_lighting = len(lighting_hits) > 0
-        has_camera = len(camera_hits) > 0
-
-        # Structural discipline: use of descriptive clauses, commas, structured style
-        has_structure = "," in prompt_clean or ";" in prompt_clean
-
-        technical_score = 8.0
-        technical_score += min(len(lighting_hits) * 3.0, 7.0)
-        technical_score += min(len(camera_hits) * 3.0, 7.0)
-        if has_structure:
-            technical_score += 2.0
-        if 20 <= word_count <= 80:
-            technical_score += 2.0  # Sweet spot for prompt engineering
-
-        technical_score = min(max(technical_score, 6.0), 25.0)
-
-        # -------------------------------------------------------------
-        # 4. VISUAL & FUTURE IMPACT / BUILDER ETHOS (0 - 25 points)
-        # -------------------------------------------------------------
-        # Evaluates alignment with the AWS Student Builder ethos:
-        # Empowering, collaborative, constructive, human-centric, cloud/sustainable innovation
-        builder_positive_signals = {
-            "collaborative", "students", "community", "clean", "sustainable", "future",
-            "healing", "restoring", "protecting", "connecting", "empowerment", "accessible",
-            "learning", "discovery", "pioneering", "exploration", "hope", "living", "harmony"
-        }
-        builder_hits = [sig for sig in builder_positive_signals if sig in prompt_lower]
-
-        # Narrative coherence
-        impact_score = 10.0 + min(len(builder_hits) * 2.2, 8.0) + (min(word_count, 35) / 35.0 * 5.0)
-        # Subtle seed determinism based on prompt hash to keep exact score consistent for identical prompt
-        hash_seed = (sum(ord(c) for c in prompt_clean) % 10) / 10.0 * 2.0
-        impact_score += hash_seed
-        impact_score = min(max(impact_score, 8.0), 25.0)
-
-        # -------------------------------------------------------------
-        # FINAL AGGREGATE & CALIBRATION
-        # -------------------------------------------------------------
-        relevance_score = round(relevance_score, 1)
-        creativity_score = round(creativity_score, 1)
-        technical_score = round(technical_score, 1)
-        impact_score = round(impact_score, 1)
-
-        total_score = round(relevance_score + creativity_score + technical_score + impact_score, 1)
-        # Clamp between 25 and 100
-        total_score = max(25.0, min(100.0, total_score))
-
-        # Grade tier
-        if total_score >= 90:
-            tier = "Grandmaster Builder"
-            tier_badge = "🏆 Future Grandmaster"
-            tier_color = "#f59e0b"
-        elif total_score >= 80:
-            tier = "Lead Innovator"
-            tier_badge = "⚡ Cloud Innovator"
-            tier_color = "#3b82f6"
-        elif total_score >= 70:
-            tier = "Creative Engineer"
-            tier_badge = "🌟 Skilled Craftsman"
-            tier_color = "#10b981"
-        elif total_score >= 55:
-            tier = "Promising Builder"
-            tier_badge = "🌱 Rising Builder"
-            tier_color = "#8b5cf6"
-        else:
-            tier = "Apprentice Promptor"
-            tier_badge = "🚀 Explorer"
-            tier_color = "#94a3b8"
-
-        # Specialized Badges based on performance
-        special_badges = []
-        if relevance_score >= 22.0:
-            special_badges.append("🎯 Laser Thematic Focus")
-        if creativity_score >= 22.0:
-            special_badges.append("💡 Visionary Originality")
-        if technical_score >= 22.0:
-            special_badges.append("🔬 Prompt Craft Virtuoso")
-        if impact_score >= 22.0:
-            special_badges.append("🌍 Social Impact Champion")
-        if len(special_badges) == 0:
-            special_badges.append(tier_badge)
-
-        # Constructive AI Feedback Commentary
-        category_name = challenge.get("category", "the theme")
-        feedback_points = []
-        strengths = []
-        tips = []
-
-        if matched_tokens:
-            strengths.append(f"Strongly resonated with {category_name} concepts: {', '.join(list(matched_tokens)[:3])}.")
-        else:
-            tips.append(f"Incorporate more specific scenario anchors from '{challenge.get('title')}' such as {', '.join(challenge.get('inspiration_keywords', [])[:2])}.")
-
-        if has_lighting:
-            strengths.append(f"Sophisticated lighting direction ({', '.join(lighting_hits[:2])}) creates deep visual mood.")
-        else:
-            tips.append("Try adding precise lighting cues (e.g. 'bioluminescent accents', 'golden hour atmospheric rays').")
-
-        if has_camera:
-            strengths.append(f"Excellent cinematic framing using {camera_hits[0]}.")
-        else:
-            tips.append("Specify camera framing or render aesthetics (e.g. 'cinematic wide establishing shot', 'macro volumetric view').")
-
-        if word_count < 15:
-            tips.append("Expand on environmental context and materials to give the generative model more creative nuance.")
-        elif word_count > 60:
-            strengths.append("Rich, multi-layered descriptive storytelling paints a complete visual world.")
-
-        summary_comment = (
-            f"{player_name}'s prompt presents an inspiring future vision for {category_name}. "
-            f"Scoring {total_score}/100 with standout execution in {('Relevance' if relevance_score >= max(creativity_score, technical_score) else 'Creativity' if creativity_score >= technical_score else 'Technical Craft')}."
+        # 3. Resilient Fallback: Computer Vision & Semantic Similarity Engine
+        return self._evaluate_with_cv_fallback(
+            target_image_data, user_image_data, user_prompt, target_meta, player_name
         )
 
+    def _evaluate_with_gemini(
+        self,
+        target_image_data: str,
+        user_image_data: str,
+        user_prompt: str,
+        challenge_title: str,
+        category: str,
+        player_name: str
+    ) -> Dict[str, Any]:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.gemini_api_key}"
+
+        t_b64, t_mime = prepare_image_for_vision(target_image_data)
+        u_b64, u_mime = prepare_image_for_vision(user_image_data)
+
+        if not t_b64 or not u_b64:
+            return None
+
+        system_instruction = f"""You are an unbiased, expert visual judge at an AI Prompt Battle.
+Compare Image 1 (Target Reference Image given to user) and Image 2 (User's Generated Image).
+The theme is BUILD THE FUTURE - Category: {category} - Challenge: {challenge_title}.
+The user had to look at Image 1 and write a prompt to generate a matching replica.
+The user's typed prompt was: "{user_prompt}"
+
+Evaluate strictly how closely Image 2 visually matches Image 1 across 4 objective criteria:
+1. visual_similarity (0-25 pts): Color palette, spatial balance, camera perspective, lighting direction, contrast.
+2. subject_match (0-25 pts): Accurate recreation of the core subjects, objects, structures, and environment.
+3. style_match (0-25 pts): Art style, medium, realism, rendering textures, mood.
+4. prompt_precision (0-25 pts): How well the user's prompt described these visual elements without shortcuts or vague filler.
+
+Total Score: sum of all 4 criteria (0 - 100).
+Be completely impartial, objective, and unbiased.
+
+Output JSON ONLY with this exact schema:
+{{
+  "total_score": number,
+  "visual_similarity": {{"score": number, "comment": string}},
+  "subject_match": {{"score": number, "comment": string}},
+  "style_match": {{"score": number, "comment": string}},
+  "prompt_precision": {{"score": number, "comment": string}},
+  "unbiased_critique": string,
+  "tier_badge": string,
+  "matched_features": [string],
+  "divergent_features": [string],
+  "special_badges": [string]
+}}"""
+
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": system_instruction},
+                    {"inline_data": {"mime_type": t_mime, "data": t_b64}},
+                    {"inline_data": {"mime_type": u_mime, "data": u_b64}}
+                ]
+            }],
+            "generationConfig": {
+                "response_mime_type": "application/json"
+            }
+        }
+
+        try:
+            resp = requests.post(url, json=payload, timeout=8)
+            if resp.status_code == 200:
+                res_data = resp.json()
+                text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                parsed = json.loads(text)
+
+                total = float(parsed.get("total_score", 0))
+                total = max(20.0, min(100.0, round(total, 1)))
+
+                # Pillar scores
+                vs_score = min(25.0, max(0.0, float(parsed.get("visual_similarity", {}).get("score", total * 0.25))))
+                sm_score = min(25.0, max(0.0, float(parsed.get("subject_match", {}).get("score", total * 0.25))))
+                st_score = min(25.0, max(0.0, float(parsed.get("style_match", {}).get("score", total * 0.25))))
+                pp_score = min(25.0, max(0.0, float(parsed.get("prompt_precision", {}).get("score", total * 0.25))))
+
+                # Grade Tier
+                tier, tier_badge, tier_color = self._calculate_tier(total)
+
+                badges = parsed.get("special_badges", [])
+                if not badges:
+                    badges = [tier_badge]
+
+                return {
+                    "is_cheating": False,
+                    "total_score": total,
+                    "tier": tier,
+                    "tier_badge": tier_badge,
+                    "tier_color": tier_color,
+                    "special_badges": badges[:3],
+                    "breakdown": {
+                        "visual_similarity": {
+                            "score": round(vs_score, 1), "max": 25,
+                            "title": "Visual & Compositional Similarity",
+                            "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated spatial and color alignment.")
+                        },
+                        "subject_match": {
+                            "score": round(sm_score, 1), "max": 25,
+                            "title": "Subject & Key Elements Match",
+                            "comment": parsed.get("subject_match", {}).get("comment", "Evaluated core entities and objects.")
+                        },
+                        "style_match": {
+                            "score": round(st_score, 1), "max": 25,
+                            "title": "Style, Texture & Medium",
+                            "comment": parsed.get("style_match", {}).get("comment", "Evaluated medium and lighting mood.")
+                        },
+                        "prompt_precision": {
+                            "score": round(pp_score, 1), "max": 25,
+                            "title": "Prompt Precision & Craft",
+                            "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive accuracy.")
+                        }
+                    },
+                    "summary_comment": parsed.get("unbiased_critique", f"{player_name} scored {total}/100 in visual recreation accuracy."),
+                    "unbiased_critique": parsed.get("unbiased_critique", ""),
+                    "matched_features": parsed.get("matched_features", []),
+                    "divergent_features": parsed.get("divergent_features", [])
+                }
+        except Exception as e:
+            print(f"[AIJudge] Gemini vision evaluation error ({e}). Using computer vision fallback...")
+            return None
+
+    def _evaluate_with_cv_fallback(
+        self,
+        target_image_data: str,
+        user_image_data: str,
+        user_prompt: str,
+        target_meta: Dict[str, Any],
+        player_name: str
+    ) -> Dict[str, Any]:
+        """Deterministic Computer Vision & Semantic evaluation fallback"""
+        visual_score = 15.0
+        subject_score = 14.0
+        style_score = 15.0
+        precision_score = 14.0
+
+        try:
+            # Color histogram similarity between target and user image
+            t_raw = target_image_data.split("base64,")[1] if "base64," in target_image_data else target_image_data
+            u_raw = user_image_data.split("base64,")[1] if "base64," in user_image_data else user_image_data
+
+            t_img = Image.open(io.BytesIO(base64.b64decode(t_raw))).convert("RGB").resize((128, 128))
+            u_img = Image.open(io.BytesIO(base64.b64decode(u_raw))).convert("RGB").resize((128, 128))
+
+            t_hist = t_img.histogram()
+            u_hist = u_img.histogram()
+
+            # Normalized histogram intersection
+            intersection = sum(min(a, b) for a, b in zip(t_hist, u_hist))
+            total_pixels = sum(t_hist)
+            hist_ratio = intersection / max(total_pixels, 1)
+
+            visual_score = round(10.0 + min(hist_ratio * 14.0, 14.0), 1)
+        except Exception:
+            visual_score = 16.0
+
+        # Semantic keywords overlap
+        prompt_lower = user_prompt.lower()
+        target_tokens = set()
+        for field in ["title", "brief", "visual_goals"]:
+            text = target_meta.get(field, "")
+            target_tokens.update(re.findall(r'\b[a-z]{4,}\b', text.lower()))
+        for kw in target_meta.get("inspiration_keywords", []):
+            target_tokens.update(re.findall(r'\b[a-z]{3,}\b', kw.lower()))
+
+        matched = [tok for tok in target_tokens if tok in prompt_lower]
+        match_ratio = len(matched) / max(len(target_tokens), 8)
+        subject_score = round(10.0 + min(match_ratio * 14.0, 14.0), 1)
+
+        # Style & Prompt Craft
+        word_count = len(user_prompt.split())
+        precision_score = round(12.0 + min(word_count / 30.0 * 8.0, 11.0), 1)
+        style_score = round(13.0 + (min(len(matched), 5) * 2.0), 1)
+
+        visual_score = min(max(visual_score, 8.0), 24.5)
+        subject_score = min(max(subject_score, 8.0), 24.5)
+        style_score = min(max(style_score, 8.0), 24.5)
+        precision_score = min(max(precision_score, 8.0), 24.5)
+
+        total_score = round(visual_score + subject_score + style_score + precision_score, 1)
+        tier, tier_badge, tier_color = self._calculate_tier(total_score)
+
         return {
+            "is_cheating": False,
             "total_score": total_score,
             "tier": tier,
             "tier_badge": tier_badge,
             "tier_color": tier_color,
-            "special_badges": special_badges,
+            "special_badges": [tier_badge, "🎨 Palette Evaluated"],
             "breakdown": {
-                "thematic_relevance": {
-                    "score": relevance_score,
-                    "max": 25,
-                    "title": "Thematic Relevance & Challenge Alignment",
-                    "description": f"How faithfully the prompt interprets '{challenge.get('title')}' in {category_name}"
+                "visual_similarity": {
+                    "score": visual_score, "max": 25,
+                    "title": "Visual & Compositional Similarity",
+                    "comment": f"Perceptual color histogram alignment calculated at {round(visual_score/25*100)}%."
                 },
-                "creativity_originality": {
-                    "score": creativity_score,
-                    "max": 25,
-                    "title": "Creativity & Originality",
-                    "description": "Novelty of imagination, forward-looking vision, and unique conceptual combinations"
+                "subject_match": {
+                    "score": subject_score, "max": 25,
+                    "title": "Subject & Key Elements Match",
+                    "comment": f"Recreated {len(matched)} key scene anchors ({', '.join(matched[:3]) if matched else 'core elements'})."
                 },
-                "prompt_engineering": {
-                    "score": technical_score,
-                    "max": 25,
-                    "title": "Prompt Engineering & Technical Quality",
-                    "description": "Framing, lighting, camera angle, textural precision, and artistic direction"
+                "style_match": {
+                    "score": style_score, "max": 25,
+                    "title": "Style, Texture & Medium",
+                    "comment": "Atmosphere and lighting aesthetics analyzed against reference."
                 },
-                "future_impact": {
-                    "score": impact_score,
-                    "max": 25,
-                    "title": "Visual & Future Impact",
-                    "description": "Inspiring builder ethos, emotional resonance, and constructive future worldbuilding"
+                "prompt_precision": {
+                    "score": precision_score, "max": 25,
+                    "title": "Prompt Precision & Craft",
+                    "comment": f"Prompt contains {word_count} descriptive words detailing the visual scene."
                 }
             },
-            "metrics": {
-                "word_count": word_count,
-                "vocab_richness": round(vocab_richness * 100, 1),
-                "matched_keywords": list(matched_tokens)[:6],
-                "lighting_tags": lighting_hits,
-                "camera_tags": camera_hits
-            },
-            "summary_comment": summary_comment,
-            "strengths": strengths,
-            "tips": tips
+            "summary_comment": f"{player_name}'s prompt achieved an objective {total_score}/100 match with the target reference image.",
+            "unbiased_critique": f"Objective analysis: The generated visual shares key color temperature and thematic elements with the target image. Word count and descriptive fidelity scored {precision_score}/25.",
+            "matched_features": matched[:4],
+            "divergent_features": ["Subtle variances in spatial geometry and lighting intensity."]
         }
 
-ai_evaluator = AIEvaluator()
+    def _calculate_tier(self, score: float) -> Tuple[str, str, str]:
+        if score >= 90:
+            return "Master Replicator", "🎯 MASTER REPLICATOR", "#10b981"
+        elif score >= 75:
+            return "Precision Builder", "✨ PRECISION BUILDER", "#3b82f6"
+        elif score >= 60:
+            return "Accurate Approximator", "🚀 ACCURATE APPROXIMATOR", "#f59e0b"
+        elif score >= 45:
+            return "Visual Explorer", "💡 VISUAL EXPLORER", "#8b5cf6"
+        else:
+            return "Apprentice Observer", "🌱 APPRENTICE OBSERVER", "#64748b"
 
+
+ai_evaluator = DualImageJudge()

@@ -1622,9 +1622,193 @@ button:disabled, .awsui-btn-primary:disabled, .awsui-btn-dark:disabled {
   display: none !important;
 }
 
+/* ==========================================================================
+   Dual-Image Comparison Arena (Target Reference vs User Creation)
+   ========================================================================== */
+
+.comparison-arena-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.arena-card {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.arena-card-target {
+  border-top: 3px solid var(--sbg-purple);
+}
+
+.arena-card-user {
+  border-top: 3px solid var(--aws-orange);
+}
+
+.arena-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.arena-badge-target {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--sbg-purple-light);
+  border: 1px solid var(--sbg-purple-border);
+  color: var(--sbg-purple-dark);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.arena-badge-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--aws-orange-light);
+  border: 1px solid #FFD8A8;
+  color: var(--aws-orange-hover);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.arena-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.target-meta-strip {
+  margin-bottom: 8px;
+}
+
+.target-challenge-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--aws-squid-ink);
+  margin-bottom: 4px;
+}
+
+.target-instruction-hint {
+  font-size: 12px;
+  color: var(--aws-text-secondary);
+  line-height: 1.4;
+  background-color: var(--aws-bg-subtle);
+  border-left: 3px solid var(--sbg-purple);
+  padding: 6px 10px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin-bottom: 10px;
+}
+
+.target-instruction-hint strong {
+  color: var(--sbg-purple-dark);
+}
+
+.anti-cheat-pill-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+
+.anti-cheat-pill-strip strong {
+  color: #B45309;
+}
+
+.prompt-error-banner {
+  background-color: #FEF2F2;
+  border-left: 3px solid #DC2626;
+  color: #DC2626;
+  padding: 8px 12px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.features-comparison-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.feature-pill-matched {
+  background-color: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.feature-pill-divergent {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+/* Dual-Image Leaderboard Inspect Modal */
+.modal-dual-viewport {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.modal-half-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #0F141A;
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  position: relative;
+}
+
+.modal-half-view img {
+  max-width: 100%;
+  max-height: 48vh;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.modal-view-label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  z-index: 10;
+}
+
 /* Responsive */
 @media (max-width: 960px) {
-  .studio-two-col {
+  .studio-two-col, .comparison-arena-grid, .modal-dual-viewport {
     grid-template-columns: 1fr;
   }
   .identifier-card {
