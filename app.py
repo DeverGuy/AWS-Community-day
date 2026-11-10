@@ -220,22 +220,16 @@ def generate():
     challenge_title = target_challenge.get("title", "")
     target_image_data = target_challenge.get("image_data")
 
-    # Generate Image for user prompt AS IT IS via multi-tier generator
+    # Generate Image for user prompt AS IT IS via Google Gemini exclusively
     gen_result = image_generator.generate(prompt, category=category, challenge_title=challenge_title)
 
     if not gen_result.get("success"):
-        if gen_result.get("rate_limited") and gen_result.get("client_url"):
-            return jsonify({
-                "success": False,
-                "fallback_to_client": True,
-                "client_url": gen_result.get("client_url"),
-                "retry_after": gen_result.get("retry_after", 10),
-                "message": "Server IP limit reached. Direct client fetch initiated."
-            }), 200
+        status_code = 429 if gen_result.get("quota_exceeded") else 503
         return jsonify({
             "success": False,
-            "error": gen_result.get("error", "Image generation failed")
-        }), 500
+            "quota_exceeded": bool(gen_result.get("quota_exceeded")),
+            "error": gen_result.get("error", "Gemini image generation failed")
+        }), status_code
 
     user_image_data = gen_result.get("image_data")
 

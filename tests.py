@@ -1,7 +1,18 @@
 import unittest
+import base64
+import io
+from unittest.mock import patch, MagicMock
+from PIL import Image
 from app import app, ADMIN_CODE
 from challenges import OFFICIAL_CATEGORIES, challenge_manager
 from evaluation import ai_evaluator, validate_prompt_anti_cheat
+from image_generator import image_generator
+
+
+def _make_sample_jpeg_b64():
+    buf = io.BytesIO()
+    Image.new("RGB", (64, 64), color=(180, 40, 40)).save(buf, format="JPEG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
 
 class TestReversePromptBattle(unittest.TestCase):
     def setUp(self):
@@ -52,6 +63,45 @@ class TestReversePromptBattle(unittest.TestCase):
             self.assertNotIn(t["id"], reroll_seen, f"Reroll repetition detected: {t['id']}")
             reroll_seen.add(t["id"])
 
+    def test_gemini_only_generator(self):
+        # Ensure Nvidia and all non-Gemini engines have been completely removed
+        self.assertFalse(hasattr(image_generator, "_generate_nvidia"))
+        self.assertFalse(hasattr(image_generator, "_generate_bedrock"))
+        self.assertFalse(hasattr(image_generator, "_generate_pollinations"))
+        self.assertFalse(hasattr(image_generator, "_generate_procedural"))
+
+        sample_b64 = _make_sample_jpeg_b64()
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "candidates": [{
+                "content": {
+                    "parts": [{
+                        "inlineData": {
+                            "mimeType": "image/jpeg",
+                            "data": sample_b64
+                        }
+                    }]
+                }
+            }]
+        }
+
+        exact_prompt = "A bright red Ferrari parked inside a white showroom with dark shadows"
+        with patch("image_generator.requests.post", return_value=mock_resp) as mock_post, \
+             patch.object(image_generator, "_get_api_key", return_value="test-gemini-key-123456"):
+            res = image_generator.generate(exact_prompt)
+
+        self.assertTrue(res["success"])
+        self.assertTrue(res["source"].startswith("gemini-"))
+        self.assertEqual(res["image_data"], f"data:image/jpeg;base64,{sample_b64}")
+
+        # Rule 4: Verify exact unmodified prompt and responseModalities sent to Gemini
+        called_url = mock_post.call_args[0][0]
+        called_payload = mock_post.call_args[1]["json"]
+        self.assertIn("generativelanguage.googleapis.com", called_url)
+        self.assertEqual(called_payload["contents"][0]["parts"][0]["text"], exact_prompt)
+        self.assertEqual(called_payload["generationConfig"]["responseModalities"], ["IMAGE", "TEXT"])
+
     def test_end_to_end_reverse_prompt_workflow(self):
         # 1. User joins on Identifier page with Name & Email
         join_resp = self.client.post('/api/join', json={
@@ -81,17 +131,31 @@ class TestReversePromptBattle(unittest.TestCase):
         cheat_data = cheat_resp.get_json()
         self.assertTrue(cheat_data.get('is_cheating'))
 
-        # 3. Test Valid Generation & Dual-Image AI Evaluation
+        # 3. Test Valid Gemini Generation & Dual-Image AI Evaluation
         valid_prompt = "A glowing futuristic research dome surrounded by crystalline spires and volumetric golden mist, 8k"
-        gen_resp = self.client.post('/api/generate', json={
-            'participant_id': pid,
-            'challenge_id': target_challenge['id'],
-            'prompt': valid_prompt
-        })
+        sample_b64 = _make_sample_jpeg_b64()
+        mock_gemini_img_resp = MagicMock()
+        mock_gemini_img_resp.status_code = 200
+        mock_gemini_img_resp.json.return_value = {
+            "candidates": [{
+                "content": {
+                    "parts": [{"inlineData": {"mimeType": "image/jpeg", "data": sample_b64}}]
+                }
+            }]
+        }
+
+        with patch("image_generator.requests.post", return_value=mock_gemini_img_resp), \
+             patch.object(image_generator, "_get_api_key", return_value="test-gemini-key-123456"):
+            gen_resp = self.client.post('/api/generate', json={
+                'participant_id': pid,
+                'challenge_id': target_challenge['id'],
+                'prompt': valid_prompt
+            })
         self.assertEqual(gen_resp.status_code, 200)
         gen_data = gen_resp.get_json()
         self.assertTrue(gen_data['success'])
         gen_rec = gen_data['generation']
+        self.assertTrue(gen_rec.get('source', '').startswith('gemini-'))
         self.assertIsNotNone(gen_rec.get('image_data'))
 
         # Check AI Judge Dual-Image Scorecard

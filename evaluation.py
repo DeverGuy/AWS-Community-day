@@ -258,6 +258,7 @@ Output JSON ONLY with this exact schema:
         candidate_models = [
             os.getenv("GEMINI_JUDGE_MODEL", "").strip(),
             "gemini-flash-lite-latest",
+            "gemini-3-flash-preview",
             "gemini-2.5-flash",
             "gemini-pro-latest",
             "gemini-flash-latest"

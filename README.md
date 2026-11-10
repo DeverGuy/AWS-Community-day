@@ -39,10 +39,9 @@ Participants craft descriptive generative prompts, synthesize futuristic digital
   - **Prompt Engineering & Technical Quality** (25 pts)
   - **Visual & Future Impact / Builder Ethos** (25 pts)
   - **Total**: 100 points with consistent scoring standards across all categories.
-- **Multi-Tier Resilient Image Generation**:
-  - **Tier 1**: NVIDIA NIM API (`black-forest-labs/flux.1-dev`) using `NVIDIA_API_KEY`.
-  - **Tier 2**: High-speed Cloud Generative AI (Pollinations AI) fallback.
-  - **Tier 3**: Offline Procedural Futuristic Synth (Pillow) fallback for zero-downtime reliability.
+- **Google Gemini Image Generation**:
+  - Uses Google Gemini native multimodal image generation models (`gemini-2.5-flash-image`, `gemini-3.1-flash-image-preview`, `gemini-3-pro-image`) via `GEMINI_API_KEY`.
+  - Passes participant prompts directly to Gemini as typed without modification.
 - **Admin Command Center**:
   - Add new challenges with category selection, vision brief, visual cues, and keywords.
   - Toggle challenges active/inactive in real time.
@@ -72,9 +71,10 @@ python -m venv .venv
 The `.env` file contains:
 
 ```env
-# NVIDIA NIM API (Flux.1-dev)
-NVIDIA_API_KEY=nvapi-your-key-here
-NVIDIA_MODEL=black-forest-labs/flux.1-dev
+# Google Gemini API (Image Generation & Multimodal Vision Judge)
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_IMAGE_MODEL=gemini-2.5-flash-image
+GEMINI_JUDGE_MODEL=gemini-flash-lite-latest
 
 # Admin Authentication Code
 ADMIN_CODE=builder2026

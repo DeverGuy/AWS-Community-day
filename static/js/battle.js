@@ -665,99 +665,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      async function fetchClientDirectAndEvaluate(clientUrl, retrySec) {
-        showToast("Synthesizing diffusion replica via direct high-speed channel...", "info");
-        const encoded = encodeURIComponent(prompt.slice(0, 300));
-        const directUrl = clientUrl || `https://image.pollinations.ai/prompt/${encoded}?model=turbo&width=512&height=512&nologo=true&seed=${Date.now()}`;
-
-        let clientImgResp = null;
-        try {
-          clientImgResp = await fetch(directUrl);
-          if (clientImgResp.status === 402) {
-            const waitSec = retrySec || 10;
-            showToast(`Diffusion engine cooling down. Automatically generating in ${waitSec}s...`, "info");
-            await new Promise(r => setTimeout(r, waitSec * 1000 + 1000));
-            clientImgResp = await fetch(directUrl + "&retry=" + Date.now());
-          }
-        } catch (fetchErr) {
-          console.warn("Direct fetch exception:", fetchErr);
-        }
-
-        if (clientImgResp && clientImgResp.ok) {
-          const blob = await clientImgResp.blob();
-          const clientDataUri = await new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-          });
-
-          // Display user generated image immediately
-          if (activeImg) {
-            activeImg.src = clientDataUri;
-            activeImg.classList.remove("hidden");
-          }
-          if (placeholder) placeholder.classList.add("hidden");
-          if (viewFullBtn) viewFullBtn.disabled = false;
-
-          const sourceTag = document.getElementById("canvas-source-tag");
-          if (sourceTag) {
-            sourceTag.textContent = "Engine: DIFFUSION-TURBO";
-            sourceTag.classList.remove("hidden");
-          }
-
-          showToast("Visual synthesized! AI Judge comparing with target...", "info");
-
-          // Call /api/evaluate to perform the grounded evaluation
-          const evalResp = await fetch("/api/evaluate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              participant_id: state.participant ? state.participant.id : null,
-              prompt: prompt,
-              image_data: clientDataUri,
-              player_name: state.participant ? state.participant.name : "Builder"
-            })
-          });
-          const evalData = await evalResp.json();
-          const evalResult = evalData.evaluation;
-
-          const genRecord = {
-            id: "client-" + Date.now(),
-            prompt: prompt,
-            image_data: clientDataUri,
-            source: "diffusion-turbo",
-            latency: 2.3,
-            evaluation: evalResult
-          };
-
-          state.currentImage = clientDataUri;
-          state.currentEvaluation = evalResult;
-          state.generations.push(genRecord);
-
-          renderEvaluationScorecard(evalResult);
-          renderHistoryReel();
-          if (submitBtn) submitBtn.disabled = false;
-          playAudioTone("success");
-          showToast(`Visual synthesized! AI Judge Match Score: ${evalResult?.total_score || 0}/100`, "success");
-          return true;
-        }
-        return false;
-      }
-
-      if (!data.success && data.fallback_to_client && data.client_url) {
-        const clientOk = await fetchClientDirectAndEvaluate(data.client_url, data.retry_after);
-        if (clientOk) return;
-      }
-
       if (data.success && data.generation) {
         const gen = data.generation;
-
-        // If the server returned an abstract procedural drawing, upgrade to real diffusion!
-        if (gen.source === "cinematic-procedural-synth" || gen.source === "procedural-synth") {
-          console.log("Procedural canvas detected. Upgrading to genuine diffusion generation...");
-          const clientOk = await fetchClientDirectAndEvaluate(null, 10);
-          if (clientOk) return;
-        }
 
         playAudioTone("success");
         state.currentImage = gen.image_data;
@@ -775,7 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Tags
         const sourceTag = document.getElementById("canvas-source-tag");
         if (sourceTag) {
-          sourceTag.textContent = `Engine: ${(gen.source || 'AI').toUpperCase()}`;
+          sourceTag.textContent = `Engine: ${(gen.source || 'GEMINI').toUpperCase()}`;
           sourceTag.classList.remove("hidden");
         }
 
@@ -795,7 +704,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (submitBtn) submitBtn.disabled = false;
         showToast(`Visual synthesized! AI Judge Match Score: ${gen.evaluation?.total_score || 0}/100`, "success");
       } else {
-        showToast(data.error || "Generation error. Please retry.", "error");
+        playAudioTone("error");
+        const errMsg = data.error || "Gemini image generation failed. Please check your GEMINI_API_KEY configuration.";
+        showPromptError(errMsg);
+        showToast(errMsg, "error");
       }
     } catch (err) {
       console.error(err);
