@@ -3,155 +3,13 @@
    Complete Black (#08080B), Dark Purple (#211832 / #35244F) & Soft Lavender (#B69AFF) Theme
    ========================================================================== */
 
-/* ==========================================================================
-   THEME DEFINITIONS: 4 DISTINCT VISUAL STYLES
-   1. AWS Cyber Midnight (Default & Flagship)
-   2. Neon Cyberpunk Arena
-   3. Cosmic Velvet Purple
-   4. Obsidian Minimalist
-   ========================================================================== */
-
-:root,
-body.theme-aws-midnight {
-  /* 1. Backgrounds: Deep Midnight Charcoal */
-  --pq-bg-main: #0B0F17;
-  --pq-bg-deep: #070A0F;
-  --pq-bg-sidebar: #0E1420;
-
-  /* 2. Cards: Layered Slate Glass */
-  --pq-bg-card: #121A27;
-  --pq-bg-card-hover: #192436;
-  --pq-bg-card-grad: linear-gradient(155deg, #162030 0%, #121A27 65%, #0D141F 100%);
-  --pq-bg-card-elevated: linear-gradient(148deg, #1B283D 0%, #131C2B 55%, #0E1522 100%);
-  --pq-bg-card-feature: linear-gradient(155deg, #182335 0%, #121A27 60%, #0E1522 100%);
-  --pq-bg-card-deep: linear-gradient(165deg, #131C2A 0%, #0E1521 65%, #0A0F18 100%);
-  --pq-bg-card-hover-grad: linear-gradient(150deg, #1F2E45 0%, #182537 50%, #101926 100%);
-  --pq-bg-input: #090D14;
-  --pq-bg-subtle: rgba(255, 153, 0, 0.08);
-
-  /* 3. Accents: Signature AWS Gold & Orange + Cyber Cyan */
-  --pq-lavender: #FF9900;
-  --pq-lilac: #FFB800;
-  --pq-purple-deep: #E08200;
-  --pq-lavender-glow: rgba(255, 153, 0, 0.35);
-  --pq-lavender-soft: rgba(255, 153, 0, 0.12);
-
-  --aws-orange: #FF9900;
-  --aws-orange-bright: #FFB800;
-  --aws-orange-deep: #D47B00;
-  --aws-orange-glow: rgba(255, 153, 0, 0.38);
-  --aws-orange-soft: rgba(255, 153, 0, 0.14);
-
-  --pq-purple-muted: #1E2B3E;
-  --pq-purple-soft: rgba(0, 216, 255, 0.12);
-  --aws-blue: #00D8FF;
-  --sbg-purple: #FF9900;
-  --sbg-purple-dark: #121A27;
-  --sbg-purple-light: rgba(255, 153, 0, 0.12);
-  --sbg-purple-border: rgba(255, 153, 0, 0.35);
-  --aws-squid-ink: #FFFFFF;
-
-  --pq-text-white: #FFFFFF;
-  --pq-text-secondary: #94A3B8;
-  --pq-text-muted: #64748B;
-  --aws-text-secondary: #94A3B8;
-
-  --pq-border-subtle: rgba(255, 153, 0, 0.14);
-  --pq-border-mid: rgba(255, 153, 0, 0.28);
-  --pq-border-orange: rgba(255, 153, 0, 0.55);
-
-  --pq-btn-primary-bg: linear-gradient(135deg, #FFB800 0%, #FF9900 60%, #E68A00 100%);
-  --pq-btn-primary-text: #090D14;
-  --pq-btn-primary-border: rgba(255, 255, 255, 0.4);
-  --pq-btn-primary-shadow: 0 6px 24px rgba(255, 153, 0, 0.35);
-  --pq-btn-primary-shadow-hover: 0 10px 28px rgba(255, 153, 0, 0.48);
-
-  --pq-hero-gradient: linear-gradient(135deg, #FFFFFF 15%, #FFB800 60%, #FF9900 100%);
-  --pq-accent-primary: #FF9900;
-  --pq-accent-secondary: #FFB800;
-  --pq-accent-glow: rgba(255, 153, 0, 0.3);
-  --pq-badge-bg: rgba(18, 26, 39, 0.85);
-  --pq-badge-border: rgba(255, 153, 0, 0.35);
-  --pq-badge-glow: rgba(255, 153, 0, 0.18);
-  --pq-pedestal-color: rgba(255, 153, 0, 0.7);
-  --pq-pedestal-glow: rgba(255, 184, 0, 0.25);
-
-  --shadow-card: inset 0 1px 0 rgba(255, 184, 0, 0.12), 0 16px 36px -8px rgba(0, 0, 0, 0.88), 0 0 0 1px rgba(255, 153, 0, 0.10);
-  --shadow-orange: 0 6px 24px rgba(255, 153, 0, 0.35);
-}
-
-/* 2. Neon Cyberpunk Arena */
-body.theme-cyberpunk {
-  --pq-bg-main: #06080E;
-  --pq-bg-deep: #030408;
-  --pq-bg-sidebar: #090D18;
-
-  --pq-bg-card: #0D1322;
-  --pq-bg-card-hover: #141D33;
-  --pq-bg-card-grad: linear-gradient(155deg, #121A2E 0%, #0D1322 62%, #080C16 100%);
-  --pq-bg-card-elevated: linear-gradient(148deg, #17223C 0%, #0E1526 55%, #080D18 100%);
-  --pq-bg-card-feature: linear-gradient(155deg, #151E36 0%, #0D1322 60%, #080D18 100%);
-  --pq-bg-card-deep: linear-gradient(165deg, #0F1729 0%, #0A0F1B 65%, #060912 100%);
-  --pq-bg-card-hover-grad: linear-gradient(150deg, #1C2947 0%, #141E34 50%, #0C1220 100%);
-  --pq-bg-input: #050810;
-  --pq-bg-subtle: rgba(0, 240, 255, 0.08);
-
-  --pq-lavender: #00F0FF;
-  --pq-lilac: #70F8FF;
-  --pq-purple-deep: #00B4D8;
-  --pq-lavender-glow: rgba(0, 240, 255, 0.35);
-  --pq-lavender-soft: rgba(0, 240, 255, 0.12);
-
-  --aws-orange: #00F0FF;
-  --aws-orange-bright: #70F8FF;
-  --aws-orange-deep: #0099AA;
-  --aws-orange-glow: rgba(0, 240, 255, 0.38);
-  --aws-orange-soft: rgba(0, 240, 255, 0.14);
-
-  --pq-purple-muted: #1A2238;
-  --pq-purple-soft: rgba(255, 0, 127, 0.14);
-  --aws-blue: #FF007F;
-  --sbg-purple: #00F0FF;
-  --sbg-purple-dark: #0D1322;
-  --sbg-purple-light: rgba(0, 240, 255, 0.14);
-  --sbg-purple-border: rgba(0, 240, 255, 0.42);
-  --aws-squid-ink: #FFFFFF;
-
-  --pq-text-white: #FFFFFF;
-  --pq-text-secondary: #8DA4C4;
-  --pq-text-muted: #5C7294;
-  --aws-text-secondary: #8DA4C4;
-
-  --pq-border-subtle: rgba(0, 240, 255, 0.18);
-  --pq-border-mid: rgba(0, 240, 255, 0.35);
-  --pq-border-orange: rgba(0, 240, 255, 0.65);
-
-  --pq-btn-primary-bg: linear-gradient(135deg, #70F8FF 0%, #00F0FF 60%, #00B4D8 100%);
-  --pq-btn-primary-text: #050810;
-  --pq-btn-primary-border: rgba(112, 248, 255, 0.6);
-  --pq-btn-primary-shadow: 0 6px 24px rgba(0, 240, 255, 0.38);
-  --pq-btn-primary-shadow-hover: 0 10px 28px rgba(0, 240, 255, 0.52);
-
-  --pq-hero-gradient: linear-gradient(135deg, #FFFFFF 15%, #00F0FF 55%, #FF007F 100%);
-  --pq-accent-primary: #00F0FF;
-  --pq-accent-secondary: #FF007F;
-  --pq-accent-glow: rgba(0, 240, 255, 0.35);
-  --pq-badge-bg: rgba(13, 19, 34, 0.88);
-  --pq-badge-border: rgba(0, 240, 255, 0.42);
-  --pq-badge-glow: rgba(0, 240, 255, 0.22);
-  --pq-pedestal-color: rgba(0, 240, 255, 0.75);
-  --pq-pedestal-glow: rgba(255, 0, 127, 0.35);
-
-  --shadow-card: inset 0 1px 0 rgba(0, 240, 255, 0.2), 0 16px 36px -8px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(0, 240, 255, 0.15);
-  --shadow-orange: 0 6px 24px rgba(0, 240, 255, 0.35);
-}
-
-/* 3. Cosmic Velvet Purple */
-body.theme-purple-quest {
+:root {
+  /* 1. Primary Black Backgrounds */
   --pq-bg-main: #08080B;
   --pq-bg-deep: #050507;
   --pq-bg-sidebar: #0B0A10;
 
+  /* 2. Dark Purple Cards, Containers & Interactive States (Layered Depth in #211832 / #35244F Family) */
   --pq-bg-card: #211832;
   --pq-bg-card-hover: #35244F;
   --pq-bg-card-grad: linear-gradient(155deg, #271C3B 0%, #211832 62%, #191227 100%);
@@ -162,124 +20,43 @@ body.theme-purple-quest {
   --pq-bg-input: #120D1D;
   --pq-bg-subtle: rgba(53, 36, 79, 0.38);
 
+  /* 3. Soft Lavender Accent Colours */
   --pq-lavender: #B69AFF;
   --pq-lilac: #D8C8FF;
   --pq-purple-deep: #8C67EB;
   --pq-lavender-glow: rgba(182, 154, 255, 0.28);
   --pq-lavender-soft: rgba(182, 154, 255, 0.14);
 
+  /* Mapped Accent Variables */
   --aws-orange: #B69AFF;
   --aws-orange-bright: #D8C8FF;
   --aws-orange-deep: #35244F;
   --aws-orange-glow: rgba(182, 154, 255, 0.28);
   --aws-orange-soft: rgba(182, 154, 255, 0.14);
 
+  /* Supporting Purple & Muted Tones */
   --pq-purple-muted: #35244F;
   --pq-purple-soft: rgba(53, 36, 79, 0.55);
   --aws-blue: #B69AFF;
+
+  /* Legacy Variable Mappings for JS Compatibility */
   --sbg-purple: #B69AFF;
   --sbg-purple-dark: #35244F;
   --sbg-purple-light: rgba(182, 154, 255, 0.14);
   --sbg-purple-border: rgba(182, 154, 255, 0.36);
   --aws-squid-ink: #FFFFFF;
 
+  /* Typography Hierarchy (White & Soft Grey) */
   --pq-text-white: #FFFFFF;
   --pq-text-secondary: #B4AFC2;
   --pq-text-muted: #7E7890;
   --aws-text-secondary: #B4AFC2;
 
+  /* Subtle Purple Borders & Depth Shadows */
   --pq-border-subtle: rgba(182, 154, 255, 0.15);
   --pq-border-mid: rgba(182, 154, 255, 0.26);
   --pq-border-orange: rgba(182, 154, 255, 0.46);
 
-  --pq-btn-primary-bg: linear-gradient(135deg, #D8C8FF 0%, #B69AFF 60%, #9B7BFF 100%);
-  --pq-btn-primary-text: #08080B;
-  --pq-btn-primary-border: rgba(216, 200, 255, 0.65);
-  --pq-btn-primary-shadow: 0 6px 22px rgba(182, 154, 255, 0.28);
-  --pq-btn-primary-shadow-hover: 0 10px 26px rgba(182, 154, 255, 0.42);
-
-  --pq-hero-gradient: linear-gradient(135deg, #FFFFFF 15%, #D8C8FF 60%, #B69AFF 100%);
-  --pq-accent-primary: #B69AFF;
-  --pq-accent-secondary: #D8C8FF;
-  --pq-accent-glow: rgba(182, 154, 255, 0.28);
-  --pq-badge-bg: rgba(33, 24, 50, 0.85);
-  --pq-badge-border: rgba(182, 154, 255, 0.32);
-  --pq-badge-glow: rgba(182, 154, 255, 0.18);
-  --pq-pedestal-color: rgba(182, 154, 255, 0.7);
-  --pq-pedestal-glow: rgba(140, 79, 255, 0.3);
-
-  --shadow-card: inset 0 1px 0 rgba(216, 200, 255, 0.14), 0 16px 36px -8px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(182, 154, 255, 0.08);
-  --shadow-orange: 0 6px 22px rgba(182, 154, 255, 0.25);
-}
-
-/* 4. Obsidian Minimalist */
-body.theme-obsidian {
-  --pq-bg-main: #000000;
-  --pq-bg-deep: #000000;
-  --pq-bg-sidebar: #080808;
-
-  --pq-bg-card: #0D0D0E;
-  --pq-bg-card-hover: #161618;
-  --pq-bg-card-grad: linear-gradient(155deg, #141416 0%, #0D0D0E 65%, #080809 100%);
-  --pq-bg-card-elevated: linear-gradient(148deg, #18181B 0%, #0F0F10 55%, #0A0A0B 100%);
-  --pq-bg-card-feature: linear-gradient(155deg, #161619 0%, #0D0D0E 60%, #080809 100%);
-  --pq-bg-card-deep: linear-gradient(165deg, #101012 0%, #0A0A0B 65%, #050505 100%);
-  --pq-bg-card-hover-grad: linear-gradient(150deg, #1C1C1F 0%, #151517 50%, #0E0E10 100%);
-  --pq-bg-input: #050505;
-  --pq-bg-subtle: rgba(255, 255, 255, 0.05);
-
-  --pq-lavender: #FFFFFF;
-  --pq-lilac: #E2E8F0;
-  --pq-purple-deep: #94A3B8;
-  --pq-lavender-glow: rgba(255, 255, 255, 0.25);
-  --pq-lavender-soft: rgba(255, 255, 255, 0.08);
-
-  --aws-orange: #FFFFFF;
-  --aws-orange-bright: #F8FAFC;
-  --aws-orange-deep: #CBD5E1;
-  --aws-orange-glow: rgba(255, 255, 255, 0.3);
-  --aws-orange-soft: rgba(255, 255, 255, 0.1);
-
-  --pq-purple-muted: #1E293B;
-  --pq-purple-soft: rgba(59, 130, 246, 0.15);
-  --aws-blue: #3B82F6;
-  --sbg-purple: #FFFFFF;
-  --sbg-purple-dark: #0D0D0E;
-  --sbg-purple-light: rgba(255, 255, 255, 0.08);
-  --sbg-purple-border: rgba(255, 255, 255, 0.35);
-  --aws-squid-ink: #FFFFFF;
-
-  --pq-text-white: #FFFFFF;
-  --pq-text-secondary: #94A3B8;
-  --pq-text-muted: #64748B;
-  --aws-text-secondary: #94A3B8;
-
-  --pq-border-subtle: rgba(255, 255, 255, 0.10);
-  --pq-border-mid: rgba(255, 255, 255, 0.22);
-  --pq-border-orange: rgba(255, 255, 255, 0.5);
-
-  --pq-btn-primary-bg: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
-  --pq-btn-primary-text: #000000;
-  --pq-btn-primary-border: rgba(255, 255, 255, 0.8);
-  --pq-btn-primary-shadow: 0 6px 20px rgba(255, 255, 255, 0.22);
-  --pq-btn-primary-shadow-hover: 0 10px 24px rgba(255, 255, 255, 0.35);
-
-  --pq-hero-gradient: linear-gradient(180deg, #FFFFFF 40%, #94A3B8 100%);
-  --pq-accent-primary: #FFFFFF;
-  --pq-accent-secondary: #3B82F6;
-  --pq-accent-glow: rgba(255, 255, 255, 0.25);
-  --pq-badge-bg: rgba(13, 13, 14, 0.9);
-  --pq-badge-border: rgba(255, 255, 255, 0.25);
-  --pq-badge-glow: rgba(59, 130, 246, 0.2);
-  --pq-pedestal-color: rgba(255, 255, 255, 0.65);
-  --pq-pedestal-glow: rgba(59, 130, 246, 0.28);
-
-  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 16px 36px -8px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --shadow-orange: 0 6px 20px rgba(255, 255, 255, 0.2);
-}
-
-/* Shared Global Design Tokens */
-:root {
   /* Status Colors */
   --pq-green: #22C55E;
   --pq-danger: #EF4444;
@@ -295,6 +72,9 @@ body.theme-obsidian {
   --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-pill: 9999px;
+
+  --shadow-card: inset 0 1px 0 rgba(216, 200, 255, 0.14), 0 16px 36px -8px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(182, 154, 255, 0.08);
+  --shadow-orange: 0 6px 22px rgba(182, 154, 255, 0.25);
 }
 
 *, *::before, *::after {
@@ -303,64 +83,15 @@ body.theme-obsidian {
   box-sizing: border-box;
 }
 
-/* Base Body + Dynamic Scoped Ambient Backgrounds */
 html, body {
   min-height: 100vh;
+  background-color: var(--pq-bg-main);
   color: var(--pq-text-white);
   font-family: var(--font-family);
   font-size: 14px;
   line-height: 1.5;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  background-attachment: fixed;
-  transition: background-color 0.3s ease;
-}
-
-/* Theme 1 Background: AWS Cyber Midnight (Default) */
-:root,
-body.theme-aws-midnight {
-  background-color: #070A0F;
-  background-image:
-    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(255, 153, 0, 0.18) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 35% at 85% 70%, rgba(0, 216, 255, 0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 30% at 15% 45%, rgba(255, 184, 0, 0.08) 0%, transparent 50%),
-    linear-gradient(rgba(255, 153, 0, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 153, 0, 0.035) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-}
-
-/* Theme 2 Background: Neon Cyberpunk Arena */
-body.theme-cyberpunk {
-  background-color: #04060B;
-  background-image:
-    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(0, 240, 255, 0.22) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 35% at 88% 75%, rgba(255, 0, 127, 0.15) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 30% at 12% 45%, rgba(0, 180, 216, 0.12) 0%, transparent 50%),
-    linear-gradient(rgba(0, 240, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 240, 255, 0.045) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-}
-
-/* Theme 3 Background: Cosmic Velvet Purple */
-body.theme-purple-quest {
-  background-color: #07070A;
-  background-image:
-    radial-gradient(ellipse 70% 45% at 50% -10%, rgba(140, 79, 255, 0.25) 0%, transparent 65%),
-    radial-gradient(ellipse 55% 35% at 88% 75%, rgba(182, 154, 255, 0.12) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 30% at 12% 45%, rgba(100, 65, 185, 0.14) 0%, transparent 50%),
-    linear-gradient(rgba(182, 154, 255, 0.038) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(182, 154, 255, 0.038) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 42px 42px, 42px 42px;
-}
-
-/* Theme 4 Background: Obsidian Minimalist */
-body.theme-obsidian {
-  background-color: #000000;
-  background-image:
-    radial-gradient(ellipse 65% 40% at 50% -10%, rgba(59, 130, 246, 0.14) 0%, transparent 60%),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 32px 32px, 32px 32px;
 }
 
 .hidden {
@@ -821,51 +552,6 @@ body.intro-complete .navbar-logo-slot {
   background-color: var(--pq-border-subtle);
 }
 
-/* Style Switcher Pill */
-.pq-style-switcher-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--pq-bg-card);
-  border: 1px solid var(--pq-border-mid);
-  border-radius: var(--radius-pill);
-  padding: 4px 10px 4px 12px;
-  transition: all 0.2s ease;
-  position: relative;
-  z-index: 10;
-}
-
-.pq-style-switcher-pill:hover,
-.pq-style-switcher-pill:focus-within {
-  border-color: var(--pq-accent-primary, #FF9900);
-  box-shadow: 0 0 14px var(--pq-accent-glow, rgba(255, 153, 0, 0.28));
-}
-
-.style-switcher-icon {
-  font-size: 13.5px;
-  line-height: 1;
-}
-
-.theme-select-input {
-  background: transparent;
-  border: none;
-  color: var(--pq-text-white);
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  outline: none;
-  padding: 2px 4px;
-}
-
-.theme-select-input option {
-  background: #0D1322;
-  color: #FFFFFF;
-  font-family: var(--font-family);
-  font-size: 13px;
-  padding: 8px;
-}
-
 /* Avatar Badge */
 .pq-default-avatar-btn {
   background: transparent;
@@ -1065,30 +751,30 @@ body.intro-complete .navbar-logo-slot {
   max-width: 480px;
 }
 
-/* Primary Dynamic Pill Button ("Enter the Arena ->", Theme Styled) */
+/* Primary Soft Lavender Pill Button ("Enter the Arena ->") */
 .pq-btn-orange-pill {
-  background: var(--pq-btn-primary-bg, linear-gradient(135deg, #FFB800 0%, #FF9900 60%, #E68A00 100%));
-  color: var(--pq-btn-primary-text, #090D14);
+  background: linear-gradient(135deg, #C7B0FF 0%, #B69AFF 60%, #9E7EFF 100%);
+  color: #08080B;
   font-family: var(--font-display);
   font-size: 14px;
   font-weight: 800;
   height: 44px;
   padding: 0 26px;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--pq-btn-primary-border, rgba(255, 255, 255, 0.4));
+  border: 1px solid rgba(216, 200, 255, 0.65);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  box-shadow: var(--pq-btn-primary-shadow, 0 6px 24px rgba(255, 153, 0, 0.35));
+  box-shadow: var(--shadow-orange);
   transition: all 0.2s ease;
 }
 
 .pq-btn-orange-pill:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: var(--pq-btn-primary-shadow-hover, 0 10px 28px rgba(255, 153, 0, 0.48));
-  filter: brightness(1.08);
+  box-shadow: 0 10px 26px rgba(182, 154, 255, 0.38);
+  filter: brightness(1.06);
 }
 
 .pq-btn-outline-pill {
@@ -1144,14 +830,14 @@ button:disabled {
   box-shadow: none !important;
 }
 
-/* Centered Hero 3D AI Robot Illustration (Centerpiece visual with glowing pedestal) */
+/* Centered Hero 3D AI Robot Illustration (First centerpiece visual above Prompt Quest) */
 .pq-hero-illustration {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 0 auto 6px;
+  margin: 0 auto 4px;
   z-index: 2;
   pointer-events: none;
   min-width: 0;
@@ -1160,60 +846,32 @@ button:disabled {
 .pq-hero-illustration::before {
   content: "";
   position: absolute;
-  width: min(440px, 85vw);
-  height: 120%;
+  width: min(420px, 80vw);
+  height: 110%;
   background: radial-gradient(
     ellipse at 50% 50%,
-    rgba(140, 79, 255, 0.42) 0%,
-    rgba(182, 154, 255, 0.16) 42%,
+    rgba(53, 36, 79, 0.72) 0%,
+    rgba(182, 154, 255, 0.2) 38%,
     transparent 72%
   );
-  filter: blur(28px);
+  filter: blur(20px);
   pointer-events: none;
   z-index: -1;
 }
 
-.pq-hero-illustration::after {
-  content: "";
-  position: absolute;
-  bottom: 2px;
-  width: min(280px, 55vw);
-  height: 18px;
-  background: radial-gradient(ellipse at center, rgba(182, 154, 255, 0.7) 0%, rgba(140, 79, 255, 0.3) 45%, transparent 75%);
-  border-radius: 50%;
-  filter: blur(5px);
-  box-shadow: 0 0 24px rgba(182, 154, 255, 0.5);
-  animation: pedestalPulse 5.5s ease-in-out infinite;
-}
-
-@keyframes pedestalPulse {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(0.92);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.08);
-  }
-}
-
 .pq-hero-robot-img {
-  width: clamp(230px, 32vw, 400px);
-  max-height: 28vh;
+  width: clamp(220px, 30vw, 380px);
+  max-height: 26vh;
   height: auto;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 20px 42px rgba(0, 0, 0, 0.92)) drop-shadow(0 0 32px rgba(182, 154, 255, 0.28));
-  animation: heroFloat 5.5s ease-in-out infinite;
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 28px rgba(182, 154, 255, 0.22));
+  animation: heroFloat 5s ease-in-out infinite;
 }
 
 @keyframes heroFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(0.8deg);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 /* ==========================================================================
@@ -1224,58 +882,52 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
-  margin: 32px 0 24px;
+  margin-bottom: 22px;
   position: relative;
   z-index: 4;
 }
 
 .pq-stat-card {
   position: relative;
-  background: linear-gradient(150deg, rgba(38, 26, 62, 0.65) 0%, rgba(22, 15, 38, 0.82) 100%) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(182, 154, 255, 0.22) !important;
-  border-radius: 16px !important;
-  padding: 20px 22px !important;
+  background: var(--pq-bg-card-elevated);
+  border: 1px solid rgba(182, 154, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(216, 200, 255, 0.15) !important;
+  gap: 18px;
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   min-width: 0;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .pq-stat-card:hover {
-  transform: translateY(-3px) !important;
-  border-color: rgba(182, 154, 255, 0.45) !important;
-  background: linear-gradient(150deg, rgba(50, 34, 82, 0.78) 0%, rgba(28, 19, 48, 0.9) 100%) !important;
-  box-shadow: 0 20px 42px -10px rgba(0, 0, 0, 0.9), 0 0 22px rgba(182, 154, 255, 0.2), inset 0 1px 0 rgba(216, 200, 255, 0.28) !important;
+  transform: translateY(-2px);
+  background: var(--pq-bg-card-hover-grad);
+  border-color: rgba(182, 154, 255, 0.44);
+  box-shadow: inset 0 1px 0 rgba(216, 200, 255, 0.22), 0 18px 38px -8px rgba(0, 0, 0, 0.88), 0 0 18px rgba(182, 154, 255, 0.12);
 }
 
+/* Subtle Lavender Bottom Edge Line on Stat Cards */
 .pq-stat-card::after {
   content: "";
   position: absolute;
   bottom: 0;
-  left: 12%;
-  right: 12%;
+  left: 16%;
+  right: 16%;
   height: 2px;
   background: linear-gradient(90deg, transparent 0%, var(--pq-lavender) 50%, transparent 100%);
-  box-shadow: 0 0 10px rgba(182, 154, 255, 0.5);
+  box-shadow: 0 -2px 10px rgba(182, 154, 255, 0.35);
 }
 
 .pq-stat-icon {
-  font-size: 22px;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: rgba(182, 154, 255, 0.12);
-  border: 1px solid rgba(182, 154, 255, 0.28);
+  color: var(--pq-lavender);
   display: flex;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 0 8px rgba(182, 154, 255, 0.28));
   flex-shrink: 0;
-  box-shadow: 0 0 16px rgba(182, 154, 255, 0.2);
 }
 
 .pq-stat-info {
@@ -1287,11 +939,10 @@ button:disabled {
 
 .pq-stat-val {
   font-family: var(--font-display);
-  font-size: 21px;
+  font-size: 22px;
   font-weight: 800;
   color: #FFFFFF;
   line-height: 1.15;
-  letter-spacing: -0.2px;
 }
 
 .pq-live-inline {
@@ -1306,10 +957,8 @@ button:disabled {
 }
 
 .pq-stat-label {
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--pq-text-secondary);
-  font-weight: 500;
-  margin-top: 2px;
 }
 
 /* ==========================================================================
@@ -1326,21 +975,14 @@ button:disabled {
 
 .pq-dash-card {
   position: relative;
-  background: linear-gradient(150deg, rgba(38, 26, 62, 0.65) 0%, rgba(22, 15, 38, 0.82) 100%) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(182, 154, 255, 0.22) !important;
-  border-radius: 18px !important;
-  padding: 24px 26px !important;
-  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(216, 200, 255, 0.15) !important;
+  background: var(--pq-bg-card-grad);
+  border: 1px solid rgba(182, 154, 255, 0.17);
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-card);
   overflow: hidden;
   min-width: 0;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.pq-dash-card:hover {
-  border-color: rgba(182, 154, 255, 0.45) !important;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.9), 0 0 24px rgba(182, 154, 255, 0.18), inset 0 1px 0 rgba(216, 200, 255, 0.25) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Thin Glowing Lavender Accent on Dashboard Cards */
@@ -1613,293 +1255,6 @@ button:disabled {
    7. ARENA BUILDER REGISTRATION DOCK (On Home Screen)
    ========================================================================== */
 
-/* Modern 2-Column Balanced Hero Stage (Eliminates Empty Space) */
-.pq-hero-stage {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 40px;
-  align-items: center;
-  max-width: 1240px;
-  width: 100%;
-  margin: 0 auto 20px;
-  padding: 10px 16px 0;
-  position: relative;
-  z-index: 2;
-}
-
-@media (max-width: 1024px) {
-  .pq-hero-stage {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    margin-bottom: 20px;
-  }
-}
-
-.pq-hero-stage-left {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-}
-
-.pq-event-tag-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  background: var(--pq-badge-bg, rgba(255, 255, 255, 0.05));
-  border: 1px solid var(--pq-border-mid);
-  width: fit-content;
-  font-family: var(--font-mono);
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--pq-accent-secondary, #FFB800);
-  box-shadow: 0 2px 12px var(--pq-accent-glow, rgba(0, 0, 0, 0.2));
-}
-
-.pq-hero-split-title {
-  margin: 0;
-  line-height: 1.05;
-}
-
-.pq-hero-gradient-headline {
-  display: block;
-  font-family: var(--font-display);
-  font-size: clamp(2.3rem, 4.2vw, 3.8rem);
-  font-weight: 900;
-  letter-spacing: -1px;
-  background: var(--pq-hero-gradient, linear-gradient(135deg, #FFFFFF 15%, #FFB800 60%, #FF9900 100%));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.8);
-}
-
-.pq-hero-tagline {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  color: var(--pq-text-secondary);
-  margin-top: 6px;
-  text-transform: uppercase;
-}
-
-.pq-hero-mission-lead {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: var(--pq-text-secondary);
-  max-width: 580px;
-  margin: 0;
-}
-
-/* Builder Sign-in Terminal Card */
-.pq-builder-terminal-card {
-  background: var(--pq-bg-card-grad);
-  border: 1px solid var(--pq-border-mid);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  overflow: hidden;
-  position: relative;
-  transition: all 0.25s ease;
-}
-
-.pq-builder-terminal-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--pq-accent-primary, #FF9900);
-  box-shadow: 0 0 12px var(--pq-accent-primary, #FF9900);
-}
-
-.terminal-card-topbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
-  background: rgba(0, 0, 0, 0.4);
-  border-bottom: 1px solid var(--pq-border-subtle);
-}
-
-.terminal-dots {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.tdot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-.tdot-red { background: #FF5F56; }
-.tdot-yellow { background: #FFBD2E; }
-.tdot-green { background: #27C93F; }
-
-.terminal-title {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  color: var(--pq-text-muted);
-}
-
-.pq-builder-terminal-card .identifier-form {
-  padding: 20px 22px;
-}
-
-/* Right Side: Robot Mascot Stage */
-.pq-hero-stage-right {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.pq-robot-stage-wrap {
-  position: relative;
-  width: 100%;
-  max-width: 440px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 10px;
-}
-
-.pq-hero-robot-container {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.pq-hero-robot-3d {
-  width: 100%;
-  max-width: 320px;
-  height: auto;
-  object-fit: contain;
-  animation: robotLevitate 6s ease-in-out infinite;
-  filter: drop-shadow(0 14px 32px rgba(0, 0, 0, 0.85));
-  user-select: none;
-}
-
-@keyframes robotLevitate {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-16px) rotate(-1.5deg);
-  }
-}
-
-.pq-holo-pedestal {
-  position: absolute;
-  bottom: -15px;
-  width: 260px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.pq-pedestal-disc {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, var(--pq-pedestal-color, rgba(255, 153, 0, 0.7)) 0%, var(--pq-pedestal-glow, rgba(255, 184, 0, 0.25)) 50%, transparent 75%);
-  filter: blur(4px);
-  animation: pedestalPulse 4.5s ease-in-out infinite;
-}
-
-/* Floating Holographic Telemetry Badges */
-.pq-floating-badge {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  background: var(--pq-badge-bg, rgba(14, 20, 32, 0.9));
-  border: 1px solid var(--pq-badge-border, rgba(255, 153, 0, 0.35));
-  border-radius: var(--radius-md);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65), 0 0 14px var(--pq-badge-glow, rgba(255, 153, 0, 0.18));
-  z-index: 4;
-  pointer-events: none;
-  animation: badgeHoverFloat 5s ease-in-out infinite;
-}
-
-.pq-floating-badge .badge-icon {
-  font-size: 18px;
-}
-
-.pq-floating-badge .badge-title {
-  font-family: var(--font-display);
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--pq-text-white);
-  line-height: 1.2;
-}
-
-.pq-floating-badge .badge-sub {
-  font-size: 10.5px;
-  color: var(--pq-text-secondary);
-  font-family: var(--font-mono);
-}
-
-.badge-top-left {
-  top: 15px;
-  left: -20px;
-  animation-delay: 0s;
-}
-
-.badge-top-right {
-  top: 45px;
-  right: -25px;
-  animation-delay: -2s;
-}
-
-.badge-bottom {
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation-delay: -3.5s;
-}
-
-@keyframes badgeHoverFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-.badge-bottom {
-  animation: badgeHoverFloatBottom 5s ease-in-out infinite -3.5s;
-}
-@keyframes badgeHoverFloatBottom {
-  0%, 100% {
-    transform: translate(-50%, 0);
-  }
-  50% {
-    transform: translate(-50%, -8px);
-  }
-}
-
-@media (max-width: 1024px) {
-  .pq-floating-badge {
-    display: none;
-  }
-}
-
 #identifier-screen.active {
   min-height: calc(100dvh - 116px);
   display: flex;
@@ -1962,66 +1317,23 @@ button:disabled {
 }
 
 .identifier-card.pq-login-card-center {
-  width: min(100%, 540px);
-  padding: 30px 32px;
-  background: linear-gradient(155deg, rgba(38, 27, 60, 0.72) 0%, rgba(26, 18, 42, 0.85) 60%, rgba(18, 12, 29, 0.92) 100%) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(182, 154, 255, 0.3) !important;
-  border-radius: 20px !important;
-  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(216, 200, 255, 0.22), 0 0 30px rgba(140, 79, 255, 0.15) !important;
-  position: relative;
-  overflow: hidden;
-}
-
-.identifier-card.pq-login-card-center::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 20%;
-  right: 20%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #B69AFF, #D8C8FF, #B69AFF, transparent);
-  box-shadow: 0 0 12px rgba(182, 154, 255, 0.7);
+  width: min(100%, clamp(320px, 92vw, 560px));
+  padding: clamp(20px, 3.2vw, 34px) clamp(18px, 3.6vw, 36px);
+  border: 1px solid rgba(182, 154, 255, 0.34);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.58), 0 0 36px rgba(182, 154, 255, 0.14);
 }
 
 .identifier-card.pq-login-card-center .awsui-text-input {
   width: 100%;
-  min-height: 48px;
-  font-size: 14.5px;
-  background: rgba(13, 9, 22, 0.75) !important;
-  border: 1.5px solid rgba(182, 154, 255, 0.22) !important;
-  border-radius: 10px !important;
-  color: #FFFFFF !important;
-  padding: 13px 16px !important;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  min-height: clamp(42px, 5vh, 48px);
+  font-size: clamp(13.5px, 1.2vw, 15px);
 }
 
-.identifier-card.pq-login-card-center .awsui-text-input:focus {
-  border-color: var(--pq-lavender) !important;
-  background: rgba(22, 15, 38, 0.95) !important;
-  box-shadow: 0 0 0 3px rgba(182, 154, 255, 0.25), 0 0 16px rgba(182, 154, 255, 0.2) !important;
-  outline: none !important;
-}
-
-.identifier-card.pq-login-card-center .pq-btn-orange-pill.full-width-btn,
-.pq-builder-terminal-card .pq-btn-orange-pill.full-width-btn {
+.identifier-card.pq-login-card-center .pq-btn-orange-pill.full-width-btn {
   width: 100%;
-  min-height: 50px;
-  font-size: 14.5px;
-  font-weight: 800;
-  background: var(--pq-btn-primary-bg, linear-gradient(135deg, #FFB800 0%, #FF9900 60%, #E68A00 100%));
-  color: var(--pq-btn-primary-text, #090D14);
-  border: 1px solid var(--pq-btn-primary-border, rgba(255, 255, 255, 0.4));
-  box-shadow: var(--pq-btn-primary-shadow, 0 6px 24px rgba(255, 153, 0, 0.35));
-  padding: 0 26px;
-  transition: all 0.25s ease;
-}
-
-.identifier-card.pq-login-card-center .pq-btn-orange-pill.full-width-btn:hover,
-.pq-builder-terminal-card .pq-btn-orange-pill.full-width-btn:hover {
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: var(--pq-btn-primary-shadow-hover, 0 10px 28px rgba(255, 153, 0, 0.48));
+  min-height: clamp(44px, 5.2vh, 50px);
+  font-size: clamp(13px, 1.25vw, 14.5px);
+  padding: 0 clamp(14px, 2.5vw, 26px);
 }
 
 @media (max-width: 640px) {
@@ -4044,39 +3356,6 @@ button:disabled {
   flex: 1;
   min-height: 360px;
   max-height: 440px;
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(182, 154, 255, 0.28);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.8);
-}
-
-.pq-arena-viewport-match::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 18px;
-  height: 18px;
-  border-top: 2px solid var(--pq-lavender);
-  border-left: 2px solid var(--pq-lavender);
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 0 6px var(--pq-lavender));
-}
-
-.pq-arena-viewport-match::after {
-  content: "";
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  width: 18px;
-  height: 18px;
-  border-bottom: 2px solid var(--pq-lavender);
-  border-right: 2px solid var(--pq-lavender);
-  pointer-events: none;
-  z-index: 2;
-  filter: drop-shadow(0 0 6px var(--pq-lavender));
 }
 
 .pq-arena-viewport-match .challenge-reference-img {
@@ -4111,25 +3390,8 @@ button:disabled {
 
 .pq-textarea-tall {
   flex: 1;
-  min-height: 260px;
+  min-height: 240px;
   resize: vertical;
-  background: rgba(12, 8, 20, 0.82) !important;
-  border: 1.5px solid rgba(182, 154, 255, 0.24) !important;
-  border-radius: 12px !important;
-  color: #F8FAFC !important;
-  font-family: var(--font-family) !important;
-  font-size: 14.5px !important;
-  line-height: 1.65 !important;
-  padding: 16px 18px !important;
-  transition: all 0.25s ease !important;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5) !important;
-}
-
-.pq-textarea-tall:focus {
-  border-color: var(--pq-lavender) !important;
-  background: rgba(18, 12, 30, 0.95) !important;
-  box-shadow: 0 0 0 3px rgba(182, 154, 255, 0.2), 0 0 20px rgba(182, 154, 255, 0.15), inset 0 2px 6px rgba(0, 0, 0, 0.5) !important;
-  outline: none !important;
 }
 
 .pq-result-image-strip {
@@ -4307,6 +3569,103 @@ button:disabled {
   z-index: 99999;
 }
 
+/* Battle Protocol 3-Step Guide */
+.pq-battle-protocol-section {
+  margin: 36px 0 28px;
+  position: relative;
+  z-index: 4;
+}
+
+.pq-section-header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.pq-sparkle-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--pq-lavender);
+  background: rgba(182, 154, 255, 0.1);
+  border: 1px solid rgba(182, 154, 255, 0.28);
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 8px;
+}
+
+.pq-section-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 6px;
+  letter-spacing: -0.3px;
+}
+
+.pq-section-subtitle {
+  font-size: 13.5px;
+  color: var(--pq-text-secondary);
+  margin: 0;
+}
+
+.pq-protocol-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.pq-protocol-card {
+  position: relative;
+  background: var(--pq-bg-card-grad);
+  border: 1px solid rgba(182, 154, 255, 0.18);
+  border-radius: var(--radius-lg);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  overflow: hidden;
+}
+
+.pq-protocol-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(182, 154, 255, 0.45);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 20px rgba(182, 154, 255, 0.15);
+}
+
+.pq-protocol-step-num {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 800;
+  color: rgba(182, 154, 255, 0.15);
+  letter-spacing: -1px;
+}
+
+.pq-protocol-icon {
+  font-size: 26px;
+  margin-bottom: 12px;
+  display: inline-block;
+  filter: drop-shadow(0 0 8px rgba(182, 154, 255, 0.35));
+}
+
+.pq-protocol-card-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0 0 8px;
+}
+
+.pq-protocol-card-desc {
+  font-size: 13px;
+  color: var(--pq-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
 /* Intel Card Specs */
 .pq-intel-specs-grid {
   display: flex;
@@ -4349,6 +3708,98 @@ button:disabled {
   color: var(--pq-text-secondary);
   margin: 2px 0 0;
   line-height: 1.35;
+}
+
+/* Prompt Booster Chips Bar */
+.pq-prompt-chips-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: rgba(33, 24, 50, 0.55);
+  border: 1px solid rgba(182, 154, 255, 0.18);
+  border-radius: var(--radius-md);
+}
+
+.pq-chips-label {
+  font-size: 11.5px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--pq-lavender);
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+.pq-prompt-chip {
+  background: rgba(53, 36, 79, 0.65);
+  border: 1px solid rgba(182, 154, 255, 0.24);
+  color: #FFFFFF;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.pq-prompt-chip:hover {
+  background: rgba(182, 154, 255, 0.2);
+  border-color: var(--pq-lavender);
+  color: var(--pq-lilac);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(182, 154, 255, 0.25);
+}
+
+.pq-prompt-chip:active {
+  transform: translateY(0);
+}
+
+/* Prompt Craft Depth Meter */
+.pq-craft-meter-wrap {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(18, 13, 29, 0.85);
+  border: 1px solid rgba(182, 154, 255, 0.15);
+  border-radius: var(--radius-md);
+}
+
+.pq-craft-meter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+}
+
+.pq-craft-meter-label {
+  font-weight: 600;
+  color: var(--pq-text-secondary);
+}
+
+.pq-craft-meter-status {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--pq-lavender);
+}
+
+.pq-craft-meter-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(53, 36, 79, 0.6);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.pq-craft-meter-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #EF4444 0%, #EC7211 35%, #22C55E 70%, var(--pq-lavender) 100%);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px rgba(182, 154, 255, 0.4);
 }
 
 /* Shimmer Button Effect */

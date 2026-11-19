@@ -597,54 +597,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------------------------------------------------------------------
-  // VISUAL UI STYLE / THEME SWITCHER
-  // Supports 4 distinct styles: aws-midnight, cyberpunk, purple-quest, obsidian
-  // ---------------------------------------------------------------------------
-  const themeStyleSelect = document.getElementById("theme-style-select");
-  const VALID_THEMES = ["aws-midnight", "cyberpunk", "purple-quest", "obsidian"];
-  let currentThemeStyle = "aws-midnight";
-
-  try {
-    const saved = localStorage.getItem("pq_ui_theme_style");
-    if (saved && VALID_THEMES.includes(saved)) {
-      currentThemeStyle = saved;
-    }
-  } catch (e) {}
-
-  function applyThemeStyle(theme, notify = false) {
-    if (!VALID_THEMES.includes(theme)) theme = "aws-midnight";
-    currentThemeStyle = theme;
-    VALID_THEMES.forEach(t => document.body.classList.remove(`theme-${t}`));
-    document.body.classList.add(`theme-${theme}`);
-    if (themeStyleSelect && themeStyleSelect.value !== theme) {
-      themeStyleSelect.value = theme;
-    }
-    try {
-      localStorage.setItem("pq_ui_theme_style", theme);
-    } catch (e) {}
-    if (notify) {
-      const themeLabels = {
-        "aws-midnight": "AWS Cyber Midnight",
-        "cyberpunk": "Neon Cyberpunk Arena",
-        "purple-quest": "Cosmic Velvet Purple",
-        "obsidian": "Obsidian Minimalist"
-      };
-      showToast(`UI Style switched to: ${themeLabels[theme] || theme}`, "info");
-    }
-  }
-
-  // Apply immediately on boot
-  applyThemeStyle(currentThemeStyle, false);
-
-  if (themeStyleSelect) {
-    themeStyleSelect.value = currentThemeStyle;
-    themeStyleSelect.addEventListener("change", (e) => {
-      applyThemeStyle(e.target.value, true);
-      playAudioTone("click");
-    });
-  }
-
-  // ---------------------------------------------------------------------------
   // NAVIGATION TRIGGERS
   // ---------------------------------------------------------------------------
   const navHomeBtn = document.getElementById("nav-home-btn");
@@ -1103,6 +1055,32 @@ document.addEventListener("DOMContentLoaded", () => {
         qualityPill.textContent = "Readiness: Optimal ✓";
         qualityPill.classList.add("quality-strong");
       }
+    }
+
+    // Dynamic Prompt Engineering Craft Depth Meter
+    const craftFill = document.getElementById("prompt-craft-fill");
+    const craftStatus = document.getElementById("prompt-craft-status");
+    if (craftFill && craftStatus) {
+      let pct = 0;
+      let label = "🌱 Initializing...";
+      if (text.length === 0) {
+        pct = 0;
+        label = "🌱 Initializing...";
+      } else if (text.length < 35) {
+        pct = Math.min(30, Math.round((text.length / 35) * 30));
+        label = "🌱 Basic Scene Prompt";
+      } else if (text.length < 90) {
+        pct = 30 + Math.min(30, Math.round(((text.length - 35) / 55) * 30));
+        label = "⚡ Detailed Context Added";
+      } else if (text.length < 180) {
+        pct = 60 + Math.min(25, Math.round(((text.length - 90) / 90) * 25));
+        label = "🔥 High-Fidelity Prompt";
+      } else {
+        pct = Math.min(100, 85 + Math.round(((text.length - 180) / 100) * 15));
+        label = "✨ Master Prompt Craft";
+      }
+      craftFill.style.width = `${pct}%`;
+      craftStatus.textContent = label;
     }
   }
 
@@ -2565,6 +2543,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     requestAnimationFrame(renderConfetti);
   }
+
+  // Interactive Prompt Booster Chips
+  document.querySelectorAll(".pq-prompt-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      if (state.hasGenerated || state.isGenerating) return;
+      const chipText = chip.dataset.chip || chip.textContent.trim();
+      playAudioTone("click");
+      if (promptInput) {
+        const val = promptInput.value.trim();
+        if (!val) {
+          promptInput.value = chipText;
+        } else if (!val.toLowerCase().includes(chipText.toLowerCase())) {
+          promptInput.value = `${val}, ${chipText}`;
+        }
+        updateCharCount();
+        promptInput.focus();
+        showToast(`✨ Added booster: "${chipText}"`, "info");
+      }
+    });
+  });
 
   // Host Controls Topbar Shortcut Button
   const hostCtrlBtn = document.getElementById("nav-host-ctrl-btn");
