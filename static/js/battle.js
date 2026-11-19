@@ -416,11 +416,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (currentPhase === "battle") {
         // --- 1. START BATTLE ROUND: Launch all players into Arena ---
-        if (adminModal) adminModal.classList.add("hidden");
-        await ensureParticipantActive();
-        unlockWorkspaceForNewSession();
-        showScreen("game");
-        startChallengeTimer(payload.time_remaining || state.timerDuration || 180);
+        if (!state.isAdmin) {
+          await ensureParticipantActive();
+          unlockWorkspaceForNewSession();
+          showScreen("game");
+          startChallengeTimer(payload.time_remaining || state.timerDuration || 180);
+        }
         playAudioTone("success");
         showToast(`⚔️ Round ${payload.round_number || 1} Live! 180 seconds on the clock!`, "success");
 
@@ -430,7 +431,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!state.hasGenerated && state.participant) {
           lockWorkspaceAfterFinalize("⏰ Round Ended by Host", "ROUND OVER", "00:00");
         }
-        showScreen("leaderboard");
+        if (!state.isAdmin) {
+          showScreen("leaderboard");
+        }
         loadLeaderboard();
         playAudioTone("success");
         showToast("🌟 Showcase & Voting is now LIVE! Cast your applause votes with 👏!", "info");
@@ -438,7 +441,9 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (currentPhase === "leaderboard") {
         // --- 3. FINAL STANDINGS: Reveal official final rankings ---
         stopChallengeTimer();
-        showScreen("leaderboard");
+        if (!state.isAdmin) {
+          showScreen("leaderboard");
+        }
         loadLeaderboard();
         playAudioTone("success");
         showToast("🏆 Final Standings Announced! Check out the Hall of Future Builders!", "success");
@@ -446,7 +451,9 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (currentPhase === "lobby") {
         // --- 4. LOBBY MODE: Return everyone to Lobby ---
         stopChallengeTimer();
-        showScreen("identifier");
+        if (!state.isAdmin) {
+          showScreen("identifier");
+        }
         if (!isFirstRun) {
           showToast("🟢 Competition returned to Lobby Mode.", "info");
         }
@@ -458,25 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-
-  // Multi-tab zero-latency broadcast sync
-  const phaseBroadcast = (typeof BroadcastChannel !== "undefined") ? new BroadcastChannel("pq_competition_sync") : null;
-  if (phaseBroadcast) {
-    phaseBroadcast.onmessage = (evt) => {
-      if (evt.data && evt.data.type === "phase_update" && evt.data.state) {
-        applyLiveCompetitionState(evt.data.state);
-      }
-    };
-  }
-
-  window.addEventListener("storage", (evt) => {
-    if (evt.key === "pq_live_phase_sync" && evt.newValue) {
-      try {
-        const payload = JSON.parse(evt.newValue);
-        applyLiveCompetitionState(payload);
-      } catch (e) { }
-    }
-  });
 
   // Smooth 1-second timer tick for active battle
   setInterval(() => {
@@ -497,10 +485,12 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) { }
   }
 
-  // Fast polling fallback: 1200ms guarantees sub-1.5s synchronization everywhere
+  // Resilient fallback: only poll if Socket.IO is disconnected, at an 8s interval
   setInterval(() => {
-    refreshCompetitionState();
-  }, 1200);
+    if (!socket || !socket.connected) {
+      refreshCompetitionState();
+    }
+  }, 8000);
 
   // Update Home Progress Circular Ring & Profile Screen
   function updateDashboardProgressRing(scoreValue, tierTitle) {
@@ -931,7 +921,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const refImg = document.getElementById("challenge-reference-img");
     const compareRefImg = document.getElementById("compare-ref-img");
 
-    if (catNameEl) catNameEl.textContent = "Visual Scene Challenge";
+    if (catNameEl) catNameEl.textContent = ch.category || "Visual Challenge";
     if (titleEl) titleEl.textContent = ch.title || "Target Reference Scene";
 
     // Display the real unique Target Reference Photo (fallback to SVG only if unavailable)
@@ -1055,32 +1045,6 @@ document.addEventListener("DOMContentLoaded", () => {
         qualityPill.textContent = "Readiness: Optimal ✓";
         qualityPill.classList.add("quality-strong");
       }
-    }
-
-    // Dynamic Prompt Engineering Craft Depth Meter
-    const craftFill = document.getElementById("prompt-craft-fill");
-    const craftStatus = document.getElementById("prompt-craft-status");
-    if (craftFill && craftStatus) {
-      let pct = 0;
-      let label = "🌱 Initializing...";
-      if (text.length === 0) {
-        pct = 0;
-        label = "🌱 Initializing...";
-      } else if (text.length < 35) {
-        pct = Math.min(30, Math.round((text.length / 35) * 30));
-        label = "🌱 Basic Scene Prompt";
-      } else if (text.length < 90) {
-        pct = 30 + Math.min(30, Math.round(((text.length - 35) / 55) * 30));
-        label = "⚡ Detailed Context Added";
-      } else if (text.length < 180) {
-        pct = 60 + Math.min(25, Math.round(((text.length - 90) / 90) * 25));
-        label = "🔥 High-Fidelity Prompt";
-      } else {
-        pct = Math.min(100, 85 + Math.round(((text.length - 180) / 100) * 15));
-        label = "✨ Master Prompt Craft";
-      }
-      craftFill.style.width = `${pct}%`;
-      craftStatus.textContent = label;
     }
   }
 
@@ -1647,20 +1611,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const totalEl = document.getElementById("eval-total-score");
-    if (totalEl) {
-      const targetScore = Number(ev.total_score) || 0;
-      let curr = 0;
-      const step = Math.max(1, Math.ceil(targetScore / 25));
-      const interval = setInterval(() => {
-        curr += step;
-        if (curr >= targetScore) {
-          curr = targetScore;
-          clearInterval(interval);
-        }
-        totalEl.textContent = curr;
-      }, 25);
-    }
-    triggerCelebrationConfetti();
+    if (totalEl) totalEl.textContent = ev.total_score;
 
     const tierPill = document.getElementById("eval-tier-pill");
     if (tierPill) {
@@ -1900,7 +1851,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (state.isAdmin) {
           podiumSection.classList.remove("hidden");
           list.slice(0, 3).forEach(entry => {
-            const cleanTitle = (entry.challenge_title || "Target Reference").replace(/^.*?•\s*/, '').trim();
             const card = document.createElement("div");
             card.className = `podium-card podium-rank-${entry.rank}`;
             card.innerHTML = `
@@ -1913,7 +1863,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   <span class="podium-builder-name">${entry.player_name}</span>
                   <span class="podium-score-val">${entry.composite_score} pts</span>
                 </div>
-                <div class="podium-cat-text">${cleanTitle}</div>
+                <div class="podium-cat-text">${entry.challenge_title}</div>
                 <p class="podium-prompt-snip">"${entry.prompt}"</p>
               </div>
             `;
@@ -1932,7 +1882,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       leaderboardBody.innerHTML = "";
       list.forEach(entry => {
-        const cleanTitle = (entry.challenge_title || "Target Reference").replace(/^.*?•\s*/, '').trim();
         const tr = document.createElement("tr");
         const rankClass =
           entry.rank === 1 ? "rank-1" : entry.rank === 2 ? "rank-2" : entry.rank === 3 ? "rank-3" : "";
@@ -1942,7 +1891,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td><strong>${entry.player_name}</strong></td>
           <td><span style="font-size:12px; color:var(--aws-blue); font-family:var(--font-mono);">${entry.player_email || "—"}</span></td>
           <td>
-            <div style="font-size:13px; font-weight:700;">${cleanTitle}</div>
+            <div style="font-size:13px; font-weight:700;">${entry.challenge_title}</div>
           </td>
           <td class="table-score">${entry.ai_score}</td>
           <td style="font-weight:800; font-size:14px; font-family:var(--font-mono);">${entry.composite_score}</td>
@@ -2084,8 +2033,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (adminAuthPanel) adminAuthPanel.classList.add("hidden");
       if (adminDashPanel) adminDashPanel.classList.remove("hidden");
       if (adminAuthError) adminAuthError.classList.add("hidden");
-      const hostCtrlBtn = document.getElementById("nav-host-ctrl-btn");
-      if (hostCtrlBtn) hostCtrlBtn.classList.remove("hidden");
     }
   } catch (e) { }
 
@@ -2136,8 +2083,6 @@ document.addEventListener("DOMContentLoaded", () => {
           try {
             sessionStorage.setItem("sbg_admin_token", code);
           } catch (e) { }
-          const hostCtrlBtn = document.getElementById("nav-host-ctrl-btn");
-          if (hostCtrlBtn) hostCtrlBtn.classList.remove("hidden");
           if (adminAuthPanel) adminAuthPanel.classList.add("hidden");
           if (adminDashPanel) adminDashPanel.classList.remove("hidden");
           if (adminAuthError) adminAuthError.classList.add("hidden");
@@ -2198,12 +2143,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.success) {
           applyLiveCompetitionState(data.state);
           updateAdminPhaseButtons(phase);
-          if (phaseBroadcast) {
-            phaseBroadcast.postMessage({ type: "phase_update", state: data.state });
-          }
-          try {
-            localStorage.setItem("pq_live_phase_sync", JSON.stringify(data.state));
-          } catch (e) { }
           const phaseNames = {
             lobby: "LOBBY MODE",
             battle: "BATTLE ROUND",
@@ -2487,105 +2426,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) {
       console.error("Init stats error:", e);
     }
-  }
-
-  // Confetti Particle Burst Engine
-  function triggerCelebrationConfetti() {
-    const canvas = document.getElementById("pq-confetti-canvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const colors = ["#B69AFF", "#D8C8FF", "#8C4FFF", "#22C55E", "#EC7211", "#FFFFFF"];
-    const particles = [];
-    for (let i = 0; i < 90; i++) {
-      particles.push({
-        x: canvas.width * 0.5 + (Math.random() - 0.5) * 360,
-        y: canvas.height * 0.4 + (Math.random() - 0.5) * 120,
-        vx: (Math.random() - 0.5) * 14,
-        vy: (Math.random() - 0.8) * 16,
-        size: Math.random() * 7 + 4,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        rotation: Math.random() * 360,
-        vr: (Math.random() - 0.5) * 10,
-        alpha: 1
-      });
-    }
-
-    let frame = 0;
-    function renderConfetti() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      let alive = false;
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.35;
-        p.rotation += p.vr;
-        p.alpha -= 0.012;
-        if (p.alpha > 0) {
-          alive = true;
-          ctx.save();
-          ctx.globalAlpha = Math.max(0, p.alpha);
-          ctx.translate(p.x, p.y);
-          ctx.rotate((p.rotation * Math.PI) / 180);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 1.5);
-          ctx.restore();
-        }
-      });
-      frame++;
-      if (alive && frame < 180) {
-        requestAnimationFrame(renderConfetti);
-      } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    }
-    requestAnimationFrame(renderConfetti);
-  }
-
-  // Interactive Prompt Booster Chips
-  document.querySelectorAll(".pq-prompt-chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-      if (state.hasGenerated || state.isGenerating) return;
-      const chipText = chip.dataset.chip || chip.textContent.trim();
-      playAudioTone("click");
-      if (promptInput) {
-        const val = promptInput.value.trim();
-        if (!val) {
-          promptInput.value = chipText;
-        } else if (!val.toLowerCase().includes(chipText.toLowerCase())) {
-          promptInput.value = `${val}, ${chipText}`;
-        }
-        updateCharCount();
-        promptInput.focus();
-        showToast(`✨ Added booster: "${chipText}"`, "info");
-      }
-    });
-  });
-
-  // Host Controls Topbar Shortcut Button
-  const hostCtrlBtn = document.getElementById("nav-host-ctrl-btn");
-  if (hostCtrlBtn) {
-    hostCtrlBtn.addEventListener("click", () => {
-      if (adminModal) {
-        adminModal.classList.remove("hidden");
-        if (state.isAdmin) {
-          loadAdminChallenges();
-          updateAdminPhaseButtons();
-        }
-      }
-    });
-  }
-
-  // Home Dashboard: View All Top Builders Link
-  const homeViewAllBtn = document.getElementById("home-view-all-lb-btn");
-  if (homeViewAllBtn) {
-    homeViewAllBtn.addEventListener("click", () => {
-      showScreen("leaderboard");
-      loadLeaderboard();
-      triggerCelebrationConfetti();
-    });
   }
 
   // Initialize
