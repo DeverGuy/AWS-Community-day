@@ -1056,32 +1056,6 @@ document.addEventListener("DOMContentLoaded", () => {
         qualityPill.classList.add("quality-strong");
       }
     }
-
-    // Dynamic Prompt Engineering Craft Depth Meter
-    const craftFill = document.getElementById("prompt-craft-fill");
-    const craftStatus = document.getElementById("prompt-craft-status");
-    if (craftFill && craftStatus) {
-      let pct = 0;
-      let label = "🌱 Initializing...";
-      if (text.length === 0) {
-        pct = 0;
-        label = "🌱 Initializing...";
-      } else if (text.length < 35) {
-        pct = Math.min(30, Math.round((text.length / 35) * 30));
-        label = "🌱 Basic Scene Prompt";
-      } else if (text.length < 90) {
-        pct = 30 + Math.min(30, Math.round(((text.length - 35) / 55) * 30));
-        label = "⚡ Detailed Context Added";
-      } else if (text.length < 180) {
-        pct = 60 + Math.min(25, Math.round(((text.length - 90) / 90) * 25));
-        label = "🔥 High-Fidelity Prompt";
-      } else {
-        pct = Math.min(100, 85 + Math.round(((text.length - 180) / 100) * 15));
-        label = "✨ Master Prompt Craft";
-      }
-      craftFill.style.width = `${pct}%`;
-      craftStatus.textContent = label;
-    }
   }
 
   // Client-side Anti-Cheat Patterns (Rule 5: No meta-prompts like "generate an image like the one on screen")
@@ -2543,26 +2517,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     requestAnimationFrame(renderConfetti);
   }
-
-  // Interactive Prompt Booster Chips
-  document.querySelectorAll(".pq-prompt-chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-      if (state.hasGenerated || state.isGenerating) return;
-      const chipText = chip.dataset.chip || chip.textContent.trim();
-      playAudioTone("click");
-      if (promptInput) {
-        const val = promptInput.value.trim();
-        if (!val) {
-          promptInput.value = chipText;
-        } else if (!val.toLowerCase().includes(chipText.toLowerCase())) {
-          promptInput.value = `${val}, ${chipText}`;
-        }
-        updateCharCount();
-        promptInput.focus();
-        showToast(`✨ Added booster: "${chipText}"`, "info");
-      }
-    });
-  });
 
   // Host Controls Topbar Shortcut Button
   const hostCtrlBtn = document.getElementById("nav-host-ctrl-btn");

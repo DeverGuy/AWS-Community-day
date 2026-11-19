@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=pq-better-ui-v1">
+  <link rel="stylesheet" href="/static/css/style.css?v=pq-better-ui-v2">
 
   <!-- Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
@@ -249,39 +249,7 @@
             </div>
           </div>
 
-          <!-- 4. THREE-STEP BATTLE PROTOCOL GUIDE -->
-          <div class="pq-battle-protocol-section">
-            <div class="pq-section-header">
-              <span class="pq-sparkle-tag">✦ HOW TO COMPETE</span>
-              <h3 class="pq-section-title">Prompt Quest Battle Protocol</h3>
-              <p class="pq-section-subtitle">Three steps from assigned target reference to high-score leaderboard victory</p>
-            </div>
-
-            <div class="pq-protocol-grid">
-              <div class="pq-protocol-card">
-                <div class="pq-protocol-step-num">01</div>
-                <div class="pq-protocol-icon">🔍</div>
-                <h4 class="pq-protocol-card-title">Inspect Reference</h4>
-                <p class="pq-protocol-card-desc">Examine your assigned target reference scene. Study composition, lighting temperatures, reflections, and palette balance.</p>
-              </div>
-
-              <div class="pq-protocol-card">
-                <div class="pq-protocol-step-num">02</div>
-                <div class="pq-protocol-icon">⚡</div>
-                <h4 class="pq-protocol-card-title">Engineer Prompt</h4>
-                <p class="pq-protocol-card-desc">Craft descriptive prompt modifiers. Leverage quick booster chips, camera lens details, and volumetric cues before the timer expires.</p>
-              </div>
-
-              <div class="pq-protocol-card">
-                <div class="pq-protocol-step-num">03</div>
-                <div class="pq-protocol-icon">🏆</div>
-                <h4 class="pq-protocol-card-title">Multimodal Benchmark</h4>
-                <p class="pq-protocol-card-desc">The AI Multimodal Judge compares visual accuracy, scoring out of 100 with grounded critique. Collect peer applause to climb the ranks!</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 5. BOTTOM INTEL & LIVE SHOWCASE GRID -->
+          <!-- 4. BOTTOM INTEL & LIVE SHOWCASE GRID -->
           <div class="pq-bottom-grid pq-home-bottom-grid">
             <!-- Card A: About the Battle -->
             <div class="pq-dash-card pq-about-card">
@@ -421,39 +389,17 @@
                   <span><strong>180 seconds</strong> &amp; <strong>1 final generation</strong>. Auto-generates at 00:00 or when you click <strong>Finalize &amp; Generate</strong>.</span>
                 </div>
 
-                <!-- Prompt Engineering Booster Chips Bar -->
-                <div class="pq-prompt-chips-bar" aria-label="Prompt Booster Keywords">
-                  <span class="pq-chips-label">⚡ Style Boosters:</span>
-                  <button type="button" class="pq-prompt-chip" data-chip="cinematic volumetric lighting">🌫️ Volumetric Light</button>
-                  <button type="button" class="pq-prompt-chip" data-chip="8k photorealistic ultra-detailed sharp focus">📸 8K Photo</button>
-                  <button type="button" class="pq-prompt-chip" data-chip="golden hour dramatic warm rim light">🌅 Golden Hour</button>
-                  <button type="button" class="pq-prompt-chip" data-chip="cyberpunk vibrant neon reflections">⚡ Neon Glow</button>
-                  <button type="button" class="pq-prompt-chip" data-chip="cinematic wide angle lens depth of field">🌌 Wide Angle</button>
-                  <button type="button" class="pq-prompt-chip" data-chip="intricate textures macro photography">🔍 Macro Detail</button>
-                </div>
-
                 <!-- Textarea -->
                 <div class="prompt-input-box pq-prompt-box-grow">
                   <textarea
                     id="prompt-input"
                     class="awsui-textarea pq-textarea-tall"
-                    rows="9"
+                    rows="10"
                     placeholder="Observe the Target Reference Scene on the left. Describe the subject, action, environment, colors, lighting, and camera framing..."
                     autocomplete="off"
                     autocorrect="off"
                     spellcheck="false"
                   ></textarea>
-                </div>
-
-                <!-- Live Prompt Craft Depth Meter -->
-                <div class="pq-craft-meter-wrap">
-                  <div class="pq-craft-meter-header">
-                    <span class="pq-craft-meter-label">Prompt Craft Depth</span>
-                    <span class="pq-craft-meter-status" id="prompt-craft-status">🌱 Initializing...</span>
-                  </div>
-                  <div class="pq-craft-meter-track">
-                    <div class="pq-craft-meter-fill" id="prompt-craft-fill"></div>
-                  </div>
                 </div>
 
                 <!-- Validation / Anti-Cheat Error Banner -->
@@ -971,6 +917,6 @@
   </div>
 
   <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
-  <script src="/static/js/battle.js?v=pq-better-ui-v1" defer></script>
+  <script src="/static/js/battle.js?v=pq-better-ui-v2" defer></script>
 </body>
 </html>
