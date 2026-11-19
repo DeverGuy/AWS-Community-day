@@ -13,15 +13,14 @@
   <link rel="stylesheet" href="/static/css/style.css?v=pq-ux-v12">
 
   <!-- Socket.IO Client -->
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
 </head>
-<body class="pq-dark-theme intro-active" data-admin-route="{{ 'true' if open_admin else 'false' }}">
+<body class="pq-dark-theme" data-admin-route="{{ 'true' if open_admin else 'false' }}">
 
   <!-- =====================================================================
-       OPENING AWS LOGO STAGE & FLIP ANIMATION OVERLAY
-       Starts centered on dark futuristic stage, then glides to top-left sidebar
+       OPENING AWS LOGO STAGE & FLIP ANIMATION OVERLAY (Played on demand)
        ===================================================================== -->
-  <div id="aws-intro-stage" class="aws-intro-stage" aria-hidden="true">
+  <div id="aws-intro-stage" class="aws-intro-stage stage-hidden" aria-hidden="true">
     <div id="aws-intro-backdrop" class="aws-intro-backdrop">
       <div class="intro-radial-glow"></div>
     </div>
@@ -112,9 +111,12 @@
               <path d="M2 52 L52 2 L70 2" stroke="#B69AFF" stroke-width="1.6" stroke-opacity="0.75"/>
             </svg>
 
-            <!-- Centerpiece 3D AI Robot Illustration (First thing visible) -->
+            <!-- Centerpiece 3D AI Robot Illustration (High-performance WebP + PNG fallback) -->
             <div class="pq-hero-illustration">
-              <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot" class="pq-hero-robot-img" draggable="false">
+              <picture>
+                <source srcset="/static/images/hero-robot.webp?v=opt1" type="image/webp">
+                <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot" class="pq-hero-robot-img" draggable="false" fetchpriority="high">
+              </picture>
             </div>
 
             <div class="pq-hero-content">
@@ -797,7 +799,7 @@
     </div>
   </div>
 
-  <!-- Client Script Engine -->
-  <script src="/static/js/battle.js?v=pq-ux-v9"></script>
+  <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
+  <script src="/static/js/battle.js?v=pq-instant-v1" defer></script>
 </body>
 </html>

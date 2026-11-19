@@ -274,7 +274,7 @@ Output JSON ONLY with this exact schema:
         for model_name in models:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={self.gemini_api_key}"
             try:
-                resp = requests.post(url, json=payload, timeout=20)
+                resp = requests.post(url, json=payload, timeout=8)
                 if resp.status_code == 200:
                     res_data = resp.json()
                     candidates = res_data.get("candidates", [])

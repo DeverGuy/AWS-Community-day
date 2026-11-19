@@ -351,6 +351,33 @@ class TestReversePromptBattle(unittest.TestCase):
                 pass
         challenge_manager.remove_challenge(ch_id)
 
+    def test_submission_image_endpoints_and_optimization(self):
+        # 1. Join and generate
+        join_resp = self.client.post('/api/join', json={'name': 'Fast Loader', 'email': 'fast@load.dev'})
+        pid = join_resp.get_json()['participant']['id']
+        dummy_b64 = "data:image/jpeg;base64," + base64.b64encode(b"sample_generated_jpeg").decode("utf-8")
+        gen_resp = self.client.post('/api/generate', json={
+            'participant_id': pid,
+            'prompt': 'A futuristic super-fast server room with neon fibers',
+            '_test_mock_image_data': dummy_b64
+        })
+        self.assertEqual(gen_resp.status_code, 200)
+
+        # 2. Check leaderboard returns lightweight URL
+        lb_resp = self.client.get('/api/leaderboard')
+        self.assertEqual(lb_resp.status_code, 200)
+        lb_data = lb_resp.get_json()
+        fast_entries = [e for e in lb_data['leaderboard'] if e['participant_id'] == pid]
+        self.assertEqual(len(fast_entries), 1)
+        sub_id = fast_entries[0]['id']
+        self.assertTrue(fast_entries[0]['image_data'].startswith(f"/api/submission/{sub_id}/image"))
+
+        # 3. Fetch image endpoint directly
+        img_resp = self.client.get(f'/api/submission/{sub_id}/image')
+        self.assertEqual(img_resp.status_code, 200)
+        self.assertTrue(len(img_resp.data) > 0)
+        self.assertIn("Cache-Control", img_resp.headers)
+
 
 if __name__ == '__main__':
     unittest.main()

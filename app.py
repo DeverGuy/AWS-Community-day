@@ -8,9 +8,11 @@ import os
 import time
 import json
 import uuid
+import gzip
+import base64
 from datetime import datetime
 from dotenv import load_dotenv
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, Response, redirect
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask_cors import CORS
 
@@ -24,7 +26,41 @@ from image_generator import image_generator
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', os.urandom(24).hex())
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 86400
 CORS(app)
+
+@app.after_request
+def optimize_http_response(response):
+    """Adds aggressive browser caching headers and high-performance gzip compression."""
+    # Static assets: cache in browser disk/memory cache for 24h
+    if request.path.startswith("/static/"):
+        response.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=604800"
+    elif request.path == "/" or request.path.startswith("/api/"):
+        if "Cache-Control" not in response.headers:
+            response.headers["Cache-Control"] = "no-cache"
+
+    # Compress textual and JSON payloads on-the-fly with gzip
+    accept_encoding = request.headers.get("Accept-Encoding", "")
+    if (
+        "gzip" in accept_encoding
+        and response.status_code < 300
+        and response.mimetype in ["text/html", "text/css", "application/javascript", "text/javascript", "application/json", "image/svg+xml"]
+        and "Content-Encoding" not in response.headers
+    ):
+        try:
+            if response.direct_passthrough:
+                response.direct_passthrough = False
+            data = response.get_data()
+            if len(data) > 400:
+                compressed = gzip.compress(data, compresslevel=5)
+                response.set_data(compressed)
+                response.headers["Content-Encoding"] = "gzip"
+                response.headers["Content-Length"] = len(compressed)
+                response.headers["Vary"] = "Accept-Encoding"
+        except Exception:
+            pass
+
+    return response
 
 # Use threading mode for Socket.IO
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
@@ -507,9 +543,50 @@ def vote():
         "total_score": total_score
     })
 
+@app.route("/api/submission/<submission_id>/image", methods=["GET"])
+def get_submission_image(submission_id):
+    """Serves high-performance cached binary image for leaderboard replicas instead of sending massive base64 JSON."""
+    sub = submissions.get(submission_id)
+    if not sub or not sub.get("image_data"):
+        return ("Image not found", 404)
+    img_raw = sub["image_data"]
+    if isinstance(img_raw, str) and img_raw.startswith("data:image/"):
+        try:
+            header, b64_str = img_raw.split(",", 1)
+            mime = header.split(";")[0].replace("data:", "")
+            binary = base64.b64decode(b64_str)
+            resp = Response(binary, mimetype=mime)
+            resp.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=604800"
+            return resp
+        except Exception:
+            return redirect(img_raw)
+    return redirect(img_raw)
+
+@app.route("/api/submission/<submission_id>/target", methods=["GET"])
+def get_submission_target_image(submission_id):
+    """Serves high-performance cached binary image for target reference scenes."""
+    sub = submissions.get(submission_id)
+    if not sub:
+        return ("Submission not found", 404)
+    target_raw = sub.get("target_image") or sub.get("challenge", {}).get("image_data")
+    if not target_raw:
+        return ("Target image not found", 404)
+    if isinstance(target_raw, str) and target_raw.startswith("data:image/"):
+        try:
+            header, b64_str = target_raw.split(",", 1)
+            mime = header.split(";")[0].replace("data:", "")
+            binary = base64.b64decode(b64_str)
+            resp = Response(binary, mimetype=mime)
+            resp.headers["Cache-Control"] = "public, max-age=86400, stale-while-revalidate=604800"
+            return resp
+        except Exception:
+            return redirect(target_raw)
+    return redirect(target_raw)
+
 @app.route("/api/leaderboard", methods=["GET"])
 def get_leaderboard():
     category = request.args.get("category")
+    include_full = request.args.get("full") == "true"
     board = []
 
     for s in submissions.values():
@@ -520,6 +597,9 @@ def get_leaderboard():
         vote_count = s.get("votes", 0)
         composite_score = round(ai_score + (vote_count * 2.0), 1)
 
+        target_img = (s.get("target_image") or s.get("challenge", {}).get("image_data")) if include_full else f"/api/submission/{s['id']}/target"
+        user_img = s["image_data"] if include_full else f"/api/submission/{s['id']}/image"
+
         board.append({
             "id": s["id"],
             "participant_id": s["participant_id"],
@@ -528,8 +608,8 @@ def get_leaderboard():
             "category": s.get("challenge", {}).get("category"),
             "challenge_title": s.get("challenge", {}).get("title"),
             "prompt": s["prompt"],
-            "target_image": s.get("target_image") or s.get("challenge", {}).get("image_data"),
-            "image_data": s["image_data"],
+            "target_image": target_img,
+            "image_data": user_img,
             "ai_score": ai_score,
             "votes": vote_count,
             "composite_score": composite_score,

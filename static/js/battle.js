@@ -120,11 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.pathname === "/admin" ||
     window.location.pathname === "/admin/";
 
-  if (isAdminRoute) {
-    finishIntroImmediately();
-  } else {
-    runOpeningLogoAnimation(false);
-  }
+  // Instant page view: 0ms delay on reloads
+  finishIntroImmediately();
 
   if (replayIntroBtn) {
     replayIntroBtn.addEventListener("click", () => {
@@ -1858,7 +1855,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.className = `podium-card podium-rank-${entry.rank}`;
             card.innerHTML = `
               <div class="podium-img-wrap" title="Click to inspect full resolution">
-                <img src="${entry.image_data}" alt="${entry.player_name}">
+                <img src="${entry.image_data}" alt="${entry.player_name}" loading="lazy">
                 <span class="podium-rank-badge">#${entry.rank} ${entry.rank === 1 ? "🏆" : entry.rank === 2 ? "🥈" : "🥉"}</span>
               </div>
               <div class="podium-body">
