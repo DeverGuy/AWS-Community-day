@@ -597,6 +597,54 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------------------------------------------------------------------
+  // VISUAL UI STYLE / THEME SWITCHER
+  // Supports 4 distinct styles: aws-midnight, cyberpunk, purple-quest, obsidian
+  // ---------------------------------------------------------------------------
+  const themeStyleSelect = document.getElementById("theme-style-select");
+  const VALID_THEMES = ["aws-midnight", "cyberpunk", "purple-quest", "obsidian"];
+  let currentThemeStyle = "aws-midnight";
+
+  try {
+    const saved = localStorage.getItem("pq_ui_theme_style");
+    if (saved && VALID_THEMES.includes(saved)) {
+      currentThemeStyle = saved;
+    }
+  } catch (e) {}
+
+  function applyThemeStyle(theme, notify = false) {
+    if (!VALID_THEMES.includes(theme)) theme = "aws-midnight";
+    currentThemeStyle = theme;
+    VALID_THEMES.forEach(t => document.body.classList.remove(`theme-${t}`));
+    document.body.classList.add(`theme-${theme}`);
+    if (themeStyleSelect && themeStyleSelect.value !== theme) {
+      themeStyleSelect.value = theme;
+    }
+    try {
+      localStorage.setItem("pq_ui_theme_style", theme);
+    } catch (e) {}
+    if (notify) {
+      const themeLabels = {
+        "aws-midnight": "AWS Cyber Midnight",
+        "cyberpunk": "Neon Cyberpunk Arena",
+        "purple-quest": "Cosmic Velvet Purple",
+        "obsidian": "Obsidian Minimalist"
+      };
+      showToast(`UI Style switched to: ${themeLabels[theme] || theme}`, "info");
+    }
+  }
+
+  // Apply immediately on boot
+  applyThemeStyle(currentThemeStyle, false);
+
+  if (themeStyleSelect) {
+    themeStyleSelect.value = currentThemeStyle;
+    themeStyleSelect.addEventListener("change", (e) => {
+      applyThemeStyle(e.target.value, true);
+      playAudioTone("click");
+    });
+  }
+
+  // ---------------------------------------------------------------------------
   // NAVIGATION TRIGGERS
   // ---------------------------------------------------------------------------
   const navHomeBtn = document.getElementById("nav-home-btn");

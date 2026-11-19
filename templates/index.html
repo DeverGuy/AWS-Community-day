@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=pq-better-ui-v2">
+  <link rel="stylesheet" href="/static/css/style.css?v=pq-styles-v3">
 
   <!-- Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
@@ -87,6 +87,17 @@
             <span id="nav-comp-status">Live Event</span>
           </div>
 
+          <!-- UI Style / Theme Switcher -->
+          <div class="pq-style-switcher-pill" title="Choose Visual UI Style">
+            <span class="style-switcher-icon">🎨</span>
+            <select id="theme-style-select" class="theme-select-input" aria-label="Visual UI Style">
+              <option value="aws-midnight">AWS Cyber Midnight</option>
+              <option value="cyberpunk">Neon Cyberpunk Arena</option>
+              <option value="purple-quest">Cosmic Velvet Purple</option>
+              <option value="obsidian">Obsidian Minimalist</option>
+            </select>
+          </div>
+
           <div class="pq-topbar-divider"></div>
 
           <!-- Active Builder Profile Pill (When signed in) -->
@@ -114,103 +125,124 @@
         <!-- =============================================================== -->
         <section id="identifier-screen" class="view-screen active">
 
-          <!-- 1. HERO BANNER (Centered 3D AI Robot First -> Prompt Quest Title) -->
-          <div class="pq-hero-banner">
-            <!-- Top-left angled lavender tech corner accent -->
-            <svg class="pq-hero-corner-line" viewBox="0 0 70 70" fill="none">
-              <path d="M2 52 L52 2 L70 2" stroke="#B69AFF" stroke-width="1.6" stroke-opacity="0.75"/>
-            </svg>
-
-            <!-- Centerpiece 3D AI Robot Illustration (High-performance WebP + PNG fallback) -->
-            <div class="pq-hero-illustration">
-              <picture>
-                <source srcset="/static/images/hero-robot.webp?v=opt1" type="image/webp">
-                <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot" class="pq-hero-robot-img" draggable="false" fetchpriority="high">
-              </picture>
-            </div>
-
-            <div class="pq-hero-content">
-              <div class="pq-hero-title-wrap">
-                <!-- Orbital Lavender Swoosh Arc + Sparkle above "Quest" -->
-                <svg class="pq-quest-arc-svg" viewBox="0 0 260 58" fill="none">
-                  <path d="M8 46 C 72 8, 195 -4, 232 22 C 242 29, 224 44, 190 48" stroke="url(#arcGrad)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-                  <path d="M242 14 L245 22 L253 25 L245 28 L242 36 L239 28 L231 25 L239 22 Z" fill="#D8C8FF"/>
-                  <defs>
-                    <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stop-color="#B69AFF" stop-opacity="0.1"/>
-                      <stop offset="55%" stop-color="#B69AFF" stop-opacity="0.95"/>
-                      <stop offset="100%" stop-color="#D8C8FF"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
-
-                <h1 class="pq-hero-heading">
-                  <span class="pq-word-prompt">Prompt</span>
-                  <span class="pq-word-quest">Quest</span>
-                </h1>
+          <!-- 1. MODERN 2-COLUMN HERO STAGE & BUILDER TERMINAL -->
+          <div class="pq-hero-stage">
+            <!-- Left Column: Event Badge, Title, Lead, Live Phase Banner & Terminal Card -->
+            <div class="pq-hero-stage-left">
+              <div class="pq-event-tag-badge">
+                <span class="pq-tag-pulse">✦</span>
+                <span class="pq-tag-text">AWS COMMUNITY DAY • AI PROMPT BATTLE 2026</span>
               </div>
 
-              <h2 class="pq-hero-sub-spaced">THINK. PROMPT. WIN.</h2>
+              <div class="pq-hero-split-title">
+                <h1 class="pq-hero-gradient-headline">Prompt Quest</h1>
+                <span class="pq-hero-tagline">BUILD THE FUTURE</span>
+              </div>
 
-              <p class="pq-hero-desc">
-                Craft the smartest prompts, tackle exciting challenges<br>
-                and climb the leaderboard!
+              <p class="pq-hero-mission-lead">
+                Reverse-engineer frontier generative visual targets. Craft precision prompts against the clock, match multi-factor neural criteria, and claim top honors on the live podium.
               </p>
+
+              <!-- Live Competition Phase Banner for Players -->
+              <div id="live-phase-banner" class="live-phase-banner phase-lobby">
+                <span class="phase-indicator-dot">●</span>
+                <span id="live-phase-text">Lobby Open — Waiting for the host to start Battle Round.</span>
+              </div>
+
+              <!-- Builder Sign-In Terminal Card -->
+              <div class="pq-builder-terminal-card" id="registration-card-dock">
+                <div class="terminal-card-topbar">
+                  <div class="terminal-dots">
+                    <span class="tdot tdot-red"></span>
+                    <span class="tdot tdot-yellow"></span>
+                    <span class="tdot tdot-green"></span>
+                  </div>
+                  <span class="terminal-title">BUILDER_AUTHENTICATION // READY</span>
+                </div>
+
+                <!-- Login Form (All original IDs preserved) -->
+                <form id="identifier-form" class="identifier-form" novalidate>
+                  <div class="awsui-form-group">
+                    <label for="identifier-name" class="awsui-label">
+                      Builder Alias / Full Name <span class="required-star">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="identifier-name"
+                      class="awsui-text-input"
+                      placeholder="e.g. CloudDreamer or Alex Morgan"
+                      maxlength="40"
+                      autocomplete="name"
+                    >
+                  </div>
+
+                  <div class="awsui-form-group">
+                    <label for="identifier-email" class="awsui-label">
+                      Email Address <span class="required-star">*</span>
+                      <span class="label-hint">(Stores your score on the leaderboard)</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="identifier-email"
+                      class="awsui-text-input"
+                      placeholder="builder@university.edu"
+                      autocomplete="email"
+                    >
+                  </div>
+
+                  <div id="identifier-error" class="identifier-error-msg hidden" role="alert"></div>
+
+                  <div class="form-action-group">
+                    <button type="button" class="pq-btn-orange-pill full-width-btn" id="start-game-btn">
+                      <span>Launch Prompt Arena &amp; Reveal Challenge</span>
+                      <span class="btn-arrow">→</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
 
-          <!-- Live Competition Phase Banner for Players -->
-          <div id="live-phase-banner" class="live-phase-banner phase-lobby">
-            <span class="phase-indicator-dot">●</span>
-            <span id="live-phase-text">Lobby Open — Waiting for the host to start Battle Round.</span>
-          </div>
-
-          <!-- 2. CENTERED ARENA BUILDER LOGIN CARD -->
-          <div class="pq-registration-section pq-login-centered" id="registration-card-dock">
-            <div class="pq-dash-card identifier-card pq-login-card-center">
-
-              <!-- Login Form (All original IDs preserved) -->
-              <form id="identifier-form" class="identifier-form" novalidate>
-
-                <div class="awsui-form-group">
-                  <label for="identifier-name" class="awsui-label">
-                    Builder Alias / Full Name <span class="required-star">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="identifier-name"
-                    class="awsui-text-input"
-                    placeholder="e.g. CloudDreamer or Alex Morgan"
-                    maxlength="40"
-                    autocomplete="name"
-                  >
+            <!-- Right Column: 3D Mascot Stage & Floating Holographic Badges -->
+            <div class="pq-hero-stage-right">
+              <div class="pq-robot-stage-wrap">
+                <!-- Floating Holographic Telemetry Badge 1 -->
+                <div class="pq-floating-badge badge-top-left">
+                  <span class="badge-icon">⚡</span>
+                  <div class="badge-body">
+                    <div class="badge-title">Sub-Second Inference</div>
+                    <div class="badge-sub">High-Speed AWS Backend</div>
+                  </div>
                 </div>
 
-                <div class="awsui-form-group">
-                  <label for="identifier-email" class="awsui-label">
-                    Email Address <span class="required-star">*</span>
-                    <span class="label-hint">(Stores your score on the leaderboard)</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="identifier-email"
-                    class="awsui-text-input"
-                    placeholder="builder@university.edu"
-                    autocomplete="email"
-                  >
+                <!-- Floating Holographic Telemetry Badge 2 -->
+                <div class="pq-floating-badge badge-top-right">
+                  <span class="badge-icon">🎯</span>
+                  <div class="badge-body">
+                    <div class="badge-title">Neural Vision Judge</div>
+                    <div class="badge-sub">4-Way Multimodal Analysis</div>
+                  </div>
                 </div>
 
-                <div id="identifier-error" class="identifier-error-msg hidden" role="alert"></div>
-
-                <div class="form-action-group">
-                  <button type="button" class="pq-btn-orange-pill full-width-btn" id="start-game-btn">
-                    <span>Launch Prompt Arena &amp; Reveal Challenge</span>
-                    <span class="btn-arrow">→</span>
-                  </button>
+                <!-- 3D Mascot with Holographic Energy Pedestal -->
+                <div class="pq-hero-robot-container">
+                  <picture>
+                    <source srcset="/static/images/hero-robot.webp?v=opt1" type="image/webp">
+                    <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot" class="pq-hero-robot-3d" draggable="false" fetchpriority="high">
+                  </picture>
+                  <div class="pq-holo-pedestal">
+                    <div class="pq-pedestal-disc"></div>
+                  </div>
                 </div>
 
-              </form>
-
+                <!-- Floating Holographic Telemetry Badge 3 -->
+                <div class="pq-floating-badge badge-bottom">
+                  <span class="badge-icon">⏱️</span>
+                  <div class="badge-body">
+                    <div class="badge-title">180s Battle Timer</div>
+                    <div class="badge-sub">Zero-Latency Multi-Tab Sync</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -917,6 +949,6 @@
   </div>
 
   <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
-  <script src="/static/js/battle.js?v=pq-better-ui-v2" defer></script>
+  <script src="/static/js/battle.js?v=pq-styles-v3" defer></script>
 </body>
 </html>
