@@ -10,12 +10,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=pq-ux-v12">
+  <link rel="stylesheet" href="/static/css/style.css?v=pq-better-ui-v1">
 
   <!-- Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
 </head>
 <body class="pq-dark-theme" data-admin-route="{{ 'true' if open_admin else 'false' }}">
+
+  <!-- Ambient Cyberpunk Floating Glow Orbs & Confetti Layer -->
+  <div class="pq-ambient-glow-orb pq-orb-purple" aria-hidden="true"></div>
+  <div class="pq-ambient-glow-orb pq-orb-lavender" aria-hidden="true"></div>
+  <canvas id="pq-confetti-canvas" class="pq-confetti-canvas" aria-hidden="true"></canvas>
 
   <!-- =====================================================================
        OPENING AWS LOGO STAGE & FLIP ANIMATION OVERLAY (Played on demand)
@@ -65,6 +70,11 @@
         </div>
 
         <div class="pq-topbar-right">
+          <!-- Host Controls Shortcut (Visible for Admins) -->
+          <button type="button" class="pq-btn-outline-pill btn-sm hidden" id="nav-host-ctrl-btn" title="Open Competition Phase & Host Controls">
+            <span>⚙️ Host Controls</span>
+          </button>
+
           <!-- Leaderboard Button (Hidden on login page; visible only after login) -->
           <button type="button" class="pq-btn-outline-pill btn-sm hidden" id="nav-leaderboard-btn" title="View Leaderboard">
             <span>🏆 Leaderboard</span>
@@ -204,6 +214,145 @@
             </div>
           </div>
 
+          <!-- 3. LIVE COMPETITION METRICS ROW (4 High-Tech Cards) -->
+          <div class="pq-stats-row">
+            <div class="pq-stat-card">
+              <div class="pq-stat-icon">⏱️</div>
+              <div class="pq-stat-info">
+                <div class="pq-stat-val pq-live-inline"><span class="pq-mono-timer">180s</span></div>
+                <div class="pq-stat-label">Round Duration</div>
+              </div>
+            </div>
+
+            <div class="pq-stat-card">
+              <div class="pq-stat-icon">🎯</div>
+              <div class="pq-stat-info">
+                <div class="pq-stat-val">26+</div>
+                <div class="pq-stat-label">Visual Targets</div>
+              </div>
+            </div>
+
+            <div class="pq-stat-card">
+              <div class="pq-stat-icon">🧠</div>
+              <div class="pq-stat-info">
+                <div class="pq-stat-val">AI Judge</div>
+                <div class="pq-stat-label">Multimodal Vision</div>
+              </div>
+            </div>
+
+            <div class="pq-stat-card">
+              <div class="pq-stat-icon">🏆</div>
+              <div class="pq-stat-info">
+                <div class="pq-stat-val" id="home-stat-players">16+</div>
+                <div class="pq-stat-label">Builders Competing</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. THREE-STEP BATTLE PROTOCOL GUIDE -->
+          <div class="pq-battle-protocol-section">
+            <div class="pq-section-header">
+              <span class="pq-sparkle-tag">✦ HOW TO COMPETE</span>
+              <h3 class="pq-section-title">Prompt Quest Battle Protocol</h3>
+              <p class="pq-section-subtitle">Three steps from assigned target reference to high-score leaderboard victory</p>
+            </div>
+
+            <div class="pq-protocol-grid">
+              <div class="pq-protocol-card">
+                <div class="pq-protocol-step-num">01</div>
+                <div class="pq-protocol-icon">🔍</div>
+                <h4 class="pq-protocol-card-title">Inspect Reference</h4>
+                <p class="pq-protocol-card-desc">Examine your assigned target reference scene. Study composition, lighting temperatures, reflections, and palette balance.</p>
+              </div>
+
+              <div class="pq-protocol-card">
+                <div class="pq-protocol-step-num">02</div>
+                <div class="pq-protocol-icon">⚡</div>
+                <h4 class="pq-protocol-card-title">Engineer Prompt</h4>
+                <p class="pq-protocol-card-desc">Craft descriptive prompt modifiers. Leverage quick booster chips, camera lens details, and volumetric cues before the timer expires.</p>
+              </div>
+
+              <div class="pq-protocol-card">
+                <div class="pq-protocol-step-num">03</div>
+                <div class="pq-protocol-icon">🏆</div>
+                <h4 class="pq-protocol-card-title">Multimodal Benchmark</h4>
+                <p class="pq-protocol-card-desc">The AI Multimodal Judge compares visual accuracy, scoring out of 100 with grounded critique. Collect peer applause to climb the ranks!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. BOTTOM INTEL & LIVE SHOWCASE GRID -->
+          <div class="pq-bottom-grid pq-home-bottom-grid">
+            <!-- Card A: About the Battle -->
+            <div class="pq-dash-card pq-about-card">
+              <div class="pq-about-content">
+                <div class="pq-card-heading-row">
+                  <span class="pq-slash">/</span>
+                  <h3>About Prompt Quest</h3>
+                </div>
+                <p class="pq-about-text">
+                  Welcome to the ultimate generative AI prompt battle. Test your prompt engineering precision against high-fidelity target visual scenes powered by AWS and generative diffusion.
+                </p>
+                <div class="pq-tag-group">
+                  <span class="badge-tag">AI Diffusion</span>
+                  <span class="badge-tag">Multimodal Vision</span>
+                  <span class="badge-tag">Live Scoring</span>
+                </div>
+              </div>
+              <div class="pq-about-art">
+                <img src="/static/images/about-cloud.png?v=refined2" alt="Cloud Innovation" class="pq-about-cloud-img" loading="lazy">
+              </div>
+            </div>
+
+            <!-- Card B: Top Players Mini Leaderboard -->
+            <div class="pq-dash-card pq-top-players-card">
+              <div class="pq-card-heading-between">
+                <div class="pq-card-heading-row">
+                  <span class="pq-slash">/</span>
+                  <h5>Top Builders</h5>
+                </div>
+                <button type="button" class="pq-link-view-all" id="home-view-all-lb-btn">
+                  <span>View All</span>
+                  <span>→</span>
+                </button>
+              </div>
+              <div class="pq-mini-lb-list" id="home-top-players-list">
+                <!-- Dynamically populated via renderHomeTopPlayersWidget -->
+              </div>
+            </div>
+
+            <!-- Card C: Engine Specs & Intel -->
+            <div class="pq-dash-card pq-intel-card">
+              <div class="pq-card-heading-row">
+                <span class="pq-slash">/</span>
+                <h5>Engine Specs</h5>
+              </div>
+              <div class="pq-intel-specs-grid">
+                <div class="pq-intel-item">
+                  <span class="pq-intel-icon">⚡</span>
+                  <div>
+                    <strong>Sub-3s Synthesis</strong>
+                    <p>High-throughput diffusion</p>
+                  </div>
+                </div>
+                <div class="pq-intel-item">
+                  <span class="pq-intel-icon">🧠</span>
+                  <div>
+                    <strong>Dual-Vision Judge</strong>
+                    <p>Grounded visual verification</p>
+                  </div>
+                </div>
+                <div class="pq-intel-item">
+                  <span class="pq-intel-icon">🔄</span>
+                  <div>
+                    <strong>Live Host Sync</strong>
+                    <p>Real-time round phases</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </section>
 
         <!-- =============================================================== -->
@@ -272,17 +421,39 @@
                   <span><strong>180 seconds</strong> &amp; <strong>1 final generation</strong>. Auto-generates at 00:00 or when you click <strong>Finalize &amp; Generate</strong>.</span>
                 </div>
 
+                <!-- Prompt Engineering Booster Chips Bar -->
+                <div class="pq-prompt-chips-bar" aria-label="Prompt Booster Keywords">
+                  <span class="pq-chips-label">⚡ Style Boosters:</span>
+                  <button type="button" class="pq-prompt-chip" data-chip="cinematic volumetric lighting">🌫️ Volumetric Light</button>
+                  <button type="button" class="pq-prompt-chip" data-chip="8k photorealistic ultra-detailed sharp focus">📸 8K Photo</button>
+                  <button type="button" class="pq-prompt-chip" data-chip="golden hour dramatic warm rim light">🌅 Golden Hour</button>
+                  <button type="button" class="pq-prompt-chip" data-chip="cyberpunk vibrant neon reflections">⚡ Neon Glow</button>
+                  <button type="button" class="pq-prompt-chip" data-chip="cinematic wide angle lens depth of field">🌌 Wide Angle</button>
+                  <button type="button" class="pq-prompt-chip" data-chip="intricate textures macro photography">🔍 Macro Detail</button>
+                </div>
+
                 <!-- Textarea -->
                 <div class="prompt-input-box pq-prompt-box-grow">
                   <textarea
                     id="prompt-input"
                     class="awsui-textarea pq-textarea-tall"
-                    rows="10"
+                    rows="9"
                     placeholder="Observe the Target Reference Scene on the left. Describe the subject, action, environment, colors, lighting, and camera framing..."
                     autocomplete="off"
                     autocorrect="off"
                     spellcheck="false"
                   ></textarea>
+                </div>
+
+                <!-- Live Prompt Craft Depth Meter -->
+                <div class="pq-craft-meter-wrap">
+                  <div class="pq-craft-meter-header">
+                    <span class="pq-craft-meter-label">Prompt Craft Depth</span>
+                    <span class="pq-craft-meter-status" id="prompt-craft-status">🌱 Initializing...</span>
+                  </div>
+                  <div class="pq-craft-meter-track">
+                    <div class="pq-craft-meter-fill" id="prompt-craft-fill"></div>
+                  </div>
                 </div>
 
                 <!-- Validation / Anti-Cheat Error Banner -->
@@ -800,6 +971,6 @@
   </div>
 
   <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
-  <script src="/static/js/battle.js?v=pq-instant-v1" defer></script>
+  <script src="/static/js/battle.js?v=pq-better-ui-v1" defer></script>
 </body>
 </html>
