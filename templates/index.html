@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=pq-styles-v3">
+  <link rel="stylesheet" href="/static/css/style.css?v=pq-styles-v4">
 
   <!-- Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
@@ -240,113 +240,6 @@
                   <div class="badge-body">
                     <div class="badge-title">180s Battle Timer</div>
                     <div class="badge-sub">Zero-Latency Multi-Tab Sync</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 3. LIVE COMPETITION METRICS ROW (4 High-Tech Cards) -->
-          <div class="pq-stats-row">
-            <div class="pq-stat-card">
-              <div class="pq-stat-icon">⏱️</div>
-              <div class="pq-stat-info">
-                <div class="pq-stat-val pq-live-inline"><span class="pq-mono-timer">180s</span></div>
-                <div class="pq-stat-label">Round Duration</div>
-              </div>
-            </div>
-
-            <div class="pq-stat-card">
-              <div class="pq-stat-icon">🎯</div>
-              <div class="pq-stat-info">
-                <div class="pq-stat-val">26+</div>
-                <div class="pq-stat-label">Visual Targets</div>
-              </div>
-            </div>
-
-            <div class="pq-stat-card">
-              <div class="pq-stat-icon">🧠</div>
-              <div class="pq-stat-info">
-                <div class="pq-stat-val">AI Judge</div>
-                <div class="pq-stat-label">Multimodal Vision</div>
-              </div>
-            </div>
-
-            <div class="pq-stat-card">
-              <div class="pq-stat-icon">🏆</div>
-              <div class="pq-stat-info">
-                <div class="pq-stat-val" id="home-stat-players">16+</div>
-                <div class="pq-stat-label">Builders Competing</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 4. BOTTOM INTEL & LIVE SHOWCASE GRID -->
-          <div class="pq-bottom-grid pq-home-bottom-grid">
-            <!-- Card A: About the Battle -->
-            <div class="pq-dash-card pq-about-card">
-              <div class="pq-about-content">
-                <div class="pq-card-heading-row">
-                  <span class="pq-slash">/</span>
-                  <h3>About Prompt Quest</h3>
-                </div>
-                <p class="pq-about-text">
-                  Welcome to the ultimate generative AI prompt battle. Test your prompt engineering precision against high-fidelity target visual scenes powered by AWS and generative diffusion.
-                </p>
-                <div class="pq-tag-group">
-                  <span class="badge-tag">AI Diffusion</span>
-                  <span class="badge-tag">Multimodal Vision</span>
-                  <span class="badge-tag">Live Scoring</span>
-                </div>
-              </div>
-              <div class="pq-about-art">
-                <img src="/static/images/about-cloud.png?v=refined2" alt="Cloud Innovation" class="pq-about-cloud-img" loading="lazy">
-              </div>
-            </div>
-
-            <!-- Card B: Top Players Mini Leaderboard -->
-            <div class="pq-dash-card pq-top-players-card">
-              <div class="pq-card-heading-between">
-                <div class="pq-card-heading-row">
-                  <span class="pq-slash">/</span>
-                  <h5>Top Builders</h5>
-                </div>
-                <button type="button" class="pq-link-view-all" id="home-view-all-lb-btn">
-                  <span>View All</span>
-                  <span>→</span>
-                </button>
-              </div>
-              <div class="pq-mini-lb-list" id="home-top-players-list">
-                <!-- Dynamically populated via renderHomeTopPlayersWidget -->
-              </div>
-            </div>
-
-            <!-- Card C: Engine Specs & Intel -->
-            <div class="pq-dash-card pq-intel-card">
-              <div class="pq-card-heading-row">
-                <span class="pq-slash">/</span>
-                <h5>Engine Specs</h5>
-              </div>
-              <div class="pq-intel-specs-grid">
-                <div class="pq-intel-item">
-                  <span class="pq-intel-icon">⚡</span>
-                  <div>
-                    <strong>Sub-3s Synthesis</strong>
-                    <p>High-throughput diffusion</p>
-                  </div>
-                </div>
-                <div class="pq-intel-item">
-                  <span class="pq-intel-icon">🧠</span>
-                  <div>
-                    <strong>Dual-Vision Judge</strong>
-                    <p>Grounded visual verification</p>
-                  </div>
-                </div>
-                <div class="pq-intel-item">
-                  <span class="pq-intel-icon">🔄</span>
-                  <div>
-                    <strong>Live Host Sync</strong>
-                    <p>Real-time round phases</p>
                   </div>
                 </div>
               </div>
@@ -949,6 +842,6 @@
   </div>
 
   <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
-  <script src="/static/js/battle.js?v=pq-styles-v3" defer></script>
+  <script src="/static/js/battle.js?v=pq-styles-v4" defer></script>
 </body>
 </html>
