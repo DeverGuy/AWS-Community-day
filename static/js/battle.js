@@ -1433,10 +1433,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextFooterBefore = document.getElementById("results-next-footer");
     if (nextFooterBefore) nextFooterBefore.classList.add("hidden");
     if (viewFullBtn) viewFullBtn.disabled = true;
-    const srcTagBefore = document.getElementById("canvas-source-tag");
-    const latTagBefore = document.getElementById("canvas-latency-tag");
-    if (srcTagBefore) srcTagBefore.classList.add("hidden");
-    if (latTagBefore) latTagBefore.classList.add("hidden");
 
     if (overlay) overlay.classList.remove("hidden");
     showScreen("results");
@@ -1498,18 +1494,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (placeholder) placeholder.classList.add("hidden");
         if (viewFullBtn) viewFullBtn.disabled = false;
         if (toggleCompareBtn) toggleCompareBtn.classList.remove("hidden");
-
-        const sourceTag = document.getElementById("canvas-source-tag");
-        if (sourceTag) {
-          sourceTag.textContent = `Engine: ${(gen.source || "CLOUDFLARE-AI").toUpperCase()}`;
-          sourceTag.classList.remove("hidden");
-        }
-
-        const latencyTag = document.getElementById("canvas-latency-tag");
-        if (latencyTag) {
-          latencyTag.textContent = `${gen.latency || "1.0"}s`;
-          latencyTag.classList.remove("hidden");
-        }
 
         renderEvaluationScorecard(gen.evaluation);
         renderHistoryReel();
