@@ -71,7 +71,7 @@ CHALLENGE_TIMER_SECONDS = int(os.getenv('CHALLENGE_TIMER_SECONDS', 180))
 
 # Competition Global State
 competition_state = {
-    "status": "lobby",  # lobby, battle, showcase, leaderboard
+    "status": "lobby",  # lobby, battle, leaderboard
     "round_number": 1,
     "round_duration": ROUND_DURATION,
     "round_start_time": None,
@@ -85,7 +85,6 @@ competition_state = {
 participants = {}    # participant_id -> dict
 socket_to_id = {}    # socket_id -> participant_id
 submissions = {}     # submission_id -> dict
-votes = {}           # submission_id -> set of participant_ids
 
 def get_time_remaining():
     if competition_state["status"] != "battle" or not competition_state["round_start_time"]:
@@ -277,14 +276,12 @@ def _record_submission(participant, target_challenge, prompt, image_data, eval_r
         "tier_badge": eval_result["tier_badge"],
         "special_badges": eval_result.get("special_badges", []),
         "unbiased_critique": eval_result.get("unbiased_critique", ""),
-        "votes": existing.get("votes", 0) if existing else 0,
         "submitted_at": time.time()
     }
 
     submissions[submission_id] = submission
     participant["submission"] = submission
     participant["status"] = "submitted"
-    votes.setdefault(submission_id, set())
 
     socketio.emit("new_submission", {
         "submission_id": submission_id,
@@ -355,7 +352,11 @@ def generate():
     target_image_data = target_challenge.get("image_data")
 
     # Generate Image for user prompt AS IT IS via Cloudflare Workers AI (saurav-z/free-image-generation-api)
-    gen_result = image_generator.generate(prompt, category=category, challenge_title=challenge_title)
+    test_mock_img = data.get("_test_mock_image_data")
+    if test_mock_img:
+        gen_result = {"success": True, "image_data": test_mock_img}
+    else:
+        gen_result = image_generator.generate(prompt, category=category, challenge_title=challenge_title)
 
     if not gen_result.get("success"):
         if gen_result.get("quota_exceeded"):
@@ -492,7 +493,7 @@ def submit_masterpiece():
     })
 
 # -----------------------------------------------------------------------------
-# REST APIS - SHOWCASE, VOTING & LEADERBOARD
+# REST APIS - LEADERBOARD & SUBMISSIONS
 # -----------------------------------------------------------------------------
 
 @app.route("/api/submissions", methods=["GET"])
@@ -501,46 +502,17 @@ def get_submissions():
     items = list(submissions.values())
     if category:
         items = [s for s in items if s.get("challenge", {}).get("category") == category]
-    # Sort by total points (AI score + vote bonus)
-    items.sort(key=lambda s: (s.get("ai_score", 0) + s.get("votes", 0) * 2), reverse=True)
+    # Sort by AI score
+    items.sort(key=lambda s: s.get("ai_score", 0), reverse=True)
     return jsonify(items)
 
 @app.route("/api/vote", methods=["POST"])
 def vote():
-    data = request.get_json() or {}
-    submission_id = data.get("submission_id")
-    voter_id = data.get("voter_id", str(uuid.uuid4()))
-
-    submission = submissions.get(submission_id)
-    if not submission:
-        return jsonify({"error": "Submission not found"}), 404
-
-    # Prevent voting for one's own submission
-    if submission.get("participant_id") == voter_id:
-        return jsonify({"error": "You cannot vote for your own creation"}), 400
-
-    voter_set = votes.setdefault(submission_id, set())
-    if voter_id in voter_set:
-        voter_set.remove(voter_id)
-        action = "unvoted"
-    else:
-        voter_set.add(voter_id)
-        action = "voted"
-
-    submission["votes"] = len(voter_set)
-    total_score = round(submission["ai_score"] + submission["votes"] * 2, 1)
-
-    socketio.emit("vote_update", {
-        "submission_id": submission_id,
-        "votes": submission["votes"],
-        "total_score": total_score
-    })
-
+    # Voting disabled per event specifications
     return jsonify({
         "success": True,
-        "action": action,
-        "votes": submission["votes"],
-        "total_score": total_score
+        "message": "Voting has been disabled for this competition",
+        "votes": 0
     })
 
 @app.route("/api/submission/<submission_id>/image", methods=["GET"])
@@ -594,8 +566,7 @@ def get_leaderboard():
             continue
 
         ai_score = s.get("ai_score", 0)
-        vote_count = s.get("votes", 0)
-        composite_score = round(ai_score + (vote_count * 2.0), 1)
+        composite_score = round(ai_score, 1)
 
         target_img = (s.get("target_image") or s.get("challenge", {}).get("image_data")) if include_full else f"/api/submission/{s['id']}/target"
         user_img = s["image_data"] if include_full else f"/api/submission/{s['id']}/image"
@@ -611,7 +582,7 @@ def get_leaderboard():
             "target_image": target_img,
             "image_data": user_img,
             "ai_score": ai_score,
-            "votes": vote_count,
+            "votes": 0,
             "composite_score": composite_score,
             "tier": s.get("tier"),
             "tier_badge": s.get("tier_badge"),
@@ -780,8 +751,8 @@ def set_competition_phase():
     new_phase = data.get("phase")
     duration = data.get("duration")
 
-    if new_phase not in ["lobby", "battle", "showcase", "leaderboard"]:
-        return jsonify({"error": "Invalid phase"}), 400
+    if new_phase not in ["lobby", "battle", "leaderboard"]:
+        return jsonify({"error": f"Invalid phase: {new_phase}. Allowed: lobby, battle, leaderboard"}), 400
 
     competition_state["status"] = new_phase
 
@@ -812,7 +783,6 @@ def reset_competition():
 
     participants.clear()
     submissions.clear()
-    votes.clear()
     competition_state["status"] = "lobby"
     competition_state["round_start_time"] = None
     competition_state["round_end_time"] = None

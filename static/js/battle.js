@@ -200,9 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
       socket.on("competition_reset", () => {
         handleCompetitionReset();
       });
-      socket.on("vote_update", () => {
-        loadLeaderboard();
-      });
       socket.on("new_submission", () => {
         refreshCompetitionState();
         loadLeaderboard();
@@ -264,7 +261,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const phaseBadgeMap = {
         lobby: "🟢 LOBBY MODE",
         battle: "⚔️ BATTLE ROUND (LIVE)",
-        showcase: "🌟 SHOWCASE & VOTING",
         leaderboard: "🏆 FINAL STANDINGS"
       };
       adminLiveBadge.textContent = phaseBadgeMap[phase] || phase.toUpperCase();
@@ -335,8 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (statusText) {
       if (currentPhase === "battle") {
         statusText.textContent = `Round ${payload.round_number || 1} Live`;
-      } else if (currentPhase === "showcase") {
-        statusText.textContent = "Showcase & Voting";
       } else if (currentPhase === "leaderboard") {
         statusText.textContent = "Final Standings";
       } else {
@@ -355,7 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const phaseBadgeMap = {
         lobby: "🟢 LOBBY MODE",
         battle: "⚔️ BATTLE ROUND (LIVE)",
-        showcase: "🌟 SHOWCASE & VOTING",
         leaderboard: "🏆 FINAL STANDINGS"
       };
       adminLiveBadge.textContent = phaseBadgeMap[currentPhase] || currentPhase.toUpperCase();
@@ -377,12 +370,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const span = startBtn.querySelector("span");
           if (span) span.textContent = "🚀 Join Live Battle Now";
         }
-      } else if (currentPhase === "showcase") {
-        phaseText.textContent = "🌟 Showcase & Voting Phase is LIVE! Review submissions and vote with 👏!";
-        if (startBtn && !state.participant) {
-          const span = startBtn.querySelector("span");
-          if (span) span.textContent = "View Showcase & Vote";
-        }
       } else if (currentPhase === "leaderboard") {
         phaseText.textContent = "🏆 Final Standings Announced! Check out the Hall of Future Builders!";
         if (startBtn && !state.participant) {
@@ -400,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 3. Leaderboard Button Visibility
     if (topLbBtn) {
-      if (currentPhase === "showcase" || currentPhase === "leaderboard" || state.isAdmin || (state.participant && state.hasGenerated)) {
+      if (currentPhase === "leaderboard" || state.isAdmin || (state.participant && state.hasGenerated)) {
         topLbBtn.classList.remove("hidden");
       } else {
         topLbBtn.classList.add("hidden");
@@ -425,21 +412,8 @@ document.addEventListener("DOMContentLoaded", () => {
         playAudioTone("success");
         showToast(`⚔️ Round ${payload.round_number || 1} Live! 180 seconds on the clock!`, "success");
 
-      } else if (currentPhase === "showcase") {
-        // --- 2. SHOWCASE & VOTING: Move all players to Leaderboard to vote ---
-        stopChallengeTimer();
-        if (!state.hasGenerated && state.participant) {
-          lockWorkspaceAfterFinalize("⏰ Round Ended by Host", "ROUND OVER", "00:00");
-        }
-        if (!state.isAdmin) {
-          showScreen("leaderboard");
-        }
-        loadLeaderboard();
-        playAudioTone("success");
-        showToast("🌟 Showcase & Voting is now LIVE! Cast your applause votes with 👏!", "info");
-
       } else if (currentPhase === "leaderboard") {
-        // --- 3. FINAL STANDINGS: Reveal official final rankings ---
+        // --- 2. FINAL STANDINGS: Reveal official final rankings ---
         stopChallengeTimer();
         if (!state.isAdmin) {
           showScreen("leaderboard");
@@ -749,7 +723,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = identifierEmailInput ? identifierEmailInput.value.trim().toLowerCase() : "";
     const currentPhase = state.compState ? state.compState.status : "lobby";
 
-    if (!name && !email && (currentPhase === "showcase" || currentPhase === "leaderboard")) {
+    if (!name && !email && currentPhase === "leaderboard") {
       showScreen("leaderboard");
       loadLeaderboard();
       return;
@@ -1893,41 +1867,12 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>
             <div style="font-size:13px; font-weight:700;">${entry.challenge_title}</div>
           </td>
-          <td class="table-score">${entry.ai_score}</td>
-          <td style="font-weight:800; font-size:14px; font-family:var(--font-mono);">${entry.composite_score}</td>
+          <td class="table-score" style="font-weight:800; font-size:14px; font-family:var(--font-mono);">${entry.ai_score} <span style="font-size:11px; color:var(--pq-text-secondary); font-weight:400;">/ 100</span></td>
           <td><span class="badge-tag">${entry.tier_badge}</span></td>
           <td>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <button type="button" class="btn-vote-applause" title="Upvote creation (+2 pts)">
-                👏 ${entry.votes || 0}
-              </button>
-              ${state.isAdmin ? `<button type="button" class="pq-btn-outline-pill btn-sm inspect-entry-btn">Inspect</button>` : ""}
-            </div>
+            <button type="button" class="pq-btn-outline-pill btn-sm inspect-entry-btn">Inspect ↗</button>
           </td>
         `;
-
-        const voteBtn = tr.querySelector(".btn-vote-applause");
-        if (voteBtn) {
-          voteBtn.addEventListener("click", async () => {
-            playAudioTone("click");
-            const voterId = state.participant ? state.participant.id : "guest_voter";
-            try {
-              const vResp = await fetch("/api/vote", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ submission_id: entry.id, voter_id: voterId })
-              });
-              const vData = await vResp.json();
-              if (vResp.ok && vData.success) {
-                loadLeaderboard();
-              } else {
-                showToast(vData.error || "Unable to vote on this entry.", "error");
-              }
-            } catch (e) {
-              showToast("Error submitting vote.", "error");
-            }
-          });
-        }
 
         const inspectBtn = tr.querySelector(".inspect-entry-btn");
         if (inspectBtn) {
@@ -2146,7 +2091,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const phaseNames = {
             lobby: "LOBBY MODE",
             battle: "BATTLE ROUND",
-            showcase: "SHOWCASE & VOTING",
             leaderboard: "FINAL STANDINGS"
           };
           showToast(`Competition phase live switched to: ${phaseNames[phase] || phase.toUpperCase()}`, "success");

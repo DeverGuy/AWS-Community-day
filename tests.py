@@ -278,16 +278,7 @@ class TestReversePromptBattle(unittest.TestCase):
         self.assertEqual(state_resp.status_code, 200)
         self.assertEqual(state_resp.get_json()['status'], 'battle')
 
-        # 2. Switch to showcase phase
-        showcase_resp = self.client.post(
-            '/api/admin/phase',
-            headers={'X-Admin-Code': ADMIN_CODE},
-            json={'phase': 'showcase'}
-        )
-        self.assertEqual(showcase_resp.status_code, 200)
-        self.assertEqual(showcase_resp.get_json()['state']['status'], 'showcase')
-
-        # 3. Switch to leaderboard phase
+        # 2. Switch to leaderboard phase
         lb_resp = self.client.post(
             '/api/admin/phase',
             headers={'X-Admin-Code': ADMIN_CODE},
@@ -296,7 +287,7 @@ class TestReversePromptBattle(unittest.TestCase):
         self.assertEqual(lb_resp.status_code, 200)
         self.assertEqual(lb_resp.get_json()['state']['status'], 'leaderboard')
 
-        # 4. Switch back to lobby phase
+        # 3. Switch back to lobby phase
         lobby_resp = self.client.post(
             '/api/admin/phase',
             headers={'X-Admin-Code': ADMIN_CODE},
