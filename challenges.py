@@ -15,388 +15,362 @@ OFFICIAL_CATEGORIES = []
 
 DEFAULT_CHALLENGES = [
     {
-        "id": "cat-sunglasses-chair",
-        "title": "The Sunlit Solarium",
-        "brief": "A fluffy white cat wearing stylish black sunglasses sitting comfortably on a bright yellow armchair in a sunlit room.",
-        "visual_goals": "Fluffy white cat sitting upright, black sunglasses on its face, bright yellow armchair, sunny morning room with warm daylight.",
-        "inspiration_keywords": [
-            "White Cat",
-            "Black Sunglasses",
-            "Yellow Armchair",
-            "Sunlit Room",
-            "Cozy Indoors"
-        ],
-        "key_subjects": [
-            "fluffy white cat",
-            "black sunglasses",
-            "bright yellow armchair",
-            "sunlit room"
-        ],
-        "action": "sitting relaxed and upright on the armchair",
-        "lighting_mood": "warm natural sunlight streaming from a window",
-        "evaluation_focus": "Recreation of the white cat wearing sunglasses on a yellow armchair with bright daytime lighting.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "vintage-red-bicycle",
-        "title": "Passage of Summer",
-        "brief": "A classic bright red vintage bicycle with a woven wicker basket filled with blooming yellow sunflowers, parked next to a blue wooden door.",
-        "visual_goals": "Bright red bicycle frame, woven wicker front basket brimming with yellow sunflowers, rustic blue wooden door, cobblestone ground.",
-        "inspiration_keywords": [
-            "Red Bicycle",
-            "Wicker Basket",
-            "Yellow Sunflowers",
-            "Blue Door",
-            "Cobblestones"
-        ],
-        "key_subjects": [
-            "red vintage bicycle",
-            "woven wicker basket",
-            "blooming yellow sunflowers",
-            "weathered blue wooden door"
-        ],
-        "action": "parked against the blue door",
-        "lighting_mood": "warm golden daylight casting soft shadows",
-        "evaluation_focus": "Red bicycle color, prominent sunflower basket, blue door background contrast.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
         "id": "coffee-latte-book",
         "title": "A Quiet Chapter",
-        "brief": "A warm ceramic mug with heart-shaped latte art in the foam, sitting next to an open hardcover book on a dark rustic wooden table.",
-        "visual_goals": "Ceramic coffee mug, heart pattern in latte foam, open book with visible printed page text, rustic dark wood table, cozy morning lighting.",
+        "brief": "A warm ceramic mug with heart latte art in the foam sitting next to a closed hardcover book on a clean wooden table.",
+        "visual_goals": "White ceramic coffee mug, heart pattern in latte foam, closed blue hardcover book, clean dark wooden table.",
         "inspiration_keywords": [
             "Coffee Mug",
             "Heart Latte Art",
-            "Open Book",
+            "Closed Book",
             "Wooden Table",
-            "Cozy Morning"
+            "Morning Light"
         ],
         "key_subjects": [
             "ceramic coffee mug",
             "heart latte art",
-            "open hardcover book",
-            "dark rustic wooden table"
+            "hardcover book",
+            "wooden table"
         ],
-        "action": "steaming gently on the table",
-        "lighting_mood": "soft warm morning cafe illumination",
-        "evaluation_focus": "Heart-shaped latte art foam, open book presence, cozy cafe ambiance.",
+        "action": "resting on the table next to the book",
+        "lighting_mood": "warm soft morning daylight",
+        "evaluation_focus": "Presence of the coffee mug with heart latte art, the book beside it, and the wooden table.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "robot-chef-cookies",
-        "title": "The Sweet Circuit",
-        "brief": "A cute round metallic robot wearing a tall white chef hat, holding a baking tray of freshly baked chocolate chip cookies in a bright modern kitchen.",
-        "visual_goals": "Smiling metallic robot, white chef hat, metal baking sheet with warm chocolate chip cookies, clean bright modern kitchen.",
+        "id": "cat-sunglasses-chair",
+        "title": "The Sunlit Solarium",
+        "brief": "A fluffy white cat wearing black sunglasses sitting on a bright yellow armchair in a sunlit room.",
+        "visual_goals": "Fluffy white cat, black sunglasses on face, bright yellow armchair, sunny clean room.",
         "inspiration_keywords": [
-            "Cute Robot",
-            "Chef Hat",
-            "Chocolate Chip Cookies",
-            "Baking Sheet",
-            "Modern Kitchen"
+            "White Cat",
+            "Black Sunglasses",
+            "Yellow Armchair",
+            "Sunlit Room"
         ],
         "key_subjects": [
-            "round metallic robot",
-            "white chef hat",
-            "tray of chocolate chip cookies",
-            "modern kitchen"
+            "fluffy white cat",
+            "black sunglasses",
+            "bright yellow armchair"
         ],
-        "action": "proudly presenting a freshly baked tray of cookies",
-        "lighting_mood": "bright clean indoor kitchen lighting",
-        "evaluation_focus": "Cute robot wearing a chef hat, visible chocolate chip cookies, cheerful kitchen setting.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "frog-mushroom-umbrella",
-        "title": "Under the Crimson Canopy",
-        "brief": "A small cute bright green tree frog sitting on a mossy grey stone under a red mushroom with white polka dots during gentle rain.",
-        "visual_goals": "Bright green frog, red toadstool mushroom with white polka dots acting as an umbrella, wet moss-covered stone, soft rain droplets.",
-        "inspiration_keywords": [
-            "Green Tree Frog",
-            "Red Toadstool Mushroom",
-            "White Polka Dots",
-            "Mossy Stone",
-            "Gentle Rain"
-        ],
-        "key_subjects": [
-            "green tree frog",
-            "red mushroom with white spots",
-            "mossy grey stone",
-            "raindrops"
-        ],
-        "action": "sheltering calmly under the mushroom cap",
-        "lighting_mood": "soft diffused rainy day forest lighting",
-        "evaluation_focus": "Green frog, red-and-white mushroom umbrella, mossy forest atmosphere.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "astronaut-moon-tea",
-        "title": "Tranquility Break",
-        "brief": "An astronaut in a white spacesuit sitting in a folding camping chair on the lunar surface, holding a steaming mug with planet Earth in the sky.",
-        "visual_goals": "White EVA spacesuit, metallic folding chair, cratered grey moon surface, steaming mug in gloved hand, glowing blue Earth in black starry sky.",
-        "inspiration_keywords": [
-            "Astronaut",
-            "White Spacesuit",
-            "Camping Chair",
-            "Moon Surface",
-            "Planet Earth",
-            "Steaming Mug"
-        ],
-        "key_subjects": [
-            "astronaut in white spacesuit",
-            "folding camping chair",
-            "steaming mug",
-            "lunar moon dust",
-            "planet Earth in sky"
-        ],
-        "action": "relaxing in chair drinking tea on the moon",
-        "lighting_mood": "stark space sunlight with deep black starry void",
-        "evaluation_focus": "Astronaut in chair holding mug, cratered lunar surface, visible blue Earth in sky.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "guitar-beach-campfire",
-        "title": "Twilight Embers",
-        "brief": "A polished wooden acoustic guitar resting on golden beach sand beside a glowing campfire pit at sunset with ocean waves in the background.",
-        "visual_goals": "Warm wooden acoustic guitar, small glowing orange campfire embers, smooth golden beach sand, purple and orange sunset sky over ocean waves.",
-        "inspiration_keywords": [
-            "Acoustic Guitar",
-            "Beach Campfire",
-            "Golden Sand",
-            "Ocean Sunset",
-            "Warm Embers"
-        ],
-        "key_subjects": [
-            "wooden acoustic guitar",
-            "glowing campfire pit",
-            "sandy beach",
-            "ocean sunset"
-        ],
-        "action": "resting peacefully beside the crackling fire",
-        "lighting_mood": "warm firelight glow combined with twilight sunset sky",
-        "evaluation_focus": "Wooden guitar placement next to campfire, golden beach sand, sunset ocean horizon.",
+        "action": "sitting upright on the armchair",
+        "lighting_mood": "bright warm daylight",
+        "evaluation_focus": "Recreation of the white cat wearing sunglasses on a bright yellow chair.",
         "is_active": True,
         "created_by": "system"
     },
     {
         "id": "dog-party-cake",
         "title": "Another Year Wiser",
-        "brief": "A happy golden retriever dog wearing a colorful pointed birthday party hat, sitting in front of a small cake with a single lit candle on a table.",
-        "visual_goals": "Smiling golden retriever, striped cone party hat, small decorated cake with one glowing candle, festive colorful background.",
+        "brief": "A happy golden retriever wearing a colorful party hat in front of a small birthday cake with a single lit candle.",
+        "visual_goals": "Smiling golden retriever, pointed cone party hat, small cake with one glowing candle, clean background.",
         "inspiration_keywords": [
             "Golden Retriever",
-            "Birthday Party Hat",
+            "Party Hat",
             "Small Cake",
-            "Lit Candle",
-            "Celebration"
+            "Lit Candle"
         ],
         "key_subjects": [
             "golden retriever dog",
             "pointed party hat",
-            "cake with lit candle",
-            "table"
+            "cake with lit candle"
         ],
-        "action": "smiling happily behind the birthday cake",
-        "lighting_mood": "warm cheerful indoor party illumination",
-        "evaluation_focus": "Golden retriever wearing party hat, cake with candle, joyful celebratory mood.",
+        "action": "smiling behind the birthday cake",
+        "lighting_mood": "cheerful warm indoor lighting",
+        "evaluation_focus": "Golden retriever wearing a party hat with a lit candle on the cake.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "frog-mushroom-umbrella",
+        "title": "Under the Crimson Canopy",
+        "brief": "A small bright green frog sitting on a red mushroom with white polka dots on green moss.",
+        "visual_goals": "Bright green frog, red toadstool mushroom with white polka dots, soft green moss, simple background.",
+        "inspiration_keywords": [
+            "Green Tree Frog",
+            "Red Toadstool Mushroom",
+            "White Polka Dots",
+            "Green Moss"
+        ],
+        "key_subjects": [
+            "green tree frog",
+            "red mushroom with white spots",
+            "green moss"
+        ],
+        "action": "perched calmly on the mushroom cap",
+        "lighting_mood": "soft diffused natural light",
+        "evaluation_focus": "Green frog sitting on the red-and-white spotted mushroom.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "yellow-rubber-duck",
+        "title": "The Sunny Drift",
+        "brief": "A classic bright yellow rubber duck floating in clean blue water with white soap bubbles.",
+        "visual_goals": "Bright yellow rubber duck, clear blue water, fluffy white soap bubbles, clean composition.",
+        "inspiration_keywords": [
+            "Yellow Rubber Duck",
+            "Blue Water",
+            "Soap Bubbles",
+            "Clean Minimalist"
+        ],
+        "key_subjects": [
+            "yellow rubber duck",
+            "clear blue water",
+            "white soap bubbles"
+        ],
+        "action": "floating on calm water with bubbles",
+        "lighting_mood": "clean bright studio lighting",
+        "evaluation_focus": "Yellow rubber duck floating in blue water with soap bubbles.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "chocolate-cake-slice",
+        "title": "Midnight Confection",
+        "brief": "A slice of chocolate cake topped with a fresh red strawberry on a white plate.",
+        "visual_goals": "Layered dark chocolate cake, fresh red strawberry on top, clean white plate, wooden table.",
+        "inspiration_keywords": [
+            "Chocolate Cake",
+            "Red Strawberry",
+            "White Plate",
+            "Wooden Table"
+        ],
+        "key_subjects": [
+            "slice of chocolate cake",
+            "fresh red strawberry",
+            "white ceramic plate"
+        ],
+        "action": "served on the plate",
+        "lighting_mood": "warm soft cafe lighting",
+        "evaluation_focus": "Chocolate cake slice with a red strawberry on a white plate.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "red-apple-table",
+        "title": "The Crimson Harvest",
+        "brief": "A fresh shiny red apple with a small green leaf on a clean wooden table.",
+        "visual_goals": "Glossy red apple, small green leaf, water droplets, light wooden table.",
+        "inspiration_keywords": [
+            "Red Apple",
+            "Green Leaf",
+            "Wooden Table",
+            "Clean Minimalist"
+        ],
+        "key_subjects": [
+            "shiny red apple",
+            "small green leaf",
+            "wooden table"
+        ],
+        "action": "resting on the clean table surface",
+        "lighting_mood": "soft bright natural daylight",
+        "evaluation_focus": "Shiny red apple with green leaf on a wooden table.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "red-rose-vase",
+        "title": "Velvet Petal",
+        "brief": "A single blooming red rose in a clear glass vase of water on a clean white surface.",
+        "visual_goals": "Deep red rose bloom, green stem and leaves, clear glass vase with water, white marble surface.",
+        "inspiration_keywords": [
+            "Red Rose",
+            "Glass Vase",
+            "Clear Water",
+            "White Marble Table"
+        ],
+        "key_subjects": [
+            "single red rose",
+            "clear glass vase",
+            "white table"
+        ],
+        "action": "standing in the vase",
+        "lighting_mood": "soft elegant natural light",
+        "evaluation_focus": "Single red rose in a clear glass vase on a clean surface.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "orange-juice-glass",
+        "title": "Morning Citrus",
+        "brief": "A tall glass of fresh orange juice with ice cubes, an orange slice on the rim, and a straw on a table.",
+        "visual_goals": "Tall glass of orange juice, visible ice cubes, fresh orange wheel slice on rim, striped straw, wooden table.",
+        "inspiration_keywords": [
+            "Orange Juice",
+            "Tall Glass",
+            "Orange Slice",
+            "Ice Cubes",
+            "Straw"
+        ],
+        "key_subjects": [
+            "glass of orange juice",
+            "ice cubes",
+            "orange slice",
+            "straw"
+        ],
+        "action": "standing on the table with ice and straw",
+        "lighting_mood": "bright sunny morning light",
+        "evaluation_focus": "Glass of orange juice with ice, orange slice on the rim, and straw.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "pancakes-syrup-butter",
+        "title": "Golden Morning",
+        "brief": "A stack of fluffy pancakes topped with melting butter and dripping maple syrup on a plate.",
+        "visual_goals": "Stack of three pancakes, melting square of butter on top, dripping maple syrup, clean round plate.",
+        "inspiration_keywords": [
+            "Pancakes",
+            "Melting Butter",
+            "Maple Syrup",
+            "Breakfast Plate"
+        ],
+        "key_subjects": [
+            "stack of pancakes",
+            "melting yellow butter",
+            "maple syrup",
+            "plate"
+        ],
+        "action": "stacked neatly with syrup dripping",
+        "lighting_mood": "warm cheerful breakfast light",
+        "evaluation_focus": "Stack of pancakes with melting butter square and syrup.",
         "is_active": True,
         "created_by": "system"
     },
     {
         "id": "red-telephone-desk",
         "title": "The Direct Line",
-        "brief": "A classic rotary dial bright red telephone sitting on a polished antique dark wood desk next to a glowing green banker desk lamp.",
-        "visual_goals": "Glossy red rotary dial telephone with coiled cord, polished dark mahogany wood desk, brass banker lamp with emerald green glass shade.",
+        "brief": "A classic bright red vintage rotary dial telephone sitting on a clean wooden desk.",
+        "visual_goals": "Glossy red rotary dial telephone, coiled black cord, dark polished wooden desk, simple background.",
         "inspiration_keywords": [
             "Vintage Red Telephone",
             "Rotary Dial",
-            "Dark Wood Desk",
-            "Green Banker Lamp",
-            "Antique Study"
+            "Coiled Cord",
+            "Wooden Desk"
         ],
         "key_subjects": [
             "red rotary telephone",
-            "dark wooden desk",
-            "green banker lamp"
+            "coiled cord",
+            "wooden desk"
         ],
-        "action": "resting on the polished executive desk",
-        "lighting_mood": "warm focused emerald lamp glow in a dim cozy study",
-        "evaluation_focus": "Red rotary telephone, green banker lamp, rich polished wood surface.",
+        "action": "resting on the executive wooden desk",
+        "lighting_mood": "warm focused indoor glow",
+        "evaluation_focus": "Bright red rotary telephone on a clean wooden desk.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "panda-eating-bamboo",
-        "title": "The Verdant Sanctuary",
-        "brief": "A fluffy black-and-white giant panda sitting upright on green grass, happily munching on fresh green bamboo stalks in a tranquil bamboo grove.",
-        "visual_goals": "Fluffy giant panda seated comfortably, holding green bamboo stalks with leaves, lush green grass ground, bamboo forest background.",
+        "id": "vintage-red-bicycle",
+        "title": "Passage of Summer",
+        "brief": "A bright red vintage bicycle with a front wicker basket of yellow flowers against a clean plain white wall.",
+        "visual_goals": "Bright red bicycle frame, wicker front basket with yellow sunflowers, plain white wall background.",
         "inspiration_keywords": [
-            "Giant Panda",
-            "Green Bamboo Stalks",
-            "Fluffy Fur",
-            "Green Grass",
-            "Bamboo Forest"
+            "Red Bicycle",
+            "Wicker Basket",
+            "Yellow Sunflowers",
+            "White Wall"
         ],
         "key_subjects": [
-            "giant panda",
-            "green bamboo stalks",
-            "lush green grass",
-            "bamboo grove"
+            "red vintage bicycle",
+            "wicker basket with yellow sunflowers",
+            "white wall"
         ],
-        "action": "holding and chewing fresh bamboo shoots",
-        "lighting_mood": "gentle natural daytime light filtering through bamboo",
-        "evaluation_focus": "Panda bear holding green bamboo, natural bamboo forest setting, cheerful peaceful vibe.",
+        "action": "parked against the plain wall",
+        "lighting_mood": "warm golden daylight",
+        "evaluation_focus": "Red vintage bicycle with flower basket against a plain wall.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "lighthouse-coastal-cliff",
-        "title": "Sentinel of the Deep",
-        "brief": "A tall red-and-white striped lighthouse standing on a dark rocky coastal cliff, beaming a bright warm light beam over ocean waves at dusk.",
-        "visual_goals": "Red and white striped lighthouse tower, dark jagged sea cliff rocks, powerful yellow beam of light cutting through dusk sky, ocean waves.",
+        "id": "robot-chef-cookies",
+        "title": "The Sweet Circuit",
+        "brief": "A cute small metallic robot wearing a white chef hat holding a chocolate chip cookie on a table.",
+        "visual_goals": "Cute metallic robot, white chef hat, holding a chocolate chip cookie, clean wooden table.",
         "inspiration_keywords": [
-            "Red and White Lighthouse",
-            "Rocky Cliff",
-            "Yellow Light Beam",
-            "Twilight Ocean",
-            "Coastal Waves"
+            "Cute Robot",
+            "White Chef Hat",
+            "Chocolate Chip Cookie",
+            "Wooden Table"
         ],
         "key_subjects": [
-            "red and white lighthouse",
-            "rocky cliff",
-            "bright light beam",
-            "ocean waves at dusk"
+            "metallic toy robot",
+            "white chef hat",
+            "chocolate chip cookie",
+            "wooden table"
         ],
-        "action": "projecting its beacon light across the darkening water",
-        "lighting_mood": "deep blue hour dusk with glowing yellow lighthouse lantern",
-        "evaluation_focus": "Striped red-white lighthouse, prominent light beam, coastal rocks and evening ocean.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "greenhouse-tropical-plants",
-        "title": "The Glass Conservatory",
-        "brief": "Interior of a sunlit glass dome greenhouse filled with vibrant green tropical monstera leaves, blooming purple orchids, and hanging ferns.",
-        "visual_goals": "Glass pane dome ceiling, large split-leaf monstera plants, bright purple orchid flowers, hanging wicker planters, sunny botanical atmosphere.",
-        "inspiration_keywords": [
-            "Glass Greenhouse",
-            "Tropical Plants",
-            "Monstera Leaves",
-            "Purple Orchids",
-            "Hanging Ferns",
-            "Sunlit Conservatory"
-        ],
-        "key_subjects": [
-            "glass greenhouse dome",
-            "large monstera leaves",
-            "blooming purple orchids",
-            "hanging ferns"
-        ],
-        "action": "flourishing inside the humid sunlit conservatory",
-        "lighting_mood": "bright golden sunlight streaming through geometric glass panes",
-        "evaluation_focus": "Abundant green plants with purple orchids, architectural glass dome, sunlit greenhouse aesthetic.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "pizza-brick-oven",
-        "title": "Flames of the Hearth",
-        "brief": "A delicious round artisanal pizza with melted bubbling mozzarella cheese, fresh green basil leaves, and red cherry tomatoes inside a brick pizza oven with glowing flames.",
-        "visual_goals": "Round golden pizza crust, melted white mozzarella, vibrant green basil leaves, red tomatoes, stone brick oven interior with orange fire embers.",
-        "inspiration_keywords": [
-            "Neapolitan Pizza",
-            "Melted Mozzarella",
-            "Fresh Basil",
-            "Brick Oven",
-            "Wood Fire Flames"
-        ],
-        "key_subjects": [
-            "fresh round pizza",
-            "melted cheese and green basil",
-            "brick pizza oven",
-            "glowing wood flames"
-        ],
-        "action": "baking on the stone hearth with fire behind it",
-        "lighting_mood": "warm golden firelight from the burning wood embers",
-        "evaluation_focus": "Appetizing pizza with visible cheese and basil, stone brick oven opening, warm wood fire glow.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "desert-cactus-sunset",
-        "title": "Dusk on the Badlands",
-        "brief": "A tall green saguaro cactus with white blooming flowers on top, standing in the red sand dunes of a desert during a blazing orange and purple sunset.",
-        "visual_goals": "Tall multi-armed green cactus, white crown flowers, red desert sand ripples, brilliant gradient sky of orange, red, and deep purple.",
-        "inspiration_keywords": [
-            "Saguaro Cactus",
-            "White Desert Flowers",
-            "Red Sand Dunes",
-            "Vibrant Sunset Sky",
-            "Desert Horizon"
-        ],
-        "key_subjects": [
-            "tall saguaro cactus",
-            "white crown blossoms",
-            "red sand desert",
-            "orange purple sunset sky"
-        ],
-        "action": "standing tall against the desert horizon",
-        "lighting_mood": "dramatic golden hour sunset with rich orange and violet gradients",
-        "evaluation_focus": "Saguaro cactus with white flowers, desert sand setting, warm sunset sky colors.",
+        "action": "holding a chocolate chip cookie",
+        "lighting_mood": "bright clean daylight",
+        "evaluation_focus": "Cute metallic robot wearing a chef hat holding a cookie.",
         "is_active": True,
         "created_by": "system"
     },
     {
         "id": "cozy-fireplace-cat",
         "title": "Hearthside Slumber",
-        "brief": "A cute orange tabby cat curled up fast asleep on a soft knitted blanket on a wooden floor in front of a warm stone fireplace with crackling fire.",
-        "visual_goals": "Sleeping orange ginger cat curled into a circle, cream knitted throw blanket, warm stone fireplace hearth, glowing orange fire logs.",
+        "brief": "A cute orange tabby kitten sleeping curled up on a soft knitted blanket on a wooden floor by a warm fireplace.",
+        "visual_goals": "Sleeping orange kitten curled in a ball, cream knitted blanket, wooden floor, warm fireplace glow.",
         "inspiration_keywords": [
-            "Orange Tabby Cat",
+            "Orange Tabby Kitten",
             "Sleeping Cat",
             "Knitted Blanket",
-            "Stone Fireplace",
-            "Crackling Hearth"
+            "Warm Hearth"
         ],
         "key_subjects": [
-            "orange tabby cat",
+            "orange tabby kitten",
             "knitted blanket",
-            "stone fireplace",
-            "crackling fire logs"
+            "wooden floor",
+            "fireplace"
         ],
-        "action": "sleeping peacefully by the warm hearth",
-        "lighting_mood": "warm amber room glow from the fireplace",
-        "evaluation_focus": "Curled sleeping orange cat, knitted blanket, stone fireplace with visible fire.",
+        "action": "sleeping peacefully on the blanket",
+        "lighting_mood": "warm cozy amber fireplace glow",
+        "evaluation_focus": "Sleeping orange kitten on a knitted blanket in front of a fireplace.",
+        "is_active": True,
+        "created_by": "system"
+    },
+    {
+        "id": "panda-eating-bamboo",
+        "title": "The Verdant Sanctuary",
+        "brief": "A fluffy giant panda sitting on green grass eating a fresh green bamboo stalk.",
+        "visual_goals": "Fluffy giant panda sitting upright, holding green bamboo stalk, lush green grass.",
+        "inspiration_keywords": [
+            "Giant Panda",
+            "Green Bamboo Stalk",
+            "Green Grass",
+            "Peaceful"
+        ],
+        "key_subjects": [
+            "giant panda",
+            "green bamboo stalk",
+            "green grass"
+        ],
+        "action": "sitting and chewing bamboo",
+        "lighting_mood": "gentle natural daylight",
+        "evaluation_focus": "Panda bear sitting on grass holding and eating green bamboo.",
         "is_active": True,
         "created_by": "system"
     },
     {
         "id": "sailboat-turquoise-sea",
         "title": "Azure Drift",
-        "brief": "A modern sleek white sailboat with full sails gliding across crystal-clear turquoise ocean water near a lush green tropical island under a sunny blue sky.",
-        "visual_goals": "White hull sailboat with hoisted white sails, bright turquoise transparent water revealing sandy seabed, tropical palm island in background, clear blue sky.",
+        "brief": "A sleek white sailboat with full white sails sailing on calm clear turquoise ocean water under a sunny blue sky.",
+        "visual_goals": "White hull sailboat with hoisted sails, clear turquoise water, clear blue sky.",
         "inspiration_keywords": [
             "White Sailboat",
-            "Crystal Turquoise Water",
-            "Tropical Island",
-            "Full White Sails",
-            "Sunny Sky"
+            "Hoisted Sails",
+            "Turquoise Ocean Water",
+            "Sunny Blue Sky"
         ],
         "key_subjects": [
             "white sailboat",
-            "clear turquoise water",
-            "tropical green island",
-            "sunny blue sky"
+            "full white sails",
+            "turquoise ocean water",
+            "blue sky"
         ],
-        "action": "sailing gracefully across the turquoise lagoon",
-        "lighting_mood": "bright midday tropical sunshine with sparkling water reflections",
-        "evaluation_focus": "White sailboat, vibrant turquoise ocean water, tropical island backdrop.",
+        "action": "sailing on calm turquoise sea",
+        "lighting_mood": "bright midday tropical sunshine",
+        "evaluation_focus": "White sailboat with sails on calm turquoise water.",
         "is_active": True,
         "created_by": "system"
     }
