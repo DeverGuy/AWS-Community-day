@@ -10,6 +10,7 @@ import json
 import uuid
 import gzip
 import base64
+import urllib.parse
 from datetime import datetime
 import tempfile
 from dotenv import load_dotenv
@@ -31,11 +32,23 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 86400
 CORS(app)
 
 class VercelPathFixMiddleware:
-    """Normalizes PATH_INFO for Vercel serverless environments when rewrites route to /api/index or /app.py."""
+    """Normalizes PATH_INFO for Vercel serverless environments using __vercel_path query and headers."""
     def __init__(self, wsgi_app):
         self.wsgi_app = wsgi_app
 
     def __call__(self, environ, start_response):
+        qs = environ.get("QUERY_STRING", "")
+        if "__vercel_path=" in qs:
+            params = urllib.parse.parse_qs(qs, keep_blank_values=True)
+            v_paths = params.pop("__vercel_path", None)
+            if v_paths and v_paths[0]:
+                raw_path = v_paths[0]
+                if not raw_path.startswith("/"):
+                    raw_path = "/" + raw_path
+                environ["PATH_INFO"] = raw_path
+                environ["QUERY_STRING"] = urllib.parse.urlencode([(k, v) for k, vs in params.items() for v in vs])
+                return self.wsgi_app(environ, start_response)
+
         matched = (
             environ.get("HTTP_X_MATCHED_PATH")
             or environ.get("HTTP_X_ORIGINAL_URI")

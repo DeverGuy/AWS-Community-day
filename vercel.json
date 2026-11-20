@@ -3,9 +3,6 @@
   "functions": {
     "api/index.py": {
       "maxDuration": 60
-    },
-    "app.py": {
-      "maxDuration": 60
     }
   },
   "headers": [
@@ -26,7 +23,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/api/index"
+      "destination": "/api/index?__vercel_path=/$1"
     }
   ]
 }
