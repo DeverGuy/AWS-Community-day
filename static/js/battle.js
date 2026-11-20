@@ -1157,7 +1157,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 4. 180-SECOND SINGLE-SHOT TIMER & FINALIZE / AUTO-GENERATE ENGINE
   // ---------------------------------------------------------------------------
   const generateBtn = document.getElementById("generate-image-btn");
-  const submitBtn = document.getElementById("submit-masterpiece-btn");
   const overlay = document.getElementById("results-loading-overlay") || document.getElementById("generating-overlay");
   const activeImg = document.getElementById("active-generated-image");
   const resultTargetImg = document.getElementById("result-target-image");
@@ -1218,10 +1217,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (placeholder) placeholder.classList.remove("hidden");
     if (viewFullBtn) viewFullBtn.disabled = true;
     if (toggleCompareBtn) toggleCompareBtn.classList.add("hidden");
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>🏆 Score Auto-Saves on Finalize</span>`;
-    }
     const evalCard = document.getElementById("ai-eval-preview-card");
     if (evalCard) evalCard.classList.add("hidden");
   }
@@ -1332,10 +1327,6 @@ document.addEventListener("DOMContentLoaded", () => {
       generateBtn.disabled = false;
       generateBtn.innerHTML = `<span>🚀 Finalize &amp; Generate Image</span>`;
     }
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>🏆 Score Auto-Saves on Finalize</span>`;
-    }
     const countBadge = document.getElementById("history-count");
     if (countBadge) countBadge.textContent = "0 / 1";
     const reel = document.getElementById("history-reel-container");
@@ -1442,10 +1433,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextFooterBefore = document.getElementById("results-next-footer");
     if (nextFooterBefore) nextFooterBefore.classList.add("hidden");
     if (viewFullBtn) viewFullBtn.disabled = true;
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span>🏆 View Leaderboard</span>`;
-    }
     const srcTagBefore = document.getElementById("canvas-source-tag");
     const latTagBefore = document.getElementById("canvas-latency-tag");
     if (srcTagBefore) srcTagBefore.classList.add("hidden");
@@ -1530,13 +1517,6 @@ document.addEventListener("DOMContentLoaded", () => {
         refreshCompetitionState();
 
         lockWorkspaceAfterFinalize("✅ Final Image Generated (1/1 Used)", "FINALIZED", "1 / 1");
-
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = state.isSubmitted
-            ? `<span>🏆 Score Saved — View Leaderboard</span>`
-            : `<span>🏆 Lock In &amp; Save Score</span>`;
-        }
 
         const nextFooterDone = document.getElementById("results-next-footer");
         if (nextFooterDone) nextFooterDone.classList.remove("hidden");
@@ -1696,64 +1676,6 @@ document.addEventListener("DOMContentLoaded", () => {
       summaryNote.style.marginLeft = "10px";
       summaryNote.textContent = `Finalized (${gen.auto_triggered ? "Auto-generated at 00:00" : "Manual Finalize"}) — Score: ${gen.evaluation?.total_score ?? 0}/100`;
       reel.appendChild(summaryNote);
-    });
-  }
-
-  // ---------------------------------------------------------------------------
-  // 6. SUBMIT MASTERPIECE / VIEW LEADERBOARD
-  // ---------------------------------------------------------------------------
-  if (submitBtn) {
-    submitBtn.addEventListener("click", async () => {
-      if (!state.participant) {
-        showToast("Please register on Home first.", "error");
-        return;
-      }
-      if (state.isSubmitted) {
-        playAudioTone("click");
-        showScreen("leaderboard");
-        return;
-      }
-      if (!state.currentImage) {
-        showToast("Finalize and generate your image first.", "error");
-        return;
-      }
-
-      playAudioTone("success");
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Locking In Score...</span>`;
-
-      try {
-        const resp = await fetch("/api/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            participant_id: state.participant.id,
-            prompt: promptInput ? promptInput.value.trim() : "",
-            image_data: state.currentImage
-          })
-        });
-        const data = await resp.json();
-
-        if (data.success) {
-          state.isSubmitted = true;
-          refreshCompetitionState();
-          updateDashboardProgressRing(data.submission.ai_score, data.submission.tier_badge);
-          showToast(
-            `Score locked in! AI Judge Match: ${data.submission.ai_score}/100 under ${state.participant.name}.`,
-            "success"
-          );
-          showScreen("leaderboard");
-        } else {
-          showToast(data.error || "Submission failed.", "error");
-        }
-      } catch (err) {
-        showToast("Error submitting masterpiece.", "error");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = state.isSubmitted
-          ? `<span>🏆 Score Saved — View Leaderboard</span>`
-          : `<span>🏆 Lock In &amp; Save Score</span>`;
-      }
     });
   }
 
