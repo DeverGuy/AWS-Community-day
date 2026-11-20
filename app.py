@@ -11,6 +11,7 @@ import uuid
 import gzip
 import base64
 from datetime import datetime
+import tempfile
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify, session, Response, redirect
 from flask_socketio import SocketIO, emit, join_room, leave_room
@@ -81,10 +82,53 @@ competition_state = {
     "philosophy": "Inspired by the AWS Student Builder Groups philosophy of empowering students to explore cloud technology, develop technical skills, collaborate, and build innovative solutions."
 }
 
-# In-memory storage for active session
+# In-memory storage for active session with serverless-safe local persistence
 participants = {}    # participant_id -> dict
 socket_to_id = {}    # socket_id -> participant_id
 submissions = {}     # submission_id -> dict
+
+STATE_FILE = os.path.join(tempfile.gettempdir() if os.environ.get("VERCEL") else "data", "competition_runtime_state.json")
+
+def _save_runtime_state():
+    try:
+        dir_name = os.path.dirname(STATE_FILE)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
+        ser_participants = {}
+        for pid, p in participants.items():
+            cp = dict(p)
+            if "seen_challenges" in cp and isinstance(cp["seen_challenges"], set):
+                cp["seen_challenges"] = list(cp["seen_challenges"])
+            ser_participants[pid] = cp
+        payload = {
+            "competition_state": competition_state,
+            "participants": ser_participants,
+            "submissions": submissions
+        }
+        with open(STATE_FILE, "w", encoding="utf-8") as f:
+            json.dump(payload, f)
+    except Exception as e:
+        print(f"[RuntimeState] Save error: {e}")
+
+def _load_runtime_state():
+    if not os.path.exists(STATE_FILE):
+        return
+    try:
+        with open(STATE_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if "competition_state" in data:
+            competition_state.update(data["competition_state"])
+        if "participants" in data:
+            for pid, p in data["participants"].items():
+                if "seen_challenges" in p and isinstance(p["seen_challenges"], list):
+                    p["seen_challenges"] = set(p["seen_challenges"])
+                participants[pid] = p
+        if "submissions" in data:
+            submissions.update(data["submissions"])
+    except Exception as e:
+        print(f"[RuntimeState] Load error: {e}")
+
+_load_runtime_state()
 
 def get_time_remaining():
     if competition_state["status"] != "battle" or not competition_state["round_start_time"]:
@@ -94,7 +138,8 @@ def get_time_remaining():
     return remaining
 
 def broadcast_state():
-    """Broadcast public state to all connected clients"""
+    """Broadcast public state to all connected clients and persist runtime state"""
+    _save_runtime_state()
     state_payload = {
         "status": competition_state["status"],
         "round_number": competition_state["round_number"],
@@ -282,6 +327,7 @@ def _record_submission(participant, target_challenge, prompt, image_data, eval_r
     submissions[submission_id] = submission
     participant["submission"] = submission
     participant["status"] = "submitted"
+    _save_runtime_state()
 
     socketio.emit("new_submission", {
         "submission_id": submission_id,

@@ -459,12 +459,16 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (e) { }
   }
 
-  // Resilient fallback: only poll if Socket.IO is disconnected, at an 8s interval
+  // Resilient fallback: poll if Socket.IO is disconnected, at a 5s interval
   setInterval(() => {
     if (!socket || !socket.connected) {
       refreshCompetitionState();
+      const currentScr = document.querySelector(".screen-view:not(.hidden)");
+      if (currentScr && currentScr.id === "screen-leaderboard") {
+        loadLeaderboard();
+      }
     }
-  }, 8000);
+  }, 5000);
 
   // Update Home Progress Circular Ring & Profile Screen
   function updateDashboardProgressRing(scoreValue, tierTitle) {

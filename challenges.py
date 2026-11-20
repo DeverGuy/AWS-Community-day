@@ -390,10 +390,18 @@ class ChallengeManager:
 
     def _load(self):
         load_candidates = []
-        if os.path.exists("challenges.json"):
+        root_dir = os.path.dirname(os.path.abspath(__file__))
+        root_json = os.path.join(root_dir, "challenges.json")
+        if os.path.exists(root_json):
+            load_candidates.append(root_json)
+        if os.path.exists("challenges.json") and "challenges.json" not in load_candidates:
             load_candidates.append("challenges.json")
-        if self.data_file and os.path.exists(self.data_file) and self.data_file not in load_candidates:
-            load_candidates.append(self.data_file)
+        if self.data_file:
+            abs_data = os.path.join(root_dir, self.data_file) if not os.path.isabs(self.data_file) else self.data_file
+            if os.path.exists(abs_data) and abs_data not in load_candidates:
+                load_candidates.append(abs_data)
+            elif os.path.exists(self.data_file) and self.data_file not in load_candidates:
+                load_candidates.append(self.data_file)
 
         for path in load_candidates:
             try:
