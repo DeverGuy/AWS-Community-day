@@ -14,356 +14,389 @@ from PIL import Image
 OFFICIAL_CATEGORIES = []
 
 DEFAULT_CHALLENGES = [
-    # Category 1: Cinematic Movie Scenes
     {
-        "id": "movie-vintage-ferrari",
-        "category": "Cinematic Movie Scenes",
-        "title": "The Riviera Coastal Cliff Drift",
-        "brief": "A classic cherry-red vintage sports car drifting around a sharp mountain hairpin curve on a coastal cliff road at golden hour, with white tire smoke curling and the deep blue Mediterranean sea below.",
-        "visual_goals": "Cherry-red vintage sports car, dynamic drift angle, white tire smoke, winding mountain asphalt road, rocky coastal cliff, golden hour sunlight flare, deep blue ocean.",
-        "inspiration_keywords": ["Vintage Red Sports Car", "Coastal Cliff Drift", "Golden Hour Flare", "Italian Riviera", "Tire Smoke", "Cinematic Film Still"],
-        "key_subjects": ["vintage red sports car", "mountain hairpin road", "ocean cliff", "tire smoke"],
-        "action": "drifting around a sharp hairpin curve at high speed",
-        "lighting_mood": "warm golden hour sunlight, low angle sun flare",
-        "evaluation_focus": "Accurate color of the vehicle, dynamic drifting motion and tire smoke, coastal cliff setting, and golden hour lighting.",
+        "id": "cat-sunglasses-chair",
+        "title": "The Sunlit Solarium",
+        "brief": "A fluffy white cat wearing stylish black sunglasses sitting comfortably on a bright yellow armchair in a sunlit room.",
+        "visual_goals": "Fluffy white cat sitting upright, black sunglasses on its face, bright yellow armchair, sunny morning room with warm daylight.",
+        "inspiration_keywords": [
+            "White Cat",
+            "Black Sunglasses",
+            "Yellow Armchair",
+            "Sunlit Room",
+            "Cozy Indoors"
+        ],
+        "key_subjects": [
+            "fluffy white cat",
+            "black sunglasses",
+            "bright yellow armchair",
+            "sunlit room"
+        ],
+        "action": "sitting relaxed and upright on the armchair",
+        "lighting_mood": "warm natural sunlight streaming from a window",
+        "evaluation_focus": "Recreation of the white cat wearing sunglasses on a yellow armchair with bright daytime lighting.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-tokyo-rain-neon",
-        "category": "Cinematic Movie Scenes",
-        "title": "Midnight Rain in Neo-Tokyo",
-        "brief": "A moody, narrow Tokyo alley drenched in heavy nighttime rain with glowing neon signs, steam rising from street drains, and neon reflections shimmering across wet dark asphalt.",
-        "visual_goals": "Wet glistening asphalt street, vibrant neon signs (cyan, magenta, amber), pouring rain atmosphere, urban narrow alley, reflections in puddles.",
-        "inspiration_keywords": ["Rainy Tokyo Alley", "Vibrant Neon Signs", "Wet Asphalt Reflections", "Atmospheric Night Haze", "Cinematic Cyberpunk"],
-        "key_subjects": ["narrow Tokyo alley", "glowing neon signs", "wet asphalt street", "rain puddles"],
-        "action": "heavy rain pouring down, steam rising from street drains",
-        "lighting_mood": "dark night with vibrant cyan and magenta neon reflections",
-        "evaluation_focus": "Atmospheric rainy night mood, vivid neon lighting reflections on wet ground, narrow urban perspective.",
+        "id": "vintage-red-bicycle",
+        "title": "Passage of Summer",
+        "brief": "A classic bright red vintage bicycle with a woven wicker basket filled with blooming yellow sunflowers, parked next to a blue wooden door.",
+        "visual_goals": "Bright red bicycle frame, woven wicker front basket brimming with yellow sunflowers, rustic blue wooden door, cobblestone ground.",
+        "inspiration_keywords": [
+            "Red Bicycle",
+            "Wicker Basket",
+            "Yellow Sunflowers",
+            "Blue Door",
+            "Cobblestones"
+        ],
+        "key_subjects": [
+            "red vintage bicycle",
+            "woven wicker basket",
+            "blooming yellow sunflowers",
+            "weathered blue wooden door"
+        ],
+        "action": "parked against the blue door",
+        "lighting_mood": "warm golden daylight casting soft shadows",
+        "evaluation_focus": "Red bicycle color, prominent sunflower basket, blue door background contrast.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-astronaut-earth",
-        "category": "Cinematic Movie Scenes",
-        "title": "Spacewalk Over Earth Horizon",
-        "brief": "A breathtaking cinematic shot of an astronaut in a pressurized white EVA spacesuit floating in deep space outside a spacecraft, with the brilliant curved blue horizon of planet Earth glowing below.",
-        "visual_goals": "Detailed white spacesuit, gold-tinted visor reflection, deep black space background, glowing blue curvature of Earth, bright solar lens flare.",
-        "inspiration_keywords": ["Astronaut Spacewalk", "Curved Earth Horizon", "Deep Black Space", "Gold Visor Reflection", "Cinematic IMAX Scale"],
-        "key_subjects": ["astronaut in white EVA spacesuit", "curved planet Earth", "deep black space", "spacecraft hull"],
-        "action": "spacewalking and floating weightlessly in orbit",
-        "lighting_mood": "harsh direct sunlight with solar lens flare against jet-black void",
-        "evaluation_focus": "Scale of the earth curvature, detailed spacesuit textures, contrast between brilliant Earth and deep black void.",
+        "id": "coffee-latte-book",
+        "title": "A Quiet Chapter",
+        "brief": "A warm ceramic mug with heart-shaped latte art in the foam, sitting next to an open hardcover book on a dark rustic wooden table.",
+        "visual_goals": "Ceramic coffee mug, heart pattern in latte foam, open book with visible printed page text, rustic dark wood table, cozy morning lighting.",
+        "inspiration_keywords": [
+            "Coffee Mug",
+            "Heart Latte Art",
+            "Open Book",
+            "Wooden Table",
+            "Cozy Morning"
+        ],
+        "key_subjects": [
+            "ceramic coffee mug",
+            "heart latte art",
+            "open hardcover book",
+            "dark rustic wooden table"
+        ],
+        "action": "steaming gently on the table",
+        "lighting_mood": "soft warm morning cafe illumination",
+        "evaluation_focus": "Heart-shaped latte art foam, open book presence, cozy cafe ambiance.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-gothic-rooftop",
-        "category": "Cinematic Movie Scenes",
-        "title": "The Gothic Rooftop Sentinel",
-        "brief": "A weathered stone gargoyle perched atop a soaring gothic cathedral rooftop, looking down upon a fog-shrouded modern city skyline at blue twilight hour with cinematic rolling clouds.",
-        "visual_goals": "Weathered stone gargoyle foreground, dramatic gothic spires, misty blue-hour city skyline below, moody dusk clouds, cinematic high-altitude perspective.",
-        "inspiration_keywords": ["Gothic Gargoyle", "Skyscraper Twilight", "Foggy City Skyline", "Blue Hour Mood", "Cinematic High Angle"],
-        "key_subjects": ["stone gargoyle", "gothic cathedral spires", "foggy modern skyline", "twilight clouds"],
-        "action": "perched motionless looking down over the sprawling metropolis",
-        "lighting_mood": "moody blue twilight hour, atmospheric fog, city night lights emerging",
-        "evaluation_focus": "Foreground stone sculpture vs background cityscape contrast, atmospheric blue hour fog, dramatic elevation.",
+        "id": "robot-chef-cookies",
+        "title": "The Sweet Circuit",
+        "brief": "A cute round metallic robot wearing a tall white chef hat, holding a baking tray of freshly baked chocolate chip cookies in a bright modern kitchen.",
+        "visual_goals": "Smiling metallic robot, white chef hat, metal baking sheet with warm chocolate chip cookies, clean bright modern kitchen.",
+        "inspiration_keywords": [
+            "Cute Robot",
+            "Chef Hat",
+            "Chocolate Chip Cookies",
+            "Baking Sheet",
+            "Modern Kitchen"
+        ],
+        "key_subjects": [
+            "round metallic robot",
+            "white chef hat",
+            "tray of chocolate chip cookies",
+            "modern kitchen"
+        ],
+        "action": "proudly presenting a freshly baked tray of cookies",
+        "lighting_mood": "bright clean indoor kitchen lighting",
+        "evaluation_focus": "Cute robot wearing a chef hat, visible chocolate chip cookies, cheerful kitchen setting.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-desert-dunes",
-        "category": "Cinematic Movie Scenes",
-        "title": "Sahara Sandstorm Horizon",
-        "brief": "Vast, sweeping golden sand dunes carved by desert winds, with sharp crest shadows and fine sand grains blowing across the ridge under a blazing golden sun flare.",
-        "visual_goals": "Sinuous sand dune curves, dramatic light and shadow ridges, fine blowing sand dust, warm golden sand texture, blazing desert sun flare.",
-        "inspiration_keywords": ["Golden Sand Dunes", "Desert Wind Ridges", "Sun Flare Horizon", "Blowing Sand Grains", "Cinematic Dunescape"],
-        "key_subjects": ["sweeping golden sand dunes", "sharp ridge crests", "blowing sand plumes", "desert horizon"],
-        "action": "wind whipping fine sand grains across the knife-edge dune ridges",
-        "lighting_mood": "blazing golden sunlight with sharp diagonal shadows on dune faces",
-        "evaluation_focus": "Clean geometric curves of the sand ridges, contrast between sunlit and shadowed faces, golden desert atmosphere.",
+        "id": "frog-mushroom-umbrella",
+        "title": "Under the Crimson Canopy",
+        "brief": "A small cute bright green tree frog sitting on a mossy grey stone under a red mushroom with white polka dots during gentle rain.",
+        "visual_goals": "Bright green frog, red toadstool mushroom with white polka dots acting as an umbrella, wet moss-covered stone, soft rain droplets.",
+        "inspiration_keywords": [
+            "Green Tree Frog",
+            "Red Toadstool Mushroom",
+            "White Polka Dots",
+            "Mossy Stone",
+            "Gentle Rain"
+        ],
+        "key_subjects": [
+            "green tree frog",
+            "red mushroom with white spots",
+            "mossy grey stone",
+            "raindrops"
+        ],
+        "action": "sheltering calmly under the mushroom cap",
+        "lighting_mood": "soft diffused rainy day forest lighting",
+        "evaluation_focus": "Green frog, red-and-white mushroom umbrella, mossy forest atmosphere.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-cyberpunk-subway",
-        "category": "Cinematic Movie Scenes",
-        "title": "Subway Platform at Blue Hour",
-        "brief": "A high-speed modern underground metro train arriving at an illuminated urban station platform, motion blur streaking lights across sleek tiled pillars.",
-        "visual_goals": "Sleek subway train with motion blur trails, bright headlights, clean urban platform tiles, cool blue and yellow lighting, vanishing point perspective.",
-        "inspiration_keywords": ["Speeding Subway Train", "Motion Blur Lights", "Underground Platform", "Vanishing Point Perspective", "Urban Transit Action"],
-        "key_subjects": ["underground metro train", "station platform", "tiled pillars", "overhead yellow lights"],
-        "action": "train speeding into station with motion blur light trails",
-        "lighting_mood": "cool cyan and blue ambient lighting with warm yellow platform lights",
-        "evaluation_focus": "Dynamic speed motion blur, underground station geometry and perspective lines, contrasting headlight glow.",
+        "id": "astronaut-moon-tea",
+        "title": "Tranquility Break",
+        "brief": "An astronaut in a white spacesuit sitting in a folding camping chair on the lunar surface, holding a steaming mug with planet Earth in the sky.",
+        "visual_goals": "White EVA spacesuit, metallic folding chair, cratered grey moon surface, steaming mug in gloved hand, glowing blue Earth in black starry sky.",
+        "inspiration_keywords": [
+            "Astronaut",
+            "White Spacesuit",
+            "Camping Chair",
+            "Moon Surface",
+            "Planet Earth",
+            "Steaming Mug"
+        ],
+        "key_subjects": [
+            "astronaut in white spacesuit",
+            "folding camping chair",
+            "steaming mug",
+            "lunar moon dust",
+            "planet Earth in sky"
+        ],
+        "action": "relaxing in chair drinking tea on the moon",
+        "lighting_mood": "stark space sunlight with deep black starry void",
+        "evaluation_focus": "Astronaut in chair holding mug, cratered lunar surface, visible blue Earth in sky.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-cyberpunk-market",
-        "category": "Cinematic Movie Scenes",
-        "title": "Neon Night Market Atmosphere",
-        "brief": "A lively outdoor night market filled with glowing lanterns, neon signage, bustling food stalls with rising steam, and vibrant nighttime street life.",
-        "visual_goals": "Glowing paper lanterns, neon signs, food stall steam clouds, narrow walkway, warm and cool color contrast, rich street textures.",
-        "inspiration_keywords": ["Neon Night Market", "Floating Steam Clouds", "Glowing Lanterns", "Vibrant Street Life", "Rich Urban Texture"],
-        "key_subjects": ["bustling night market stalls", "glowing paper lanterns", "neon signs", "rising food steam"],
-        "action": "crowds walking through market, vendors cooking with billowing steam",
-        "lighting_mood": "warm amber lantern illumination contrasted with cool neon glow",
-        "evaluation_focus": "Atmospheric street density, lighting from lanterns and neon, warm culinary steam.",
+        "id": "guitar-beach-campfire",
+        "title": "Twilight Embers",
+        "brief": "A polished wooden acoustic guitar resting on golden beach sand beside a glowing campfire pit at sunset with ocean waves in the background.",
+        "visual_goals": "Warm wooden acoustic guitar, small glowing orange campfire embers, smooth golden beach sand, purple and orange sunset sky over ocean waves.",
+        "inspiration_keywords": [
+            "Acoustic Guitar",
+            "Beach Campfire",
+            "Golden Sand",
+            "Ocean Sunset",
+            "Warm Embers"
+        ],
+        "key_subjects": [
+            "wooden acoustic guitar",
+            "glowing campfire pit",
+            "sandy beach",
+            "ocean sunset"
+        ],
+        "action": "resting peacefully beside the crackling fire",
+        "lighting_mood": "warm firelight glow combined with twilight sunset sky",
+        "evaluation_focus": "Wooden guitar placement next to campfire, golden beach sand, sunset ocean horizon.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-samurai-duel",
-        "category": "Cinematic Movie Scenes",
-        "title": "Samurai Duel in Moonlit Cherry Blossoms",
-        "brief": "A dramatic cinematic confrontation between two samurai in traditional armor standing poised with katanas beneath blowing pink cherry blossom petals under a giant full moon.",
-        "visual_goals": "Silhouetted samurai warriors, traditional battle armor, katana blade glint, swirling pink sakura petals, giant luminous white moon, atmospheric night fog.",
-        "inspiration_keywords": ["Samurai Duel", "Moonlit Sakura", "Katana Blade Glint", "Cherry Blossom Blizzard", "Cinematic Japanese Period"],
-        "key_subjects": ["two samurai warriors", "katana swords", "cherry blossom petals", "giant full moon"],
-        "action": "poised in tension moments before a deadly katana strike",
-        "lighting_mood": "cool silver moonlight contrasting with dark shadowy silhouettes",
-        "evaluation_focus": "Silhouette composition, moonlit contrast, dynamic petal motion, period battle atmosphere.",
+        "id": "dog-party-cake",
+        "title": "Another Year Wiser",
+        "brief": "A happy golden retriever dog wearing a colorful pointed birthday party hat, sitting in front of a small cake with a single lit candle on a table.",
+        "visual_goals": "Smiling golden retriever, striped cone party hat, small decorated cake with one glowing candle, festive colorful background.",
+        "inspiration_keywords": [
+            "Golden Retriever",
+            "Birthday Party Hat",
+            "Small Cake",
+            "Lit Candle",
+            "Celebration"
+        ],
+        "key_subjects": [
+            "golden retriever dog",
+            "pointed party hat",
+            "cake with lit candle",
+            "table"
+        ],
+        "action": "smiling happily behind the birthday cake",
+        "lighting_mood": "warm cheerful indoor party illumination",
+        "evaluation_focus": "Golden retriever wearing party hat, cake with candle, joyful celebratory mood.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-aurora-cabin",
-        "category": "Cinematic Movie Scenes",
-        "title": "Snowy Mountain Cabin Under Northern Lights",
-        "brief": "A cozy, warm timber cabin nestled deep in snowy alpine pines, with glowing orange windows contrasting against ethereal green and purple Aurora Borealis dancing across the arctic night sky.",
-        "visual_goals": "Luminous emerald green aurora ribbons, starry arctic sky, warm glowing cabin windows, heavy snowdrifts on roof, silhouetted evergreen pine trees.",
-        "inspiration_keywords": ["Aurora Borealis", "Snowy Log Cabin", "Warm Window Glow", "Starry Arctic Sky", "Emerald Ribbons"],
-        "key_subjects": ["wooden snow cabin", "dancing green aurora borealis", "snow-covered pine trees", "warm window light"],
-        "action": "emerald light ribbons rippling dynamically across the night sky",
-        "lighting_mood": "cold celestial green aurora light contrasting with cozy warm amber indoor glow",
-        "evaluation_focus": "Vibrant aurora colors, stark temperature contrast between snow and warm windows.",
+        "id": "red-telephone-desk",
+        "title": "The Direct Line",
+        "brief": "A classic rotary dial bright red telephone sitting on a polished antique dark wood desk next to a glowing green banker desk lamp.",
+        "visual_goals": "Glossy red rotary dial telephone with coiled cord, polished dark mahogany wood desk, brass banker lamp with emerald green glass shade.",
+        "inspiration_keywords": [
+            "Vintage Red Telephone",
+            "Rotary Dial",
+            "Dark Wood Desk",
+            "Green Banker Lamp",
+            "Antique Study"
+        ],
+        "key_subjects": [
+            "red rotary telephone",
+            "dark wooden desk",
+            "green banker lamp"
+        ],
+        "action": "resting on the polished executive desk",
+        "lighting_mood": "warm focused emerald lamp glow in a dim cozy study",
+        "evaluation_focus": "Red rotary telephone, green banker lamp, rich polished wood surface.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-steam-train",
-        "category": "Cinematic Movie Scenes",
-        "title": "The Highland Viaduct Steam Locomotive",
-        "brief": "A historic black steam locomotive pulling vintage red passenger coaches across a soaring curved stone arched viaduct, billowing dense white steam over a misty Scottish glen at sunrise.",
-        "visual_goals": "Majestic curved stone viaduct, classic steam locomotive, massive plumes of white steam, rolling green hills and heather, morning mountain mist.",
-        "inspiration_keywords": ["Vintage Steam Locomotive", "Arched Stone Viaduct", "Billowing White Steam", "Scottish Highlands", "Morning Glen Mist"],
-        "key_subjects": ["black steam locomotive", "curved stone viaduct bridge", "white steam clouds", "misty green valley"],
-        "action": "train powering across the high bridge with billowing steam plumes",
-        "lighting_mood": "soft morning sunrise rays breaking through mountain valley mist",
-        "evaluation_focus": "Curving architectural perspective of the bridge, volume of steam, highland landscape depth.",
+        "id": "panda-eating-bamboo",
+        "title": "The Verdant Sanctuary",
+        "brief": "A fluffy black-and-white giant panda sitting upright on green grass, happily munching on fresh green bamboo stalks in a tranquil bamboo grove.",
+        "visual_goals": "Fluffy giant panda seated comfortably, holding green bamboo stalks with leaves, lush green grass ground, bamboo forest background.",
+        "inspiration_keywords": [
+            "Giant Panda",
+            "Green Bamboo Stalks",
+            "Fluffy Fur",
+            "Green Grass",
+            "Bamboo Forest"
+        ],
+        "key_subjects": [
+            "giant panda",
+            "green bamboo stalks",
+            "lush green grass",
+            "bamboo grove"
+        ],
+        "action": "holding and chewing fresh bamboo shoots",
+        "lighting_mood": "gentle natural daytime light filtering through bamboo",
+        "evaluation_focus": "Panda bear holding green bamboo, natural bamboo forest setting, cheerful peaceful vibe.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-paris-rain",
-        "category": "Cinematic Movie Scenes",
-        "title": "Rainy Paris Café Terrace & Cobblestones",
-        "brief": "A romantic vintage Paris street café with small round tables under a dark green canvas awning, looking out onto wet glistening cobblestone streets with classic Haussmann architecture in the rain.",
-        "visual_goals": "Wet glistening cobblestones, vintage café tables, green bistro awning, blurred car headlights in rain, historic Parisian apartment facades, warm streetlamps.",
-        "inspiration_keywords": ["Rainy Paris Bistro", "Wet Cobblestone Reflections", "Haussmann Architecture", "Warm Bistro Awning", "Vintage French Cinema"],
-        "key_subjects": ["Paris café terrace", "wet cobblestone street", "classic Parisian buildings", "glowing streetlamps"],
-        "action": "gentle rain falling, creating shimmering puddles and reflections",
-        "lighting_mood": "moody rainy daylight mixed with glowing warm amber streetlights",
-        "evaluation_focus": "Cobblestone surface reflections, Parisian architectural authenticity, cozy café foreground.",
+        "id": "lighthouse-coastal-cliff",
+        "title": "Sentinel of the Deep",
+        "brief": "A tall red-and-white striped lighthouse standing on a dark rocky coastal cliff, beaming a bright warm light beam over ocean waves at dusk.",
+        "visual_goals": "Red and white striped lighthouse tower, dark jagged sea cliff rocks, powerful yellow beam of light cutting through dusk sky, ocean waves.",
+        "inspiration_keywords": [
+            "Red and White Lighthouse",
+            "Rocky Cliff",
+            "Yellow Light Beam",
+            "Twilight Ocean",
+            "Coastal Waves"
+        ],
+        "key_subjects": [
+            "red and white lighthouse",
+            "rocky cliff",
+            "bright light beam",
+            "ocean waves at dusk"
+        ],
+        "action": "projecting its beacon light across the darkening water",
+        "lighting_mood": "deep blue hour dusk with glowing yellow lighthouse lantern",
+        "evaluation_focus": "Striped red-white lighthouse, prominent light beam, coastal rocks and evening ocean.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-deep-sea",
-        "category": "Cinematic Movie Scenes",
-        "title": "Abyssal Submersible & Bioluminescent Titan",
-        "brief": "An deep-ocean research submersible shining twin halogen beam spotlights through pitch-black waters, illuminating an enormous glowing bioluminescent deep-sea siphonophore.",
-        "visual_goals": "Deep sapphire and jet-black water, bright yellow submersible spotlights, glowing translucent azure and violet bioluminescent tentacles, floating marine snow particles.",
-        "inspiration_keywords": ["Deep Sea Submersible", "Bioluminescent Organism", "High-Beam Spotlights", "Abyssal Trench", "Marine Snow"],
-        "key_subjects": ["research submarine with spotlights", "giant glowing bioluminescent creature", "pitch black ocean", "floating particles"],
-        "action": "spotlights cutting through darkness to reveal ethereal floating alien creature",
-        "lighting_mood": "high-contrast underwater spotlights cutting through deep black abyssal void",
-        "evaluation_focus": "Spotlight volumetric beams, glowing translucent bioluminescence, deep sea mystery.",
+        "id": "greenhouse-tropical-plants",
+        "title": "The Glass Conservatory",
+        "brief": "Interior of a sunlit glass dome greenhouse filled with vibrant green tropical monstera leaves, blooming purple orchids, and hanging ferns.",
+        "visual_goals": "Glass pane dome ceiling, large split-leaf monstera plants, bright purple orchid flowers, hanging wicker planters, sunny botanical atmosphere.",
+        "inspiration_keywords": [
+            "Glass Greenhouse",
+            "Tropical Plants",
+            "Monstera Leaves",
+            "Purple Orchids",
+            "Hanging Ferns",
+            "Sunlit Conservatory"
+        ],
+        "key_subjects": [
+            "glass greenhouse dome",
+            "large monstera leaves",
+            "blooming purple orchids",
+            "hanging ferns"
+        ],
+        "action": "flourishing inside the humid sunlit conservatory",
+        "lighting_mood": "bright golden sunlight streaming through geometric glass panes",
+        "evaluation_focus": "Abundant green plants with purple orchids, architectural glass dome, sunlit greenhouse aesthetic.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "movie-mars-explorer",
-        "category": "Cinematic Movie Scenes",
-        "title": "Red Planet Crater Explorer",
-        "brief": "A solitary astronaut in an orange-and-white high-tech planetary exploration suit standing on the rocky rim of a massive Martian crater, looking across rust-red plains toward an atmospheric dust storm.",
-        "visual_goals": "Rugged rust-red terrain, crater rim vista, detailed planetary EVA suit with reflective visor, distant swirling orange dust storm, pale blue Martian sunset.",
-        "inspiration_keywords": ["Mars Crater Rim", "Planetary Astronaut", "Rust Red Plains", "Martian Dust Storm", "Pale Blue Sunset"],
-        "key_subjects": ["astronaut on cliff edge", "massive impact crater", "rust-red Martian soil", "swirling dust clouds"],
-        "action": "astronaut gazing across the vast alien expanse of Mars",
-        "lighting_mood": "harsh low-angle sunlight casting long dramatic shadows across red rocks",
-        "evaluation_focus": "Geological Martian terrain texture, solitude of astronaut scale, red and orange palette fidelity.",
-        "is_active": True,
-        "created_by": "system"
-    },
-
-    # Category 2: Dynamic Objects in Action
-    {
-        "id": "action-coffee-splash",
-        "category": "Dynamic Objects in Action",
-        "title": "Exploding Coffee Cup Kinetics",
-        "brief": "A dramatic high-speed photograph capturing a cup of dark coffee exploding into the air, with frozen liquid arcs, coffee droplets suspended in mid-flight, and roasted coffee beans scattering.",
-        "visual_goals": "High-speed shutter freeze (1/8000s), dark coffee splash waves, floating roasted beans, ceramic mug, moody rustic backdrop, dramatic side lighting.",
-        "inspiration_keywords": ["High-Speed Liquid Splash", "Coffee Droplets Freeze", "Roasted Beans Mid-Air", "Rustic Ceramic Mug", "Dramatic Side Lighting"],
-        "key_subjects": ["ceramic coffee mug", "dark coffee liquid waves", "suspended roasted coffee beans", "liquid droplets"],
-        "action": "liquid bursting violently upwards in mid-air frozen motion",
-        "lighting_mood": "dramatic directional side lighting on dark rustic backdrop",
-        "evaluation_focus": "High-speed kinetic freeze effect, detailed liquid droplets and splash geometry, scattering coffee beans.",
+        "id": "pizza-brick-oven",
+        "title": "Flames of the Hearth",
+        "brief": "A delicious round artisanal pizza with melted bubbling mozzarella cheese, fresh green basil leaves, and red cherry tomatoes inside a brick pizza oven with glowing flames.",
+        "visual_goals": "Round golden pizza crust, melted white mozzarella, vibrant green basil leaves, red tomatoes, stone brick oven interior with orange fire embers.",
+        "inspiration_keywords": [
+            "Neapolitan Pizza",
+            "Melted Mozzarella",
+            "Fresh Basil",
+            "Brick Oven",
+            "Wood Fire Flames"
+        ],
+        "key_subjects": [
+            "fresh round pizza",
+            "melted cheese and green basil",
+            "brick pizza oven",
+            "glowing wood flames"
+        ],
+        "action": "baking on the stone hearth with fire behind it",
+        "lighting_mood": "warm golden firelight from the burning wood embers",
+        "evaluation_focus": "Appetizing pizza with visible cheese and basil, stone brick oven opening, warm wood fire glow.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "action-chef-wok-flame",
-        "category": "Dynamic Objects in Action",
-        "title": "The Master Chef Wok Inferno",
-        "brief": "An intense culinary action shot of a master street chef tossing noodles in a seasoned iron carbon wok, with a towering column of orange flame erupting upward and green scallions flying in mid-air.",
-        "visual_goals": "Vibrant roaring orange fire column, seasoned iron wok, chef tossing noodles, flying green scallions, high contrast dark kitchen, motion freeze.",
-        "inspiration_keywords": ["Wok Fire Flare", "Noodle Toss Action", "Flying Scallions", "High Contrast Dark Kitchen", "Culinary Energy"],
-        "key_subjects": ["iron carbon wok", "roaring orange fire column", "tossed noodles", "green scallions"],
-        "action": "chef tossing noodles with a towering burst of cooking flame",
-        "lighting_mood": "high-contrast dark environment lit primarily by the roaring orange flame",
-        "evaluation_focus": "Intensity of the flame vortex, dynamic food motion mid-toss, focused culinary action.",
+        "id": "desert-cactus-sunset",
+        "title": "Dusk on the Badlands",
+        "brief": "A tall green saguaro cactus with white blooming flowers on top, standing in the red sand dunes of a desert during a blazing orange and purple sunset.",
+        "visual_goals": "Tall multi-armed green cactus, white crown flowers, red desert sand ripples, brilliant gradient sky of orange, red, and deep purple.",
+        "inspiration_keywords": [
+            "Saguaro Cactus",
+            "White Desert Flowers",
+            "Red Sand Dunes",
+            "Vibrant Sunset Sky",
+            "Desert Horizon"
+        ],
+        "key_subjects": [
+            "tall saguaro cactus",
+            "white crown blossoms",
+            "red sand desert",
+            "orange purple sunset sky"
+        ],
+        "action": "standing tall against the desert horizon",
+        "lighting_mood": "dramatic golden hour sunset with rich orange and violet gradients",
+        "evaluation_focus": "Saguaro cactus with white flowers, desert sand setting, warm sunset sky colors.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "action-skateboard-jump",
-        "category": "Dynamic Objects in Action",
-        "title": "Sunset Stairway Kickflip Apex",
-        "brief": "A street skateboarder frozen in mid-air at the apex of a kickflip over an urban concrete stairway, silhouetted against a brilliant sunset sky with silhouette palm trees.",
-        "visual_goals": "Mid-air suspended skateboarder, deck rotating mid-kickflip, concrete stairs, warm sunset glow, urban architecture, low angle perspective.",
-        "inspiration_keywords": ["Mid-Air Kickflip", "Skater Apex Freeze", "Concrete Stair Set", "Warm Sunset Backlight", "Low Angle Urban Action"],
-        "key_subjects": ["skateboarder in mid-air", "spinning skateboard deck", "concrete stairway", "sunset sky"],
-        "action": "frozen at the highest apex of a kickflip over stairs",
-        "lighting_mood": "warm golden sunset backlight creating dynamic silhouettes",
-        "evaluation_focus": "Action pose frozen at apex, skateboard rotation, clear urban stairway context, warm backlight.",
+        "id": "cozy-fireplace-cat",
+        "title": "Hearthside Slumber",
+        "brief": "A cute orange tabby cat curled up fast asleep on a soft knitted blanket on a wooden floor in front of a warm stone fireplace with crackling fire.",
+        "visual_goals": "Sleeping orange ginger cat curled into a circle, cream knitted throw blanket, warm stone fireplace hearth, glowing orange fire logs.",
+        "inspiration_keywords": [
+            "Orange Tabby Cat",
+            "Sleeping Cat",
+            "Knitted Blanket",
+            "Stone Fireplace",
+            "Crackling Hearth"
+        ],
+        "key_subjects": [
+            "orange tabby cat",
+            "knitted blanket",
+            "stone fireplace",
+            "crackling fire logs"
+        ],
+        "action": "sleeping peacefully by the warm hearth",
+        "lighting_mood": "warm amber room glow from the fireplace",
+        "evaluation_focus": "Curled sleeping orange cat, knitted blanket, stone fireplace with visible fire.",
         "is_active": True,
         "created_by": "system"
     },
     {
-        "id": "action-guitarist-stage",
-        "category": "Dynamic Objects in Action",
-        "title": "Stadium Rock Solo in Laser Fog",
-        "brief": "A passionate rock guitarist leaning back during an intense guitar solo on a stadium stage, engulfed in dense purple stage haze, piercing laser beams, and flying sweat droplets.",
-        "visual_goals": "Electric guitar in hands, dramatic back-bending posture, purple and magenta stage lighting, atmospheric smoke haze, laser light beams.",
-        "inspiration_keywords": ["Electric Guitar Solo", "Stadium Stage Fog", "Purple Laser Beams", "Intense Musical Action", "Concert Lighting"],
-        "key_subjects": ["electric guitarist", "electric guitar", "dense purple stage haze", "laser beams"],
-        "action": "leaning back in an aggressive, emotional guitar solo",
-        "lighting_mood": "intense purple and magenta concert spotlights cutting through stage smoke",
-        "evaluation_focus": "Musical energy and posture, dramatic concert stage lighting and atmospheric fog effects.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-hummingbird-flower",
-        "category": "Dynamic Objects in Action",
-        "title": "High-Speed Emerald Wingbeat",
-        "brief": "An extreme macro high-speed photograph of an iridescent emerald green hummingbird hovering with rapid wing blur at an exotic pink flower, with glistening morning dew droplets.",
-        "visual_goals": "Shimmering green feathers, wing blur motion, needle-like beak sipping nectar, vivid pink petals, glistening dew droplets, creamy bokeh background.",
-        "inspiration_keywords": ["Emerald Hummingbird Hover", "High-Speed Wing Blur", "Exotic Flower Blossom", "Glistening Dew Drops", "Macro Bokeh"],
-        "key_subjects": ["iridescent green hummingbird", "pink exotic flower blossom", "dew droplets", "creamy green bokeh"],
-        "action": "hovering precisely in mid-air with rapid wing motion blur",
-        "lighting_mood": "soft diffused morning sunlight highlighting iridescent feathers",
-        "evaluation_focus": "Precision of the hovering bird and beak position, wing motion blur vs frozen body, vibrant color contrast.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-water-splash",
-        "category": "Dynamic Objects in Action",
-        "title": "Crystalline Water Splash Crown",
-        "brief": "A crystal-clear macro photograph of a single water droplet hitting a surface, exploding into a perfectly symmetrical coronet water crown with suspended bead droplets.",
-        "visual_goals": "Symmetrical water splash crown, suspended micro droplets, concentric ripples, crystal refraction, pristine aquatic blue lighting.",
-        "inspiration_keywords": ["Water Droplet Crown", "High-Speed Liquid Freeze", "Concentric Ripples", "Crystalline Refraction", "Aquatic Macro"],
-        "key_subjects": ["water droplet splash crown", "suspended water beads", "concentric ripples", "aquatic blue surface"],
-        "action": "single droplet impact forming a high-speed coronet crown",
-        "lighting_mood": "clean studio light refracting through crystal-clear water droplets",
-        "evaluation_focus": "Symmetry of the splash crown, crystal liquid clarity, micro droplet suspension.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-surfer-barrel",
-        "category": "Dynamic Objects in Action",
-        "title": "Inside the Giant Ocean Wave Barrel",
-        "brief": "A dramatic wide-angle shot taken from inside the curving hollow barrel of a massive turquoise ocean wave, with a surfer carving the water face surrounded by frozen spray.",
-        "visual_goals": "Curving translucent turquoise wave wall, water spray droplets frozen in air, surfer in athletic stance, bright sunlight shining through wave lip.",
-        "inspiration_keywords": ["Surfer Wave Barrel", "Turquoise Tube", "Water Spray Freeze", "Pacific Surf", "Extreme Watersports"],
-        "key_subjects": ["surfer carving wave face", "curving hollow wave barrel", "translucent turquoise water", "white sea foam"],
-        "action": "carving at high speed inside a roaring hollow ocean wave tube",
-        "lighting_mood": "backlit by brilliant tropical sun illuminating translucent blue water",
-        "evaluation_focus": "Wave curvature and water translucency, surfer position, frozen droplet dynamics.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-eagle-flight",
-        "category": "Dynamic Objects in Action",
-        "title": "Bald Eagle Talons Strike",
-        "brief": "A razor-sharp action photograph of a massive bald eagle swooping down low over mountain lake water, yellow talons extended and ready to strike with water wake behind.",
-        "visual_goals": "Massive wingspan with individual feather definition, fierce yellow eyes, outstretched talons, water droplets kicked up by wingtips, alpine mountain background.",
-        "inspiration_keywords": ["Eagle Talons Strike", "Predator Strike", "Feather Definition", "Lake Water Spray", "Wildlife Action"],
-        "key_subjects": ["bald eagle with open wings", "extended yellow talons", "water wake", "mountain lake"],
-        "action": "swooping inches above water surface at full attack speed",
-        "lighting_mood": "crisp morning mountain light highlighting wing feathers",
-        "evaluation_focus": "Eagle wing sharpness, extended talon focus, dynamic water surface interaction.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-formula1-speed",
-        "category": "Dynamic Objects in Action",
-        "title": "Formula 1 High-Speed Apex Drift",
-        "brief": "An ultra-dynamic racing photograph of a modern open-wheel Formula 1 racing car hitting the curbs of a chicane at 200 mph, with smoking tire rubber, sparks from titanium skid blocks, and blur.",
-        "visual_goals": "Aerodynamic F1 car in motion, red-and-white track kerbs, bright shower of golden skid block sparks, tire smoke puffs, background motion blur.",
-        "inspiration_keywords": ["Formula 1 Racing", "Apex Kerb Strike", "Skid Block Sparks", "Tire Smoke", "High-Speed Motorsport"],
-        "key_subjects": ["Formula 1 race car", "track kerbs", "shower of titanium sparks", "motion-blurred grandstands"],
-        "action": "car hammering over track kerbs at 200 mph showering sparks",
-        "lighting_mood": "bright trackside sunlight with intense golden sparks flying underneath",
-        "evaluation_focus": "Sense of extreme speed motion, bright spark shower, vehicle detail and livery.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-flamenco-dance",
-        "category": "Dynamic Objects in Action",
-        "title": "Flamenco Dancer Swirling Crimson Dress",
-        "brief": "A passionate flamenco dancer captured mid-spin on a dark wooden stage, her layered crimson ruffles swirling in dynamic circular arcs under a warm theatrical overhead spotlight.",
-        "visual_goals": "Swirling tiers of vibrant red fabric, graceful expressive arm posture, dark rustic stage, airborne dust and motion trails in warm spotlight cone.",
-        "inspiration_keywords": ["Flamenco Swirl", "Crimson Ruffle Dress", "Theatrical Spotlight", "Dynamic Spin Freeze", "Spanish Cultural Passion"],
-        "key_subjects": ["flamenco dancer", "swirling red ruffle dress", "wooden dance floor", "theatrical spotlight"],
-        "action": "spinning rapidly in a passionate traditional dance movement",
-        "lighting_mood": "intense golden overhead stage spotlight against velvety black background",
-        "evaluation_focus": "Fabric flow and circular swirl motion, intense color saturation of red dress.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-lava-ocean",
-        "category": "Dynamic Objects in Action",
-        "title": "Molten Lava Exploding Into Crashing Waves",
-        "brief": "Glowing red-orange molten basaltic lava pouring off black coastal volcanic rock directly into crashing ocean surf, triggering explosive steam plumes and black sand eruptions.",
-        "visual_goals": "Incandescent glowing lava streams, billowing white and grey steam clouds, violent crashing dark blue sea waves, black volcanic rock contrast.",
-        "inspiration_keywords": ["Molten Lava Ocean Entry", "Steam Plume Explosion", "Volcanic Black Rock", "Crashing Pacific Waves", "Elemental Fire & Water"],
-        "key_subjects": ["glowing red molten lava", "crashing ocean waves", "towering steam plumes", "black volcanic cliffs"],
-        "action": "red-hot lava hitting cold seawater with violent steam eruptions",
-        "lighting_mood": "twilight blue hour illuminated by the fiery orange volcanic glow",
-        "evaluation_focus": "Contrast between glowing orange heat and cold sea foam, dramatic steam dynamics.",
-        "is_active": True,
-        "created_by": "system"
-    },
-    {
-        "id": "action-lightning-city",
-        "category": "Dynamic Objects in Action",
-        "title": "Lightning Bolt Striking Skyscraper Spire",
-        "brief": "A branch of intense purple and white lightning striking the antenna spire of a massive city skyscraper during a nighttime thunderstorm, illuminating ominous storm clouds.",
-        "visual_goals": "Forked lightning branches radiating across dark sky, bright electrical impact on spire, illuminated city towers in silhouette, heavy rain streaks.",
-        "inspiration_keywords": ["Lightning Strike Spire", "Skyscraper Thunderstorm", "Forked Electrical Discharge", "Purple Storm Clouds", "City Skyline Thunder"],
-        "key_subjects": ["lightning bolt strike", "skyscraper antenna spire", "dark storm clouds", "city skyline at night"],
-        "action": "millisecond electrical discharge branching down from clouds onto the spire",
-        "lighting_mood": "flash of brilliant electrical white and violet lighting up dark cityscape",
-        "evaluation_focus": "Branching lightning geometry, high-contrast city illumination, electric intensity.",
+        "id": "sailboat-turquoise-sea",
+        "title": "Azure Drift",
+        "brief": "A modern sleek white sailboat with full sails gliding across crystal-clear turquoise ocean water near a lush green tropical island under a sunny blue sky.",
+        "visual_goals": "White hull sailboat with hoisted white sails, bright turquoise transparent water revealing sandy seabed, tropical palm island in background, clear blue sky.",
+        "inspiration_keywords": [
+            "White Sailboat",
+            "Crystal Turquoise Water",
+            "Tropical Island",
+            "Full White Sails",
+            "Sunny Sky"
+        ],
+        "key_subjects": [
+            "white sailboat",
+            "clear turquoise water",
+            "tropical green island",
+            "sunny blue sky"
+        ],
+        "action": "sailing gracefully across the turquoise lagoon",
+        "lighting_mood": "bright midday tropical sunshine with sparkling water reflections",
+        "evaluation_focus": "White sailboat, vibrant turquoise ocean water, tropical island backdrop.",
         "is_active": True,
         "created_by": "system"
     }
@@ -382,22 +415,33 @@ class ChallengeManager:
         self._init_deck()
 
     def _load(self):
-        if os.path.exists(self.data_file):
+        load_candidates = []
+        if os.path.exists("challenges.json"):
+            load_candidates.append("challenges.json")
+        if self.data_file and os.path.exists(self.data_file) and self.data_file not in load_candidates:
+            load_candidates.append(self.data_file)
+
+        for path in load_candidates:
             try:
-                with open(self.data_file, 'r', encoding='utf-8') as f:
+                with open(path, 'r', encoding='utf-8') as f:
                     self.challenges = json.load(f)
                     return
             except Exception as e:
-                print(f"[ChallengeManager] Error loading {self.data_file}: {e}")
+                print(f"[ChallengeManager] Error loading {path}: {e}")
         self.challenges = [dict(c) for c in DEFAULT_CHALLENGES]
 
     def _save(self):
-        os.makedirs(os.path.dirname(self.data_file), exist_ok=True)
-        try:
-            with open(self.data_file, 'w', encoding='utf-8') as f:
-                json.dump(self.challenges, f, indent=2)
-        except Exception as e:
-            print(f"[ChallengeManager] Error saving {self.data_file}: {e}")
+        for path in [self.data_file, "challenges.json"]:
+            if not path:
+                continue
+            dir_name = os.path.dirname(path)
+            if dir_name:
+                os.makedirs(dir_name, exist_ok=True)
+            try:
+                with open(path, 'w', encoding='utf-8') as f:
+                    json.dump(self.challenges, f, indent=2)
+            except Exception as e:
+                print(f"[ChallengeManager] Error saving {path}: {e}")
 
     def _init_deck(self):
         ids = [c["id"] for c in self.challenges if c.get("is_active", True)]
