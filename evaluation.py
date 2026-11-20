@@ -70,21 +70,20 @@ def validate_prompt_anti_cheat(prompt: str) -> Tuple[bool, str]:
     Returns (is_valid, error_message).
     """
     cleaned = prompt.strip()
-    if len(cleaned) < 10:
-        return False, "Prompt is too short! Please write a descriptive prompt (at least 10 characters) detailing the scene."
+    if len(cleaned) < 8:
+        return False, "Prompt is too short! Please write a description (at least 8 characters) of the scene you see."
 
     p_lower = cleaned.lower()
     for pattern in CHEAT_PATTERNS:
         if re.search(pattern, p_lower):
             return False, (
-                "Cheating / meta-prompts are strictly prohibited! You cannot refer to 'the image on screen' "
-                "or ask to copy it. You must observe the reference image and describe what you visually see "
-                "(subjects, action, colors, environment, lighting, camera angle, etc.)."
+                "Cheating / meta-prompts are prohibited! You cannot refer to 'the image on screen' "
+                "or ask to copy it. Please describe what you visually see (the main subjects, visible objects, colors, and setting)."
             )
 
     words = re.findall(r'\b[a-zA-Z0-9\-]+\b', p_lower)
-    if len(words) < 3:
-        return False, "Please provide more descriptive details about what you visually observe in the target image."
+    if len(words) < 2:
+        return False, "Please provide more details describing what you see in the target image."
 
     return True, ""
 
@@ -202,42 +201,46 @@ class DualImageJudge:
         if not t_b64 or not u_b64:
             return None
 
-        system_instruction = f"""You are a rigorous, completely unbiased visual judge at an AI Prompt Battle.
-You are given two images:
-- Image 1: Target Reference Image (The scenario image given to the participant).
-- Image 2: User's Generated Image (Synthesized from the user's typed prompt).
+        system_instruction = f"""You are a fair, intuitive visual judge at an AI Prompt Battle game where players have only 3 minutes to recreate a target image by typing a prompt.
 
-Category: {category} - Challenge: {challenge_title}
+You are comparing two images:
+- Image 1: Target Reference Image (The original photo given to the participant).
+- Image 2: User's Generated Image (Synthesized from the user's prompt).
+
+Scenario: {challenge_title}
 The user's typed prompt was: "{user_prompt}"
 
-YOUR TASK: Perform a strict, objective, grounded visual comparison between Image 1 and Image 2.
+YOUR TASK: Compare Image 1 and Image 2 AS A WHOLE, focusing on the big picture and key recognizable items.
 
-Follow this exact 5-step evaluation protocol:
-1. TARGET AUDIT: Describe exactly what is visually depicted in Image 1 (Subject, action, environment/setting, colors, lighting, camera angle).
-2. USER AUDIT: Describe exactly what is visually depicted in Image 2.
-3. MATCHES: List the specific visual elements from Image 1 that Image 2 successfully recreated.
-4. DISCREPANCIES: List the critical differences, missing elements, or wrong subjects.
-5. STRICT CALIBRATED SCORING (0-25 each, sum = 0-100 total):
-   - visual_similarity (0-25): Color palette, spatial balance, camera perspective, lighting direction, contrast. (If background/setting is completely wrong, cap at 7/25).
-   - subject_match (0-25): Recreation of core subjects and actions. (CRITICAL RULE: If the main subject or action is completely different or missing, score MUST be capped at 5/25).
-   - style_match (0-25): Photographic realism, art style, textures, lighting mood.
-   - prompt_precision (0-25): How accurately the user's typed prompt described the visual reality of Image 1. (If the prompt described unrelated elements, cap at 5/25).
+IMPORTANT JUDGING RULES:
+1. DO NOT JUDGE OR PENALIZE on micro-technical camera specs, shutter speed, lens focal length, ISO, micro bokeh, or camera focus depth. Participants are everyday humans with only 3 minutes to prompt.
+2. FOCUS ON COMPARING THE IMAGES AS A WHOLE:
+   - Primary Subject(s): Is the main character, animal, vehicle, or subject present? (e.g. Is the dog, cat, frog, robot, astronaut, or bicycle there?)
+   - Key Visible Objects & Details: Are the obvious items and visible features there? (e.g. If there's an open book, is there a book? If a book or sign has a visible title/text, is it captured? If the cat has sunglasses, are they there? If the bicycle has a sunflower basket, is it there? If the cake has a lit candle, is it there?)
+   - Overall Scene & Colors: Does the overall setting and primary color palette match as a whole? (e.g. sunlit room, cozy fireside, beach at sunset, rain with red umbrella mushroom, turquoise water).
+3. SCORING CRITERIA (0 - 25 each, sum = 0 - 100):
+   - visual_similarity (0-25): Overall Scene & Setting. How well does the overall environment, atmosphere, and general color scheme match as a whole?
+   - subject_match (0-25): Core Subjects Present. Did the user generate the main subject(s) (e.g. cat, dog, frog, robot, bicycle, guitar)?
+   - style_match (0-25): Key Visible Details. Did the user capture prominent visible features (e.g. sunglasses, book presence, party hat, campfire, sunflowers, latte foam art)?
+   - prompt_precision (0-25): Prompt Faithfulness. How faithfully did the user's prompt describe what is actually in the target picture?
 
-Total Score = sum of all 4 criteria (0 - 100).
-DO NOT be overly generous. If the images depict different things, award a low score. If they closely match, award a high score.
+Be encouraging, objective, and fair:
+- If the user captured the main subject and the key visible details, give them a high score (80 - 95+).
+- If they got the general subject but missed prominent items, give an encouraging medium score (55 - 75).
+- Only give low scores (< 40) if the generated image is completely unrelated (e.g. asking for a spaceship when the picture was a cat on a chair).
 
 Output JSON ONLY with this exact schema:
 {{
-  "target_observations": "description of Image 1",
-  "user_observations": "description of Image 2",
-  "matched_features": ["list of matched visual features"],
-  "discrepancies": ["list of differences or missing elements"],
+  "target_observations": "Summary of the main subjects, visible objects, and setting in Image 1",
+  "user_observations": "Summary of what is visibly present in Image 2",
+  "matched_features": ["list of matched items and details, e.g. 'Fluffy white cat', 'Black sunglasses', 'Yellow armchair'"],
+  "discrepancies": ["list of noticeable differences or missing items"],
   "total_score": number,
-  "visual_similarity": {{"score": number, "comment": "string"}},
-  "subject_match": {{"score": number, "comment": "string"}},
-  "style_match": {{"score": number, "comment": "string"}},
-  "prompt_precision": {{"score": number, "comment": "string"}},
-  "unbiased_critique": "detailed paragraph explaining the evaluation based on visual evidence",
+  "visual_similarity": {{"score": number, "comment": "Feedback on overall scene, environment, and colors"}},
+  "subject_match": {{"score": number, "comment": "Feedback on whether the main subjects are present"}},
+  "style_match": {{"score": number, "comment": "Feedback on key visible details and items"}},
+  "prompt_precision": {{"score": number, "comment": "Feedback on prompt faithfulness"}},
+  "unbiased_critique": "A clear, constructive 2-3 sentence summary comparing the images as a whole and noting key details matched or missed.",
   "tier_badge": "string",
   "special_badges": ["string"]
 }}"""
@@ -333,23 +336,23 @@ Output JSON ONLY with this exact schema:
                         "breakdown": {
                             "visual_similarity": {
                                 "score": round(vs_score, 1), "max": 25,
-                                "title": "Visual & Compositional Similarity",
-                                "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated spatial balance, lighting and palette.")
+                                "title": "Overall Scene & Colors",
+                                "comment": parsed.get("visual_similarity", {}).get("comment", "Evaluated overall scene, setting and color palette.")
                             },
                             "subject_match": {
                                 "score": round(sm_score, 1), "max": 25,
-                                "title": "Subject & Action Match",
-                                "comment": parsed.get("subject_match", {}).get("comment", "Evaluated primary entities and dynamic action.")
+                                "title": "Core Subjects & Objects",
+                                "comment": parsed.get("subject_match", {}).get("comment", "Evaluated presence of primary subjects and entities.")
                             },
                             "style_match": {
                                 "score": round(st_score, 1), "max": 25,
-                                "title": "Style, Texture & Realism",
-                                "comment": parsed.get("style_match", {}).get("comment", "Evaluated realism and artistic medium.")
+                                "title": "Key Visible Details",
+                                "comment": parsed.get("style_match", {}).get("comment", "Evaluated key visible items and recognizable features.")
                             },
                             "prompt_precision": {
                                 "score": round(pp_score, 1), "max": 25,
-                                "title": "Prompt Precision & Faithfulness",
-                                "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive accuracy against reference.")
+                                "title": "Prompt Faithfulness",
+                                "comment": parsed.get("prompt_precision", {}).get("comment", "Evaluated prompt descriptive faithfulness to the scene.")
                             }
                         },
                         "summary_comment": parsed.get("unbiased_critique", f"{player_name} scored {total}/100 in visual recreation accuracy."),
@@ -371,11 +374,11 @@ Output JSON ONLY with this exact schema:
         target_meta: Dict[str, Any],
         player_name: str
     ) -> Dict[str, Any]:
-        """Calibrated Computer Vision & Semantic evaluation fallback"""
-        visual_score = 5.0
-        subject_score = 5.0
-        style_score = 5.0
-        precision_score = 5.0
+        """Holistic, fair Computer Vision & Semantic evaluation fallback"""
+        visual_score = 12.0
+        subject_score = 10.0
+        style_score = 10.0
+        precision_score = 10.0
 
         matched_tokens = []
         discrepancies = []
@@ -396,12 +399,12 @@ Output JSON ONLY with this exact schema:
             total_pixels = sum(t_hist)
             hist_ratio = intersection / max(total_pixels, 1)
 
-            # Palette match scaled 0 - 25
-            visual_score = round(hist_ratio * 25.0, 1)
+            # Palette match scaled generously (12.0 - 25.0)
+            visual_score = round(12.0 + (hist_ratio * 13.0), 1)
         except Exception:
-            visual_score = 8.0
+            visual_score = 16.0
 
-        # Semantic keywords analysis
+        # Semantic visible objects and subjects analysis
         prompt_lower = user_prompt.lower()
         key_subjects = target_meta.get("key_subjects", [])
         action_text = target_meta.get("action", "")
@@ -414,26 +417,30 @@ Output JSON ONLY with this exact schema:
             target_anchors.update(re.findall(r'\b[a-z]{3,}\b', kw.lower()))
 
         matched = [tok for tok in target_anchors if tok in prompt_lower]
-        match_ratio = len(matched) / max(len(target_anchors), 6)
+        match_ratio = len(matched) / max(len(target_anchors), 4)
 
-        # If user didn't mention core subject or action, subject score is strictly capped
-        if len(matched) >= 4:
-            subject_score = round(16.0 + min(match_ratio * 9.0, 9.0), 1)
-            style_score = round(15.0 + min(len(matched) * 1.8, 9.0), 1)
-            precision_score = round(14.0 + min(len(user_prompt.split()) / 20.0 * 9.0, 10.0), 1)
+        if len(matched) >= 3:
+            subject_score = round(20.0 + min(match_ratio * 5.0, 5.0), 1)
+            style_score = round(19.0 + min(len(matched) * 1.2, 5.0), 1)
+            precision_score = round(18.0 + min(len(user_prompt.split()) / 15.0 * 6.0, 7.0), 1)
             matched_tokens = matched[:5]
         elif len(matched) >= 2:
-            subject_score = round(10.0 + (len(matched) * 2.5), 1)
-            style_score = 12.0
-            precision_score = 11.0
+            subject_score = round(16.0 + (len(matched) * 2.0), 1)
+            style_score = 16.0
+            precision_score = 16.0
             matched_tokens = matched
-            discrepancies.append("Partial subject match: several key visual details from the reference scene are missing.")
+            discrepancies.append("Good match overall; a few secondary scene details could be captured.")
+        elif len(matched) >= 1:
+            subject_score = round(12.0 + (len(matched) * 2.0), 1)
+            style_score = 12.0
+            precision_score = 12.0
+            matched_tokens = matched
+            discrepancies.append("Partial subject match: captured some scene items, but missing other key objects.")
         else:
-            # Low match / wrong prompt
-            subject_score = round(2.0 + (len(matched) * 2.0), 1)
-            style_score = 8.0
-            precision_score = round(min(len(user_prompt.split()) * 0.5, 6.0), 1)
-            discrepancies.append("Subject mismatch: prompt does not describe the core subject or action depicted in the target scene.")
+            subject_score = 5.0
+            style_score = 6.0
+            precision_score = 6.0
+            discrepancies.append("Subject mismatch: prompt did not describe the main subjects or items in the target scene.")
 
         visual_score = min(max(visual_score, 0.0), 25.0)
         subject_score = min(max(subject_score, 0.0), 25.0)
@@ -449,38 +456,38 @@ Output JSON ONLY with this exact schema:
             "tier": tier,
             "tier_badge": tier_badge,
             "tier_color": tier_color,
-            "special_badges": [tier_badge, "🎯 Grounded CV"],
-            "target_observations": f"Target scene: {target_meta.get('title', 'Reference')} ({target_meta.get('brief', '')})",
-            "user_observations": f"User prompt generated visual: '{user_prompt}'",
-            "matched_features": matched_tokens if matched_tokens else ["Photographic medium"],
-            "discrepancies": discrepancies if discrepancies else ["Minor variances in lighting angle and particle geometry."],
+            "special_badges": [tier_badge, "🎯 Holistic Match"],
+            "target_observations": f"Target scene features: {', '.join(key_subjects)}" if key_subjects else f"Target reference: {target_meta.get('title', 'Scene')}",
+            "user_observations": f"Recreated with prompt: '{user_prompt}'",
+            "matched_features": [tok.capitalize() for tok in matched_tokens] if matched_tokens else ["General Scene Vibe"],
+            "discrepancies": discrepancies if discrepancies else ["Key visible elements align well with the target scene."],
             "breakdown": {
                 "visual_similarity": {
                     "score": visual_score, "max": 25,
-                    "title": "Visual & Compositional Similarity",
-                    "comment": f"Perceptual color histogram alignment calculated at {round(visual_score/25*100)}%."
+                    "title": "Overall Scene & Colors",
+                    "comment": f"Overall scene atmosphere and color tone matched at {round(visual_score/25*100)}%."
                 },
                 "subject_match": {
                     "score": subject_score, "max": 25,
-                    "title": "Subject & Action Match",
-                    "comment": f"Matched {len(matched_tokens)} key scene anchors ({', '.join(matched_tokens[:3]) if matched_tokens else 'minimal overlap'})."
+                    "title": "Core Subjects & Objects",
+                    "comment": f"Recognized key subjects ({', '.join(matched_tokens[:3]) if matched_tokens else 'general visual layout'})."
                 },
                 "style_match": {
                     "score": style_score, "max": 25,
-                    "title": "Style, Texture & Realism",
-                    "comment": "Atmosphere and lighting aesthetics analyzed against reference image."
+                    "title": "Key Visible Details",
+                    "comment": "Prominent visible items and details successfully compared."
                 },
                 "prompt_precision": {
                     "score": precision_score, "max": 25,
-                    "title": "Prompt Precision & Faithfulness",
-                    "comment": f"Prompt evaluated for visual faithfulness to target scene ({len(user_prompt.split())} words)."
+                    "title": "Prompt Faithfulness",
+                    "comment": f"Prompt faithfulness to the target scene ({len(user_prompt.split())} words)."
                 }
             },
-            "summary_comment": f"{player_name}'s prompt achieved an objective {total_score}/100 match with the target reference image.",
+            "summary_comment": f"{player_name}'s prompt achieved an overall {total_score}/100 match with the target scene.",
             "unbiased_critique": (
-                f"Objective audit: The generated visual scored {total_score}/100. "
-                f"Subject match was {subject_score}/25 based on {len(matched_tokens)} key matched elements. "
-                f"Visual color alignment was {visual_score}/25."
+                f"Overall evaluation: The generated visual scored {total_score}/100. "
+                f"Core subject match was {subject_score}/25 with key items ({', '.join(matched_tokens[:3]) if matched_tokens else 'general elements'}) captured. "
+                f"Overall scene and color harmony scored {visual_score}/25."
             )
         }
 

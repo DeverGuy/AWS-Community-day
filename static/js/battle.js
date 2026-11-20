@@ -1036,13 +1036,13 @@ document.addEventListener("DOMContentLoaded", () => {
       qualityPill.classList.remove("quality-good", "quality-strong");
       if (words === 0) {
         qualityPill.textContent = "Readiness: Waiting";
-      } else if (words < 10) {
+      } else if (words < 6) {
         qualityPill.textContent = "Readiness: Brief";
-      } else if (words < 20) {
-        qualityPill.textContent = "Readiness: Good";
+      } else if (words < 12) {
+        qualityPill.textContent = "Readiness: Good ✓";
         qualityPill.classList.add("quality-good");
       } else {
-        qualityPill.textContent = "Readiness: Optimal ✓";
+        qualityPill.textContent = "Readiness: Ready to Generate 🚀";
         qualityPill.classList.add("quality-strong");
       }
     }

@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prompt Quest | AWS Community Day — AI Prompt Engineering Challenge</title>
-  <link rel="icon" type="image/png" href="/static/images/aws-logo.png?v=refined2">
+  <link rel="icon" type="image/png" href="/static/images/aws-logo.svg">
 
   <!-- Typography: Plus Jakarta Sans, Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/static/css/style.css?v=pq-ux-v12">
 
   <!-- Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
 </head>
+
 <body class="pq-dark-theme" data-admin-route="{{ 'true' if open_admin else 'false' }}">
 
   <!-- =====================================================================
@@ -56,7 +60,8 @@
         <div class="pq-topbar-left">
           <div class="pq-topbar-brand" id="brand-home-trigger" role="button" tabindex="0" title="Prompt Quest Home">
             <div class="navbar-logo-slot topbar-logo-slot" id="navbar-logo-slot">
-              <img src="/static/images/aws-logo.png?v=refined2" alt="AWS" class="aws-nav-logo-img" id="aws-navbar-logo" draggable="false">
+              <img src="/static/images/aws-logo.png?v=refined2" alt="AWS" class="aws-nav-logo-img" id="aws-navbar-logo"
+                draggable="false">
             </div>
           </div>
           <span class="pq-sparkle-icon">✦</span>
@@ -66,7 +71,8 @@
 
         <div class="pq-topbar-right">
           <!-- Leaderboard Button (Hidden on login page; visible only after login) -->
-          <button type="button" class="pq-btn-outline-pill btn-sm hidden" id="nav-leaderboard-btn" title="View Leaderboard">
+          <button type="button" class="pq-btn-outline-pill btn-sm hidden" id="nav-leaderboard-btn"
+            title="View Leaderboard">
             <span>🏆 Leaderboard</span>
             <span class="pq-nav-badge" id="nav-submissions-count">0</span>
           </button>
@@ -108,14 +114,15 @@
           <div class="pq-hero-banner">
             <!-- Top-left angled lavender tech corner accent -->
             <svg class="pq-hero-corner-line" viewBox="0 0 70 70" fill="none">
-              <path d="M2 52 L52 2 L70 2" stroke="#B69AFF" stroke-width="1.6" stroke-opacity="0.75"/>
+              <path d="M2 52 L52 2 L70 2" stroke="#B69AFF" stroke-width="1.6" stroke-opacity="0.75" />
             </svg>
 
             <!-- Centerpiece 3D AI Robot Illustration (High-performance WebP + PNG fallback) -->
             <div class="pq-hero-illustration">
               <picture>
                 <source srcset="/static/images/hero-robot.webp?v=opt1" type="image/webp">
-                <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot" class="pq-hero-robot-img" draggable="false" fetchpriority="high">
+                <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot"
+                  class="pq-hero-robot-img" draggable="false" fetchpriority="high">
               </picture>
             </div>
 
@@ -123,13 +130,14 @@
               <div class="pq-hero-title-wrap">
                 <!-- Orbital Lavender Swoosh Arc + Sparkle above "Quest" -->
                 <svg class="pq-quest-arc-svg" viewBox="0 0 260 58" fill="none">
-                  <path d="M8 46 C 72 8, 195 -4, 232 22 C 242 29, 224 44, 190 48" stroke="url(#arcGrad)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-                  <path d="M242 14 L245 22 L253 25 L245 28 L242 36 L239 28 L231 25 L239 22 Z" fill="#D8C8FF"/>
+                  <path d="M8 46 C 72 8, 195 -4, 232 22 C 242 29, 224 44, 190 48" stroke="url(#arcGrad)"
+                    stroke-width="2.4" stroke-linecap="round" fill="none" />
+                  <path d="M242 14 L245 22 L253 25 L245 28 L242 36 L239 28 L231 25 L239 22 Z" fill="#D8C8FF" />
                   <defs>
                     <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stop-color="#B69AFF" stop-opacity="0.1"/>
-                      <stop offset="55%" stop-color="#B69AFF" stop-opacity="0.95"/>
-                      <stop offset="100%" stop-color="#D8C8FF"/>
+                      <stop offset="0%" stop-color="#B69AFF" stop-opacity="0.1" />
+                      <stop offset="55%" stop-color="#B69AFF" stop-opacity="0.95" />
+                      <stop offset="100%" stop-color="#D8C8FF" />
                     </linearGradient>
                   </defs>
                 </svg>
@@ -166,14 +174,8 @@
                   <label for="identifier-name" class="awsui-label">
                     Builder Alias / Full Name <span class="required-star">*</span>
                   </label>
-                  <input
-                    type="text"
-                    id="identifier-name"
-                    class="awsui-text-input"
-                    placeholder="e.g. CloudDreamer or Alex Morgan"
-                    maxlength="40"
-                    autocomplete="name"
-                  >
+                  <input type="text" id="identifier-name" class="awsui-text-input"
+                    placeholder="e.g. CloudDreamer or Alex Morgan" maxlength="40" autocomplete="name">
                 </div>
 
                 <div class="awsui-form-group">
@@ -181,13 +183,8 @@
                     Email Address <span class="required-star">*</span>
                     <span class="label-hint">(Stores your score on the leaderboard)</span>
                   </label>
-                  <input
-                    type="email"
-                    id="identifier-email"
-                    class="awsui-text-input"
-                    placeholder="builder@university.edu"
-                    autocomplete="email"
-                  >
+                  <input type="email" id="identifier-email" class="awsui-text-input"
+                    placeholder="builder@university.edu" autocomplete="email">
                 </div>
 
                 <div id="identifier-error" class="identifier-error-msg hidden" role="alert"></div>
@@ -221,7 +218,8 @@
                 <span class="builder-display-email" id="game-builder-email">(builder@aws.dev)</span>
               </div>
 
-              <div class="countdown-timer-pill" id="countdown-timer-pill" title="When this 180-second timer ends, your current prompt is automatically finalized and generated.">
+              <div class="countdown-timer-pill" id="countdown-timer-pill"
+                title="When this 180-second timer ends, your current prompt is automatically finalized and generated.">
                 <span class="timer-icon">⏱️</span>
                 <span class="timer-label" id="countdown-timer-label">AUTO-GENERATE IN</span>
                 <strong class="timer-digits" id="countdown-timer-display">03:00</strong>
@@ -248,7 +246,8 @@
                     </button>
                   </div>
                   <div class="reference-visual-frame pq-arena-viewport-match" id="reference-visual-frame">
-                    <img id="challenge-reference-img" class="challenge-reference-img" src="" alt="Challenge Reference Visual">
+                    <img id="challenge-reference-img" class="challenge-reference-img" src=""
+                      alt="Challenge Reference Visual">
                   </div>
                 </div>
               </div>
@@ -269,20 +268,15 @@
                 <!-- Single-Shot & Anti-Cheat Notice -->
                 <div class="anti-cheat-pill-strip">
                   <span class="badge-lock">🔒 1-Shot Challenge:</span>
-                  <span><strong>180 seconds</strong> &amp; <strong>1 final generation</strong>. Auto-generates at 00:00 or when you click <strong>Finalize &amp; Generate</strong>.</span>
+                  <span><strong>180 seconds</strong> &amp; <strong>1 final generation</strong>. Auto-generates at 00:00
+                    or when you click <strong>Finalize &amp; Generate</strong>.</span>
                 </div>
 
                 <!-- Textarea -->
                 <div class="prompt-input-box pq-prompt-box-grow">
-                  <textarea
-                    id="prompt-input"
-                    class="awsui-textarea pq-textarea-tall"
-                    rows="10"
-                    placeholder="Observe the Target Reference Scene on the left. Describe the subject, action, environment, colors, lighting, and camera framing..."
-                    autocomplete="off"
-                    autocorrect="off"
-                    spellcheck="false"
-                  ></textarea>
+                  <textarea id="prompt-input" class="awsui-textarea pq-textarea-tall" rows="10"
+                    placeholder="Look at the image on the left. Describe what you see: the main subject(s), visible objects, colors, and setting..."
+                    autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
                 </div>
 
                 <!-- Validation / Anti-Cheat Error Banner -->
@@ -361,7 +355,8 @@
                   <div class="pq-results-loading-box" id="results-loading-overlay">
                     <div class="awsui-spinner"></div>
                     <h4 id="gen-status-text">Generating Your Image &amp; Running AI Judge...</h4>
-                    <p id="gen-sub-text">Synthesizing your prompt via Cloudflare Workers AI &amp; comparing both photos with Gemini Vision</p>
+                    <p id="gen-sub-text">Synthesizing your prompt via Cloudflare Workers AI &amp; comparing both photos
+                      with Gemini Vision</p>
                     <div class="progress-track">
                       <div class="progress-fill"></div>
                     </div>
@@ -400,48 +395,56 @@
               <div class="eval-pillars-row">
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>1. Visual &amp; Composition</span>
+                    <span>1. Overall Scene &amp; Colors</span>
                     <strong id="score-rel">0 / 25</strong>
                   </div>
-                  <div class="pillar-bar"><div class="fill" id="bar-rel" style="width: 0%"></div></div>
+                  <div class="pillar-bar">
+                    <div class="fill" id="bar-rel" style="width: 0%"></div>
+                  </div>
                   <p class="pillar-comment" id="comm-rel"></p>
                 </div>
 
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>2. Subject &amp; Action Match</span>
+                    <span>2. Core Subjects &amp; Objects</span>
                     <strong id="score-cre">0 / 25</strong>
                   </div>
-                  <div class="pillar-bar"><div class="fill" id="bar-cre" style="width: 0%"></div></div>
+                  <div class="pillar-bar">
+                    <div class="fill" id="bar-cre" style="width: 0%"></div>
+                  </div>
                   <p class="pillar-comment" id="comm-cre"></p>
                 </div>
 
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>3. Style &amp; Realism</span>
+                    <span>3. Key Visible Details</span>
                     <strong id="score-tec">0 / 25</strong>
                   </div>
-                  <div class="pillar-bar"><div class="fill" id="bar-tec" style="width: 0%"></div></div>
+                  <div class="pillar-bar">
+                    <div class="fill" id="bar-tec" style="width: 0%"></div>
+                  </div>
                   <p class="pillar-comment" id="comm-tec"></p>
                 </div>
 
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>4. Prompt Precision</span>
+                    <span>4. Prompt Faithfulness</span>
                     <strong id="score-imp">0 / 25</strong>
                   </div>
-                  <div class="pillar-bar"><div class="fill" id="bar-imp" style="width: 0%"></div></div>
+                  <div class="pillar-bar">
+                    <div class="fill" id="bar-imp" style="width: 0%"></div>
+                  </div>
                   <p class="pillar-comment" id="comm-imp"></p>
                 </div>
               </div>
 
               <div class="eval-observations-grid">
                 <div class="eval-obs-box">
-                  <span class="block-subtitle">TARGET IMAGE AUDIT</span>
+                  <span class="block-subtitle">TARGET SCENE DETAILS</span>
                   <p id="target-obs-text"></p>
                 </div>
                 <div class="eval-obs-box">
-                  <span class="block-subtitle">YOUR REPLICA AUDIT</span>
+                  <span class="block-subtitle">YOUR GENERATED DETAILS</span>
                   <p id="user-obs-text"></p>
                 </div>
               </div>
@@ -476,7 +479,8 @@
                   <span class="pq-slash">/</span>
                   <h2 class="leaderboard-title">Hall of Future Builders</h2>
                 </div>
-                <p class="leaderboard-sub">Live Prompt Quest standings combining AI Judge evaluations (100 pts) and community applause votes (+2 pts/vote).</p>
+                <p class="leaderboard-sub">Live Prompt Quest standings combining AI Judge evaluations (100 pts) and
+                  community applause votes (+2 pts/vote).</p>
               </div>
 
               <div class="leaderboard-actions">
@@ -507,7 +511,8 @@
                 </thead>
                 <tbody id="leaderboard-table-body">
                   <tr>
-                    <td colspan="8" class="table-empty">No submissions locked in yet. Enter the Arena to claim Rank #1!</td>
+                    <td colspan="8" class="table-empty">No submissions locked in yet. Enter the Arena to claim Rank #1!
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -527,7 +532,8 @@
                   <span class="pq-slash">/</span>
                   <h2 class="leaderboard-title">Builder Achievements &amp; Mastery</h2>
                 </div>
-                <p class="leaderboard-sub">Unlock special AI evaluation honors and master all 8 AWS Frontier Innovation Tracks.</p>
+                <p class="leaderboard-sub">Unlock special AI evaluation honors and master all 8 AWS Frontier Innovation
+                  Tracks.</p>
               </div>
               <button type="button" class="pq-btn-orange-pill" id="ach-to-arena-btn">
                 <span>Enter the Arena →</span>
@@ -575,7 +581,8 @@
                   <span class="pq-slash">/</span>
                   <h2 class="leaderboard-title">Builder Profile &amp; Session Stats</h2>
                 </div>
-                <p class="leaderboard-sub">Your registered AWS Community Day identity and active Prompt Quest performance.</p>
+                <p class="leaderboard-sub">Your registered AWS Community Day identity and active Prompt Quest
+                  performance.</p>
               </div>
               <button type="button" class="pq-btn-orange-pill" id="profile-to-arena-btn">
                 <span>Go to Prompt Arena →</span>
@@ -619,7 +626,8 @@
   <!-- =====================================================================
        SETTINGS & ADMIN COMMAND CENTER MODAL
        ===================================================================== -->
-  <div class="modal-backdrop hidden" id="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
+  <div class="modal-backdrop hidden" id="admin-modal" role="dialog" aria-modal="true"
+    aria-labelledby="admin-modal-title">
     <div class="pq-dash-card awsui-modal-card">
 
       <div class="awsui-modal-header">
@@ -634,9 +642,11 @@
       <div id="admin-auth-panel" class="modal-auth-body">
         <div class="auth-lock-badge">🔒</div>
         <h4>Administrator Access</h4>
-        <p>Enter the competition administrator code (<code>builder2026</code>) to manage challenges and live event rounds.</p>
+        <p>Enter the competition administrator code (<code>builder2026</code>) to manage challenges and live event
+          rounds.</p>
         <div class="modal-auth-row">
-          <input type="password" id="admin-code-input" class="awsui-text-input" placeholder="Admin Access Code..." autocomplete="off">
+          <input type="password" id="admin-code-input" class="awsui-text-input" placeholder="Admin Access Code..."
+            autocomplete="off">
           <button type="button" class="pq-btn-orange-pill" id="admin-login-btn">Authenticate</button>
         </div>
         <p class="auth-error-text hidden" id="admin-auth-error">Incorrect admin code.</p>
@@ -674,35 +684,45 @@
               <div class="form-grid-two">
                 <div class="form-cell full-width">
                   <label class="awsui-label">Challenge Title *</label>
-                  <input type="text" id="new-challenge-title" class="awsui-text-input" placeholder="e.g. Floating Clean Energy Megacity">
+                  <input type="text" id="new-challenge-title" class="awsui-text-input"
+                    placeholder="e.g. Floating Clean Energy Megacity">
                 </div>
                 <div class="form-cell full-width">
                   <label class="awsui-label">Challenge Brief / Scenario *</label>
-                  <textarea id="new-challenge-brief" class="awsui-textarea" rows="2" placeholder="Describe the creative futuristic scenario..."></textarea>
+                  <textarea id="new-challenge-brief" class="awsui-textarea" rows="2"
+                    placeholder="Describe the creative futuristic scenario..."></textarea>
                 </div>
                 <div class="form-cell full-width">
                   <label class="awsui-label">Visual Goals / Cues</label>
-                  <input type="text" id="new-challenge-visual" class="awsui-text-input" placeholder="e.g. Terraced vertical gardens, solar towers">
+                  <input type="text" id="new-challenge-visual" class="awsui-text-input"
+                    placeholder="e.g. Terraced vertical gardens, solar towers">
                 </div>
                 <div class="form-cell">
                   <label class="awsui-label">Inspiration Keywords (comma separated)</label>
-                  <input type="text" id="new-challenge-keywords" class="awsui-text-input" placeholder="e.g. Solarpunk, Clean Maglev">
+                  <input type="text" id="new-challenge-keywords" class="awsui-text-input"
+                    placeholder="e.g. Solarpunk, Clean Maglev">
                 </div>
                 <div class="form-cell">
                   <label class="awsui-label">Evaluation Focus</label>
-                  <input type="text" id="new-challenge-focus" class="awsui-text-input" placeholder="e.g. Renewable energy motifs">
+                  <input type="text" id="new-challenge-focus" class="awsui-text-input"
+                    placeholder="e.g. Renewable energy motifs">
                 </div>
                 <div class="form-cell full-width">
                   <label class="awsui-label">Target Reference Image (Upload custom challenge photo / artwork)</label>
-                  <input type="file" id="new-challenge-image" class="awsui-file-input" accept="image/png, image/jpeg, image/webp" style="padding: 6px 0; color: #fff; font-size: 12.5px;">
-                  <div id="new-challenge-image-preview" class="image-upload-preview hidden" style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
-                    <img id="new-challenge-preview-img" src="" alt="Preview" style="width: 90px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--aws-orange);">
-                    <button type="button" class="pq-btn-outline-pill btn-sm" id="clear-image-preview-btn">✕ Remove Image</button>
+                  <input type="file" id="new-challenge-image" class="awsui-file-input"
+                    accept="image/png, image/jpeg, image/webp" style="padding: 6px 0; color: #fff; font-size: 12.5px;">
+                  <div id="new-challenge-image-preview" class="image-upload-preview hidden"
+                    style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+                    <img id="new-challenge-preview-img" src="" alt="Preview"
+                      style="width: 90px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--aws-orange);">
+                    <button type="button" class="pq-btn-outline-pill btn-sm" id="clear-image-preview-btn">✕ Remove
+                      Image</button>
                   </div>
                 </div>
               </div>
               <div class="form-actions-bar">
-                <button type="button" class="pq-btn-orange-pill" id="save-new-challenge-btn">Save &amp; Activate Challenge</button>
+                <button type="button" class="pq-btn-orange-pill" id="save-new-challenge-btn">Save &amp; Activate
+                  Challenge</button>
               </div>
             </div>
           </div>
@@ -712,7 +732,8 @@
             <div class="catalog-top-toolbar">
               <h5>Challenge Catalog &amp; Activations</h5>
               <div class="catalog-actions-group">
-                <button type="button" class="pq-btn-outline-pill btn-sm" id="reset-challenges-btn">Reset to Defaults</button>
+                <button type="button" class="pq-btn-outline-pill btn-sm" id="reset-challenges-btn">Reset to
+                  Defaults</button>
               </div>
             </div>
             <div class="catalog-table-scroll">
@@ -738,11 +759,15 @@
             <div class="admin-panel-card">
               <h4>Competition Phase Control</h4>
               <p>Switch active competition phase and round timer for all connected players:</p>
-              
-              <div class="admin-phase-status-strip" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:8px 12px; background:rgba(182,154,255,0.08); border:1px solid rgba(182,154,255,0.25); border-radius:8px;">
+
+              <div class="admin-phase-status-strip"
+                style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:8px 12px; background:rgba(182,154,255,0.08); border:1px solid rgba(182,154,255,0.25); border-radius:8px;">
                 <div>
-                  <span style="font-size:12px; color:var(--pq-text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Live Status:</span>
-                  <strong id="admin-live-phase-badge" style="color:var(--sbg-purple-light); font-size:13px; margin-left:6px;">🟢 LOBBY MODE</strong>
+                  <span
+                    style="font-size:12px; color:var(--pq-text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Live
+                    Status:</span>
+                  <strong id="admin-live-phase-badge"
+                    style="color:var(--sbg-purple-light); font-size:13px; margin-left:6px;">🟢 LOBBY MODE</strong>
                 </div>
                 <div>
                   <span style="font-size:12px; color:var(--pq-text-secondary);">Active Players: </span>
@@ -752,14 +777,19 @@
 
               <div class="phase-btn-group" id="admin-phase-btn-group">
                 <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="lobby">Lobby Mode</button>
-                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="battle">Start Battle Round</button>
-                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="showcase">Showcase &amp; Voting</button>
-                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="leaderboard">Final Standings</button>
+                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="battle">Start Battle
+                  Round</button>
+                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="showcase">Showcase &amp;
+                  Voting</button>
+                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="leaderboard">Final
+                  Standings</button>
               </div>
 
-              <div style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+              <div
+                style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
                 <span style="font-size:12px; color:var(--pq-text-secondary);">Testing multi-player?</span>
-                <a href="/" target="_blank" class="pq-btn-outline-pill btn-sm" style="text-decoration:none; font-size:11.5px; padding:4px 10px;">↗ Open Player View in New Tab</a>
+                <a href="/" target="_blank" class="pq-btn-outline-pill btn-sm"
+                  style="text-decoration:none; font-size:11.5px; padding:4px 10px;">↗ Open Player View in New Tab</a>
               </div>
             </div>
 
@@ -781,7 +811,8 @@
        ===================================================================== -->
   <div class="modal-backdrop hidden" id="image-modal" role="dialog" aria-modal="true">
     <div class="awsui-image-modal-card" style="max-width: 960px; width: 95%;">
-      <button type="button" class="modal-close-btn image-modal-close" id="close-image-modal" aria-label="Close">✕</button>
+      <button type="button" class="modal-close-btn image-modal-close" id="close-image-modal"
+        aria-label="Close">✕</button>
       <div id="modal-single-view" class="modal-single-container">
         <img id="modal-full-image" src="" alt="Full resolution view">
       </div>
@@ -802,4 +833,5 @@
   <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
   <script src="/static/js/battle.js?v=pq-instant-v1" defer></script>
 </body>
+
 </html>
