@@ -31,7 +31,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 86400
 CORS(app)
 
 class VercelPathFixMiddleware:
-    """Normalizes PATH_INFO for Vercel serverless environments when rewrites route to /app.py."""
+    """Normalizes PATH_INFO for Vercel serverless environments when rewrites route to /api/index or /app.py."""
     def __init__(self, wsgi_app):
         self.wsgi_app = wsgi_app
 
@@ -43,10 +43,15 @@ class VercelPathFixMiddleware:
         )
         if matched:
             matched_path = matched.split("?")[0]
-            if matched_path and matched_path != "/app.py":
+            if matched_path and matched_path not in ["/app.py", "/api/index", "/api/index.py"]:
                 environ["PATH_INFO"] = matched_path
+            elif not environ.get("PATH_INFO") or environ.get("PATH_INFO") in ["/app.py", "/api/index", "/api/index.py"]:
+                environ["PATH_INFO"] = "/"
         elif environ.get("PATH_INFO", "").startswith("/app.py"):
             rest = environ["PATH_INFO"][len("/app.py"):]
+            environ["PATH_INFO"] = rest if rest else "/"
+        elif environ.get("PATH_INFO", "").startswith("/api/index"):
+            rest = environ["PATH_INFO"][len("/api/index"):]
             environ["PATH_INFO"] = rest if rest else "/"
         return self.wsgi_app(environ, start_response)
 
