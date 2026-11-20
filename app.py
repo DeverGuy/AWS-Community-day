@@ -30,6 +30,28 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 86400
 CORS(app)
 
+class VercelPathFixMiddleware:
+    """Normalizes PATH_INFO for Vercel serverless environments when rewrites route to /app.py."""
+    def __init__(self, wsgi_app):
+        self.wsgi_app = wsgi_app
+
+    def __call__(self, environ, start_response):
+        matched = (
+            environ.get("HTTP_X_MATCHED_PATH")
+            or environ.get("HTTP_X_ORIGINAL_URI")
+            or environ.get("HTTP_X_FORWARDED_URI")
+        )
+        if matched:
+            matched_path = matched.split("?")[0]
+            if matched_path and matched_path != "/app.py":
+                environ["PATH_INFO"] = matched_path
+        elif environ.get("PATH_INFO", "").startswith("/app.py"):
+            rest = environ["PATH_INFO"][len("/app.py"):]
+            environ["PATH_INFO"] = rest if rest else "/"
+        return self.wsgi_app(environ, start_response)
+
+app.wsgi_app = VercelPathFixMiddleware(app.wsgi_app)
+
 @app.after_request
 def optimize_http_response(response):
     """Adds aggressive browser caching headers and high-performance gzip compression."""
@@ -158,6 +180,7 @@ def broadcast_state():
 # -----------------------------------------------------------------------------
 
 @app.route("/")
+@app.route("/app.py")
 def index():
     return render_template(
         "index.html",
@@ -170,6 +193,7 @@ def index():
 
 @app.route("/admin")
 @app.route("/admin/")
+@app.route("/app.py/admin")
 def admin_page():
     return render_template(
         "index.html",
