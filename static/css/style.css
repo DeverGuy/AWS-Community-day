@@ -3057,6 +3057,7 @@ button:disabled {
 
   .pq-topbar {
     padding: 0 16px;
+    height: 60px;
   }
 
   .pq-topbar-sub-pill {
@@ -3064,7 +3065,7 @@ button:disabled {
   }
 
   .pq-viewport {
-    padding: 16px 16px 36px;
+    padding: 16px 14px 36px;
   }
 
   .pq-stats-row,
@@ -3095,6 +3096,284 @@ button:disabled {
   .modal-dual-viewport,
   .eval-observations-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS (<= 640px) - TOPBAR & ARENA OPTIMIZATIONS
+   ========================================================================== */
+@media (max-width: 640px) {
+  .pq-topbar {
+    height: 52px;
+    min-height: 52px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .pq-topbar-left {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .topbar-logo-slot {
+    height: 24px;
+  }
+
+  .aws-nav-logo-img {
+    height: 20px;
+    width: auto;
+  }
+
+  .pq-sparkle-icon {
+    display: none;
+  }
+
+  .pq-topbar-title {
+    font-size: 14px;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+  }
+
+  .pq-topbar-right {
+    gap: 6px;
+    flex-shrink: 1;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+
+  .pq-topbar-divider {
+    display: none;
+  }
+
+  .pq-live-event-pill {
+    padding: 3px 9px;
+    font-size: 11px;
+    gap: 5px;
+    white-space: nowrap;
+    height: 28px;
+  }
+
+  .pq-green-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  #nav-leaderboard-btn {
+    padding: 0 8px;
+    font-size: 11px;
+    height: 28px;
+    white-space: nowrap;
+  }
+
+  #open-admin-btn {
+    padding: 0 8px;
+    font-size: 11px;
+    height: 28px;
+    white-space: nowrap;
+  }
+
+  .pq-user-pill {
+    padding: 2px 8px 2px 3px;
+    gap: 6px;
+    max-width: 130px;
+    overflow: hidden;
+    height: 30px;
+  }
+
+  .pq-avatar-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .pq-user-meta {
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .pq-user-name {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 78px;
+    line-height: 1.2;
+  }
+
+  .pq-user-email {
+    display: none; /* Hide long email in topbar on mobile to eliminate clutter */
+  }
+
+  .pq-btn-switch {
+    display: none;
+  }
+
+  .pq-viewport {
+    padding: 12px 10px 28px;
+  }
+
+  /* Game Header Strip on Mobile */
+  .game-header-strip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+  }
+
+  .builder-welcome-meta {
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+    font-size: 12px;
+  }
+
+  .builder-display-name {
+    font-size: 13px;
+  }
+
+  .builder-display-email {
+    font-size: 11px;
+    word-break: break-all;
+    opacity: 0.85;
+  }
+
+  .countdown-timer-pill {
+    width: 100%;
+    justify-content: center;
+    padding: 6px 14px;
+  }
+
+  /* Dual Arena Grid on Mobile */
+  .pq-dual-arena-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .challenge-box,
+  .prompt-card {
+    padding: 12px;
+  }
+
+  .challenge-main-title {
+    font-size: 17px;
+    margin-bottom: 8px;
+  }
+
+  .reference-target-header {
+    padding: 6px 10px;
+  }
+
+  .reference-badge-pill {
+    font-size: 9px;
+  }
+
+  .btn-inspect-ref {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .reference-visual-frame {
+    min-height: 200px;
+    max-height: 270px;
+  }
+
+  .arena-security-watermark {
+    font-size: 8.5px;
+    padding: 5px 8px;
+    margin: 6px 8px 8px;
+    line-height: 1.35;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .prompt-header-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .prompt-title {
+    font-size: 15px;
+  }
+
+  .prompt-quality-pill {
+    font-size: 9.5px;
+    padding: 2px 7px;
+  }
+
+  .char-counter {
+    font-size: 10px;
+  }
+
+  .anti-cheat-pill-strip {
+    font-size: 10.5px;
+    padding: 6px 8px;
+    line-height: 1.4;
+  }
+
+  #prompt-input {
+    min-height: 130px;
+    font-size: 13.5px;
+    padding: 10px;
+  }
+
+  .prompt-actions-bar {
+    display: flex;
+    gap: 8px;
+  }
+
+  #clear-prompt-btn {
+    flex: 1;
+    height: 42px;
+    padding: 0 10px;
+  }
+
+  #generate-image-btn {
+    flex: 2.5;
+    height: 42px;
+    font-size: 13px;
+    padding: 0 12px;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   EXTRA COMPACT MOBILE DEVICES (<= 380px)
+   ========================================================================== */
+@media (max-width: 380px) {
+  .pq-topbar {
+    padding: 0 8px;
+    gap: 5px;
+  }
+
+  .pq-topbar-title {
+    font-size: 13px;
+  }
+
+  .pq-live-event-pill {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .pq-user-pill {
+    max-width: 100px;
+    padding: 2px 6px 2px 2px;
+  }
+
+  .pq-user-name {
+    max-width: 52px;
+    font-size: 10px;
+  }
+
+  #nav-leaderboard-btn,
+  #open-admin-btn {
+    padding: 0 6px;
+    font-size: 10px;
+  }
+
+  .challenge-main-title {
+    font-size: 15px;
   }
 }
 
