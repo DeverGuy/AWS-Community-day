@@ -118,7 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const isAdminRoute =
     document.body.dataset.adminRoute === "true" ||
     window.location.pathname === "/admin" ||
-    window.location.pathname === "/admin/";
+    window.location.pathname === "/admin/" ||
+    window.location.pathname.endsWith("/admin") ||
+    window.location.search.includes("admin=true");
 
   // Instant page view: 0ms delay on reloads
   finishIntroImmediately();
@@ -1759,6 +1761,11 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (e) { }
 
   if (openAdminBtn) {
+    if (isAdminRoute) {
+      openAdminBtn.classList.remove("hidden");
+    } else {
+      openAdminBtn.classList.add("hidden");
+    }
     openAdminBtn.addEventListener("click", () => {
       adminModal.classList.remove("hidden");
       if (state.isAdmin) {

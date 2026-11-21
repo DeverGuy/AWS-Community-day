@@ -83,8 +83,8 @@
             <span id="nav-comp-status">Live Event</span>
           </div>
 
-          <!-- Admin Settings Button -->
-          <button type="button" class="pq-btn-outline-pill btn-sm" id="open-admin-btn" title="Admin Settings">
+          <!-- Admin Settings Button (Visible only when typing /admin in URL bar) -->
+          <button type="button" class="pq-btn-outline-pill btn-sm {% if not open_admin %}hidden{% endif %}" id="open-admin-btn" title="Admin Settings">
             <span>⚙️ Admin Settings</span>
           </button>
 
