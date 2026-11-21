@@ -1847,67 +1847,20 @@ document.addEventListener("DOMContentLoaded", () => {
       (data.challenges || []).forEach(ch => {
         const tr = document.createElement("tr");
         const isActive = ch.is_active;
-        const imgCell = ch.static_url
-          ? `<img src="${ch.static_url}?v=${Date.now()}" alt="${ch.title}" style="width:52px; height:34px; object-fit:cover; border-radius:4px; border:1px solid rgba(255,255,255,0.2);">`
-          : `<div style="width:52px; height:34px; border-radius:4px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:14px;" title="AI synthesized on demand">🎨</div>`;
 
         tr.innerHTML = `
-          <td>${imgCell}</td>
           <td><span class="status-badge ${isActive ? "active" : "inactive"}">${isActive ? "ACTIVE" : "INACTIVE"}</span></td>
           <td>
             <div style="font-weight:700;">${ch.title}</div>
-            <div style="font-size:11.5px; color:var(--pq-text-secondary);">${ch.brief.slice(0, 90)}...</div>
+            <div style="font-size:11.5px; color:var(--pq-text-secondary);">${ch.brief.slice(0, 110)}...</div>
           </td>
           <td>
             <div style="display:flex; gap:6px; align-items:center;">
-              <button type="button" class="pq-btn-outline-pill btn-sm upload-ch-img-btn" title="Upload custom reference image">📷 Upload</button>
-              <input type="file" class="hidden-ch-file-input hidden" accept="image/png, image/jpeg, image/webp">
               <button type="button" class="pq-btn-outline-pill btn-sm toggle-act-btn">${isActive ? "Deactivate" : "Activate"}</button>
               <button type="button" class="awsui-btn-danger btn-sm delete-ch-btn" style="margin-top:0;">Delete</button>
             </div>
           </td>
         `;
-
-        const fileInput = tr.querySelector(".hidden-ch-file-input");
-        const uploadBtn = tr.querySelector(".upload-ch-img-btn");
-
-        if (uploadBtn && fileInput) {
-          uploadBtn.addEventListener("click", () => fileInput.click());
-          fileInput.addEventListener("change", (evt) => {
-            const file = evt.target.files && evt.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = async (readEvt) => {
-              const b64 = readEvt.target.result;
-              try {
-                uploadBtn.disabled = true;
-                uploadBtn.textContent = "Uploading...";
-                const uResp = await fetch(`/api/challenges/${ch.id}/image`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "X-Admin-Code": state.adminToken
-                  },
-                  body: JSON.stringify({ image_data: b64 })
-                });
-                const uData = await uResp.json();
-                if (uData.success) {
-                  playAudioTone("success");
-                  showToast(`Custom reference image uploaded for "${ch.title}"!`, "success");
-                  loadAdminChallenges();
-                } else {
-                  showToast(uData.error || "Failed to upload image.", "error");
-                }
-              } catch (err) {
-                showToast("Error uploading image.", "error");
-              } finally {
-                uploadBtn.disabled = false;
-                uploadBtn.textContent = "📷 Upload";
-              }
-            };
-            reader.readAsDataURL(file);
-          });
-        }
 
         tr.querySelector(".toggle-act-btn").addEventListener("click", async () => {
           playAudioTone("click");
@@ -1944,34 +1897,6 @@ document.addEventListener("DOMContentLoaded", () => {
     adminCatFilter.addEventListener("change", loadAdminChallenges);
   }
 
-  let newChallengeImageData = null;
-  const newChallengeImageInput = document.getElementById("new-challenge-image");
-  const newChallengePreviewWrap = document.getElementById("new-challenge-image-preview");
-  const newChallengePreviewImg = document.getElementById("new-challenge-preview-img");
-  const clearImagePreviewBtn = document.getElementById("clear-image-preview-btn");
-
-  if (newChallengeImageInput) {
-    newChallengeImageInput.addEventListener("change", (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (loadEvt) => {
-        newChallengeImageData = loadEvt.target.result;
-        if (newChallengePreviewImg) newChallengePreviewImg.src = newChallengeImageData;
-        if (newChallengePreviewWrap) newChallengePreviewWrap.classList.remove("hidden");
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  if (clearImagePreviewBtn) {
-    clearImagePreviewBtn.addEventListener("click", () => {
-      newChallengeImageData = null;
-      if (newChallengeImageInput) newChallengeImageInput.value = "";
-      if (newChallengePreviewWrap) newChallengePreviewWrap.classList.add("hidden");
-    });
-  }
-
   const saveChallengeBtn = document.getElementById("save-new-challenge-btn");
   if (saveChallengeBtn) {
     saveChallengeBtn.addEventListener("click", async () => {
@@ -1999,7 +1924,6 @@ document.addEventListener("DOMContentLoaded", () => {
             visual_goals: visual,
             inspiration_keywords: keywords,
             evaluation_focus: focus,
-            image_data: newChallengeImageData,
             is_active: true
           })
         });
@@ -2012,9 +1936,6 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById("new-challenge-visual").value = "";
           document.getElementById("new-challenge-keywords").value = "";
           document.getElementById("new-challenge-focus").value = "";
-          newChallengeImageData = null;
-          if (newChallengeImageInput) newChallengeImageInput.value = "";
-          if (newChallengePreviewWrap) newChallengePreviewWrap.classList.add("hidden");
           if (accContent) accContent.classList.add("hidden");
           loadAdminChallenges();
         } else {

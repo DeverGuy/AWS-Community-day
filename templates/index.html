@@ -83,6 +83,11 @@
             <span id="nav-comp-status">Live Event</span>
           </div>
 
+          <!-- Admin Settings Button -->
+          <button type="button" class="pq-btn-outline-pill btn-sm" id="open-admin-btn" title="Admin Settings">
+            <span>⚙️ Admin Settings</span>
+          </button>
+
           <div class="pq-topbar-divider"></div>
 
           <!-- Active Builder Profile Pill (When signed in) -->
@@ -641,7 +646,7 @@
       <div id="admin-dashboard-panel" class="modal-dashboard-body hidden">
 
         <div class="awsui-modal-tabs">
-          <button type="button" class="modal-tab-btn active" data-tab="tab-challenges">Challenge Catalog</button>
+          <button type="button" class="modal-tab-btn active" data-tab="tab-challenges">Admin Settings</button>
           <button type="button" class="modal-tab-btn" data-tab="tab-competition">Reset Competition</button>
         </div>
 
@@ -692,18 +697,6 @@
                   <input type="text" id="new-challenge-focus" class="awsui-text-input"
                     placeholder="e.g. Renewable energy motifs">
                 </div>
-                <div class="form-cell full-width">
-                  <label class="awsui-label">Target Reference Image (Upload custom challenge photo / artwork)</label>
-                  <input type="file" id="new-challenge-image" class="awsui-file-input"
-                    accept="image/png, image/jpeg, image/webp" style="padding: 6px 0; color: #fff; font-size: 12.5px;">
-                  <div id="new-challenge-image-preview" class="image-upload-preview hidden"
-                    style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
-                    <img id="new-challenge-preview-img" src="" alt="Preview"
-                      style="width: 90px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--aws-orange);">
-                    <button type="button" class="pq-btn-outline-pill btn-sm" id="clear-image-preview-btn">✕ Remove
-                      Image</button>
-                  </div>
-                </div>
               </div>
               <div class="form-actions-bar">
                 <button type="button" class="pq-btn-orange-pill" id="save-new-challenge-btn">Save &amp; Activate
@@ -725,7 +718,6 @@
               <table class="awsui-table compact-table">
                 <thead>
                   <tr>
-                    <th>Image</th>
                     <th>Status</th>
                     <th>Title &amp; Brief</th>
                     <th>Actions</th>
