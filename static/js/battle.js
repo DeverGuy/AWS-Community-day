@@ -642,11 +642,21 @@ document.addEventListener("DOMContentLoaded", () => {
         renderAssignedChallenge(target);
         refreshCompetitionState();
 
+        const watermarkEl = document.getElementById("arena-watermark");
+        if (watermarkEl) {
+          watermarkEl.textContent = `🛡️ AWS PROMPT QUEST • BUILDER: ${name.toUpperCase()} (${email}) • SESSION PROTECTED • 1 ATTEMPT PER EMAIL`;
+        }
+
         showScreen("game");
         startChallengeTimer(state.timerDuration);
         showToast(`Welcome, ${name}! You have ${state.timerDuration}s and 1 final generation attempt.`, "success");
       } else {
         showIdentifierError(data.error || "Unable to register session. Please try again.");
+        if (data.already_completed) {
+          playAudioTone("click");
+          const topLbBtn = document.getElementById("nav-leaderboard-btn");
+          if (topLbBtn) topLbBtn.classList.remove("hidden");
+        }
       }
     } catch (err) {
       console.error("Join error:", err);
@@ -2010,7 +2020,169 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // ANTI-CHEAT CONTROLS: DISABLE COPY-PASTE, DISABLE SCREENSHOTS
+  // ---------------------------------------------------------------------------
+  function setupSecurityAndIntegrityControls() {
+    const shieldEl = document.getElementById("screenshot-shield");
+    let shieldTimeout = null;
+
+    function triggerScreenshotShield(reason = "Screenshots are disabled during the live battle round!") {
+      if (state.isAdmin) return;
+      if (shieldEl) {
+        shieldEl.classList.remove("hidden");
+        clearTimeout(shieldTimeout);
+        shieldTimeout = setTimeout(() => {
+          shieldEl.classList.add("hidden");
+        }, 1300);
+      }
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText("Screenshots and prompt copying are disabled in the AWS AI Prompt Battle.").catch(() => {});
+        }
+      } catch (e) {}
+      showToast(`📸 ${reason}`, "error");
+      playAudioTone("click");
+    }
+
+    // 1. Disable Pasting into prompt input (strictly enforce manual typing)
+    if (promptInput) {
+      promptInput.addEventListener("paste", (e) => {
+        e.preventDefault();
+        showToast("🚫 Pasting is disabled! You must craft and type your prompt manually.", "error");
+        playAudioTone("click");
+        return false;
+      });
+
+      promptInput.addEventListener("copy", (e) => {
+        e.preventDefault();
+        showToast("🚫 Copying is disabled in the Prompt Arena.", "warning");
+        return false;
+      });
+
+      promptInput.addEventListener("cut", (e) => {
+        e.preventDefault();
+        return false;
+      });
+
+      promptInput.addEventListener("drop", (e) => {
+        e.preventDefault();
+        showToast("🚫 Drag & drop is disabled in the Prompt Arena.", "warning");
+        return false;
+      });
+    }
+
+    // 2. Global Copy & Paste Block for players
+    document.addEventListener("copy", (e) => {
+      if (state.isAdmin) return;
+      e.preventDefault();
+      showToast("🚫 Copying challenge content is disabled.", "warning");
+      return false;
+    });
+
+    document.addEventListener("cut", (e) => {
+      if (state.isAdmin) return;
+      e.preventDefault();
+      return false;
+    });
+
+    document.addEventListener("paste", (e) => {
+      if (state.isAdmin) return;
+      const target = e.target;
+      if (target && (target.id === "prompt-input" || target.closest("#game-screen") || target.closest(".pq-prompt-workspace"))) {
+        e.preventDefault();
+        showToast("🚫 Pasting is disabled in the Prompt Arena. Type your prompt manually!", "error");
+        return false;
+      }
+    });
+
+    // 3. Disable Right-Click Context Menu
+    document.addEventListener("contextmenu", (e) => {
+      if (state.isAdmin) return;
+      e.preventDefault();
+      showToast("🚫 Right-click context menu is disabled in the Arena.", "info");
+      return false;
+    });
+
+    // 4. Disable Screenshot & DevTools Keyboard Shortcuts
+    window.addEventListener("keydown", (e) => {
+      if (state.isAdmin) return;
+
+      // PrintScreen key
+      if (e.key === "PrintScreen" || e.keyCode === 44 || e.code === "PrintScreen") {
+        e.preventDefault();
+        triggerScreenshotShield("Screenshots are blocked during the battle round!");
+        return false;
+      }
+
+      // Ctrl+P / Cmd+P (Print page / PDF)
+      if ((e.ctrlKey || e.metaKey) && (e.key === "p" || e.key === "P")) {
+        e.preventDefault();
+        triggerScreenshotShield("Printing / Exporting is disabled.");
+        return false;
+      }
+
+      // Ctrl+S / Cmd+S (Save webpage)
+      if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "S")) {
+        e.preventDefault();
+        showToast("🚫 Saving webpage is disabled.", "warning");
+        return false;
+      }
+
+      // Ctrl+Shift+S / Win+Shift+S / Meta+Shift+S (Snipping tool)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault();
+        triggerScreenshotShield("Snipping tool and screenshot shortcuts are disabled!");
+        return false;
+      }
+
+      // DevTools: F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+      if (e.key === "F12" ||
+          ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "I" || e.key === "i" || e.key === "J" || e.key === "j" || e.key === "C" || e.key === "c")) ||
+          ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U"))) {
+        e.preventDefault();
+        showToast("🚫 Developer inspection tools are disabled.", "warning");
+        return false;
+      }
+    });
+
+    window.addEventListener("keyup", (e) => {
+      if (state.isAdmin) return;
+      if (e.key === "PrintScreen" || e.keyCode === 44 || e.code === "PrintScreen") {
+        e.preventDefault();
+        triggerScreenshotShield("Screenshot capture detected and blocked!");
+      }
+    });
+
+    // 5. Anti-Screen Capture (Window Blur / Tab Switch Privacy Blur during active arena)
+    const refFrame = document.getElementById("reference-visual-frame");
+
+    function applyArenaPrivacyBlur() {
+      const isGameActive = screens.game && screens.game.classList.contains("active");
+      if (isGameActive && !state.isAdmin) {
+        if (refFrame) refFrame.classList.add("arena-privacy-blur");
+        if (promptInput) promptInput.classList.add("arena-privacy-blur");
+      }
+    }
+
+    function removeArenaPrivacyBlur() {
+      if (refFrame) refFrame.classList.remove("arena-privacy-blur");
+      if (promptInput) promptInput.classList.remove("arena-privacy-blur");
+    }
+
+    window.addEventListener("blur", applyArenaPrivacyBlur);
+    window.addEventListener("focus", removeArenaPrivacyBlur);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        applyArenaPrivacyBlur();
+      } else {
+        removeArenaPrivacyBlur();
+      }
+    });
+  }
+
   // Initialize
+  setupSecurityAndIntegrityControls();
   initChallengeStats();
   checkSavedIdentity();
   updateCharCount();

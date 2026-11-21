@@ -3526,3 +3526,130 @@ button:disabled {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==========================================================================
+   12. ANTI-CHEAT & INTEGRITY CONTROLS (Copy-Paste & Screenshot Protections)
+   ========================================================================== */
+
+/* 1. Prevent text selection across arena, challenges, and canvas */
+body.pq-dark-theme {
+  -webkit-touch-callout: none;
+}
+
+.pq-prompt-workspace,
+.challenge-box,
+.reference-target-card,
+.reference-visual-frame,
+.pq-dual-arena-grid,
+.anti-cheat-pill-strip,
+.pq-hero-banner,
+.identifier-card,
+.challenge-main-title {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Allow cursor placement in textarea but prevent paste via JS */
+#prompt-input {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 2. Anti-Print / Anti-PDF Export */
+@media print {
+  html, body {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* 3. Anti-Screenshot Privacy Shield */
+.screenshot-shield {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999999;
+  background: #080811;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.screenshot-shield.hidden {
+  display: none !important;
+}
+
+.screenshot-shield-box {
+  padding: 36px 48px;
+  background: rgba(22, 22, 38, 0.96);
+  border: 2px solid var(--aws-orange, #FF9900);
+  border-radius: 16px;
+  box-shadow: 0 0 60px rgba(255, 153, 0, 0.4);
+  max-width: 500px;
+  backdrop-filter: blur(12px);
+}
+
+.screenshot-shield-icon {
+  font-size: 52px;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.screenshot-shield-title {
+  color: #FFFFFF;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.screenshot-shield-desc {
+  color: #B69AFF;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 4. Canvas & Arena Privacy Blur on Window Blur / Tab Switching */
+.arena-privacy-blur {
+  filter: blur(32px) grayscale(90%) !important;
+  transition: filter 0.08s ease;
+  pointer-events: none !important;
+}
+
+/* 5. Prevent image dragging and saving */
+img, picture, canvas {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* 6. Dynamic Arena Watermark */
+.arena-security-watermark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: rgba(182, 154, 255, 0.08);
+  border: 1px dashed rgba(182, 154, 255, 0.3);
+  border-radius: 20px;
+  font-size: 11px;
+  color: #B69AFF;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-top: 6px;
+  user-select: none;
+}

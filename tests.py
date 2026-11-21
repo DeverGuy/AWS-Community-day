@@ -369,6 +369,34 @@ class TestReversePromptBattle(unittest.TestCase):
         self.assertTrue(len(img_resp.data) > 0)
         self.assertIn("Cache-Control", img_resp.headers)
 
+    def test_one_try_per_email_enforcement(self):
+        # 1. Join with email
+        email = "unique_builder@university.edu"
+        join_resp = self.client.post('/api/join', json={'name': 'Unique Builder', 'email': email})
+        self.assertEqual(join_resp.status_code, 200)
+        pid = join_resp.get_json()['participant']['id']
+
+        # 2. Complete generation
+        dummy_b64 = "data:image/jpeg;base64," + base64.b64encode(b"test_image_bytes").decode("utf-8")
+        gen_resp = self.client.post('/api/generate', json={
+            'participant_id': pid,
+            'prompt': 'A floating greenhouse on an alien world',
+            '_test_mock_image_data': dummy_b64
+        })
+        self.assertEqual(gen_resp.status_code, 200)
+
+        # 3. Attempting to join AGAIN with the same email must be strictly blocked (403)
+        rejoin_resp = self.client.post('/api/join', json={'name': 'Unique Builder', 'email': email})
+        self.assertEqual(rejoin_resp.status_code, 403)
+        rejoin_data = rejoin_resp.get_json()
+        self.assertFalse(rejoin_data['success'])
+        self.assertTrue(rejoin_data.get('already_completed'))
+        self.assertIn("1 try per email ID", rejoin_data.get('error'))
+
+        # 4. A different email can join successfully
+        other_resp = self.client.post('/api/join', json={'name': 'Other Builder', 'email': 'other_builder@university.edu'})
+        self.assertEqual(other_resp.status_code, 200)
+
 
 if __name__ == '__main__':
     unittest.main()

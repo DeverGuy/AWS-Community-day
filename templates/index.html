@@ -246,7 +246,10 @@
                   </div>
                   <div class="reference-visual-frame pq-arena-viewport-match" id="reference-visual-frame">
                     <img id="challenge-reference-img" class="challenge-reference-img" src=""
-                      alt="Challenge Reference Visual">
+                      alt="Challenge Reference Visual" draggable="false" oncontextmenu="return false;">
+                  </div>
+                  <div class="arena-security-watermark" id="arena-watermark">
+                    🛡️ AWS PROMPT QUEST • BUILDER SESSION PROTECTED • 1 ATTEMPT PER EMAIL
                   </div>
                 </div>
               </div>
@@ -271,11 +274,12 @@
                     or when you click <strong>Finalize &amp; Generate</strong>.</span>
                 </div>
 
-                <!-- Textarea -->
+                <!-- Textarea (Copy & Paste Disabled) -->
                 <div class="prompt-input-box pq-prompt-box-grow">
                   <textarea id="prompt-input" class="awsui-textarea pq-textarea-tall" rows="10"
                     placeholder="Look at the image on the left. Describe what you see: the main subject(s), visible objects, colors, and setting..."
-                    autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+                    autocomplete="off" autocorrect="off" spellcheck="false"
+                    oncopy="return false;" onpaste="return false;" oncut="return false;" ondragstart="return false;" ondrop="return false;"></textarea>
                 </div>
 
                 <!-- Validation / Anti-Cheat Error Banner -->
@@ -771,6 +775,17 @@
         </div>
       </div>
       <div class="image-modal-caption" id="modal-image-caption"></div>
+    </div>
+  </div>
+
+  <!-- Anti-Screenshot Privacy Shield Overlay -->
+  <div id="screenshot-shield" class="screenshot-shield hidden" aria-hidden="true">
+    <div class="screenshot-shield-box">
+      <span class="screenshot-shield-icon">🛡️</span>
+      <h3 class="screenshot-shield-title">SCREENSHOTS BLOCKED</h3>
+      <p class="screenshot-shield-desc">
+        Screen capture and print commands are disabled during the live AWS AI Prompt Battle.
+      </p>
     </div>
   </div>
 

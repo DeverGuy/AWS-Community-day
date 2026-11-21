@@ -235,6 +235,24 @@ def get_state():
         "submission_count": len(submissions)
     })
 
+def _has_email_completed_attempt(email):
+    """Check if an email has already used its single allowed arena attempt."""
+    if not email:
+        return False
+    norm_email = email.strip().lower()
+    # Check finalized submissions on the leaderboard
+    for sub in submissions.values():
+        if sub.get("player_email", "").strip().lower() == norm_email:
+            return True
+    # Check participants who have already generated an image, locked in, or expired
+    for p in participants.values():
+        if p.get("email", "").strip().lower() == norm_email:
+            if p.get("has_generated") or p.get("submission") or p.get("status") in ["submitted", "expired", "disqualified"]:
+                return True
+            if len(p.get("generations", [])) >= 1:
+                return True
+    return False
+
 @app.route("/api/join", methods=["POST"])
 def join_competition():
     data = request.get_json() or {}
@@ -242,27 +260,52 @@ def join_competition():
     email = data.get("email", "").strip().lower()
     participant_id = data.get("participant_id") or str(uuid.uuid4())
 
-    # Generate or assign a unique target challenge from agents under "BUILD THE FUTURE"
-    target_challenge = challenge_manager.get_unique_target_challenge(participant_id=participant_id)
-    seen_set = set([target_challenge["id"]])
+    if not email:
+        return jsonify({"success": False, "error": "Email address is required to enter the arena."}), 400
 
-    now_ts = time.time()
-    participant = {
-        "id": participant_id,
-        "name": name,
-        "email": email,
-        "joined_at": now_ts,
-        "timer_started_at": now_ts,
-        "timer_duration": CHALLENGE_TIMER_SECONDS,
-        "has_generated": False,
-        "assigned_challenge": target_challenge,
-        "target_challenge": target_challenge,
-        "seen_challenges": seen_set,
-        "generations": [],
-        "submission": None,
-        "status": "ready"
-    }
-    participants[participant_id] = participant
+    # 1 TRY PER EMAIL ID ENFORCEMENT
+    if _has_email_completed_attempt(email):
+        return jsonify({
+            "success": False,
+            "error": "This email ID has already completed an arena round. Only 1 try per email ID is allowed.",
+            "already_completed": True
+        }), 403
+
+    # Check if participant already has an active, uncompleted session for this email (e.g. refreshed page before generating)
+    existing_active = None
+    for p in participants.values():
+        if p.get("email", "").strip().lower() == email:
+            if not p.get("has_generated") and not p.get("submission") and p.get("status") == "ready":
+                existing_active = p
+                break
+
+    if existing_active:
+        participant = existing_active
+        if name:
+            participant["name"] = name
+        target_challenge = participant.get("target_challenge") or participant.get("assigned_challenge")
+    else:
+        # Generate or assign a unique target challenge from agents under "BUILD THE FUTURE"
+        target_challenge = challenge_manager.get_unique_target_challenge(participant_id=participant_id)
+        seen_set = set([target_challenge["id"]])
+
+        now_ts = time.time()
+        participant = {
+            "id": participant_id,
+            "name": name,
+            "email": email,
+            "joined_at": now_ts,
+            "timer_started_at": now_ts,
+            "timer_duration": CHALLENGE_TIMER_SECONDS,
+            "has_generated": False,
+            "assigned_challenge": target_challenge,
+            "target_challenge": target_challenge,
+            "seen_challenges": seen_set,
+            "generations": [],
+            "submission": None,
+            "status": "ready"
+        }
+        participants[participant_id] = participant
 
     broadcast_state()
 
@@ -287,6 +330,7 @@ def get_participant(participant_id):
     participant = participants.get(participant_id)
     if not participant:
         return jsonify({"error": "Participant not found"}), 404
+
     client_p = dict(participant)
     client_p["seen_challenges"] = list(client_p.get("seen_challenges", []))
     if "target_challenge" in client_p and client_p["target_challenge"]:
@@ -306,6 +350,15 @@ def reroll_challenge():
     participant = participants.get(participant_id)
     if not participant:
         return jsonify({"error": "Participant not found"}), 404
+
+    p_email = participant.get("email", "").strip().lower()
+    if p_email:
+        for sid, sub in submissions.items():
+            if sub.get("player_email", "").strip().lower() == p_email and sub.get("participant_id") != participant["id"]:
+                return jsonify({
+                    "success": False,
+                    "error": "This email ID has already submitted an arena entry. Only 1 try per email ID is allowed."
+                }), 403
 
     if participant.get("has_generated") or len(participant.get("generations", [])) >= 1:
         return jsonify({
@@ -392,7 +445,19 @@ def generate():
 
     participant = participants.get(participant_id)
 
-    # Single-shot enforcement: each participant gets strictly ONE generation attempt
+    # 1 Try per Email ID & Single-Shot enforcement
+    if participant:
+        p_email = participant.get("email", "").strip().lower()
+        if p_email:
+            for sid, sub in submissions.items():
+                if sub.get("player_email", "").strip().lower() == p_email and sub.get("participant_id") != participant["id"]:
+                    return jsonify({
+                        "success": False,
+                        "already_generated": True,
+                        "locked": True,
+                        "error": "This email ID has already completed an arena round. Only 1 try per email ID is allowed."
+                    }), 403
+
     if participant and (participant.get("has_generated") or len(participant.get("generations", [])) >= 1):
         return jsonify({
             "success": False,
@@ -541,6 +606,15 @@ def submit_masterpiece():
     participant = participants.get(participant_id)
     if not participant:
         return jsonify({"error": "Participant not found"}), 404
+
+    p_email = participant.get("email", "").strip().lower()
+    if p_email:
+        for sid, sub in submissions.items():
+            if sub.get("player_email", "").strip().lower() == p_email and sub.get("participant_id") != participant["id"]:
+                return jsonify({
+                    "success": False,
+                    "error": "This email ID has already submitted an arena entry. Only 1 try per email ID is allowed."
+                }), 403
 
     # If already finalized & auto-submitted on single-shot generation, return it directly
     if participant.get("submission"):
