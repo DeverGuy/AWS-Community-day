@@ -244,28 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${hrs}:${mins}:${secs}`;
   }
 
-  function updateAdminPhaseButtons(currentPhase) {
-    const phase = currentPhase || (state.compState && state.compState.status) || "lobby";
-    document.querySelectorAll(".btn-phase-ctrl").forEach(btn => {
-      const bPhase = btn.dataset.phase;
-      if (bPhase === phase) {
-        btn.classList.remove("pq-btn-outline-pill");
-        btn.classList.add("pq-btn-orange-pill", "active-phase");
-      } else {
-        btn.classList.remove("pq-btn-orange-pill", "active-phase");
-        btn.classList.add("pq-btn-outline-pill");
-      }
-    });
-    const adminLiveBadge = document.getElementById("admin-live-phase-badge");
-    if (adminLiveBadge) {
-      const phaseBadgeMap = {
-        lobby: "🟢 LOBBY MODE",
-        battle: "⚔️ BATTLE ROUND (LIVE)",
-        leaderboard: "🏆 FINAL STANDINGS"
-      };
-      adminLiveBadge.textContent = phaseBadgeMap[phase] || phase.toUpperCase();
-    }
-  }
+  function updateAdminPhaseButtons() {}
 
   let lastHandledPhase = null;
 
@@ -307,20 +286,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function applyLiveCompetitionState(payload) {
     if (!payload) return;
-    const prevPhase = state.compState ? state.compState.status : null;
     state.compState = payload;
-    const currentPhase = payload.status || "lobby";
 
     if (typeof payload.time_remaining === "number") {
       state.timeRemaining = payload.time_remaining;
     }
 
-    // Keep Admin Phase Buttons visual state updated
-    updateAdminPhaseButtons(currentPhase);
-
     // 1. Navigation Status & Pill
     const statusText = document.getElementById("nav-comp-status");
-    const liveStatusPill = document.getElementById("live-status-pill");
     const subCountEl = document.getElementById("nav-submissions-count");
     const topLbBtn = document.getElementById("nav-leaderboard-btn");
 
@@ -329,125 +302,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (statusText) {
-      if (currentPhase === "battle") {
-        statusText.textContent = `Round ${payload.round_number || 1} Live`;
-      } else if (currentPhase === "leaderboard") {
-        statusText.textContent = "Final Standings";
-      } else {
-        statusText.textContent = "Lobby Open";
-      }
+      statusText.textContent = "Arena Live";
     }
 
-    if (liveStatusPill) {
-      liveStatusPill.className = `pq-live-event-pill pill-phase-${currentPhase}`;
-    }
-
-    // Update Admin Phase Control Strip (Live Status & Player Count)
-    const adminLiveBadge = document.getElementById("admin-live-phase-badge");
-    const adminPlayersCount = document.getElementById("admin-live-players-count");
-    if (adminLiveBadge) {
-      const phaseBadgeMap = {
-        lobby: "🟢 LOBBY MODE",
-        battle: "⚔️ BATTLE ROUND (LIVE)",
-        leaderboard: "🏆 FINAL STANDINGS"
-      };
-      adminLiveBadge.textContent = phaseBadgeMap[currentPhase] || currentPhase.toUpperCase();
-    }
-    if (adminPlayersCount && payload.participant_count !== undefined) {
-      adminPlayersCount.textContent = payload.participant_count;
-    }
-
-    // 2. Identifier Screen Live Phase Banner & CTA Button Text
-    const phaseBanner = document.getElementById("live-phase-banner");
-    const phaseText = document.getElementById("live-phase-text");
-    const startBtn = document.getElementById("start-game-btn");
-
-    if (phaseBanner && phaseText) {
-      phaseBanner.className = `live-phase-banner phase-${currentPhase}`;
-      if (currentPhase === "battle") {
-        phaseText.textContent = "🔥 BATTLE ROUND IS LIVE! Complete your prompt before the timer expires!";
-        if (startBtn && !state.participant) {
-          const span = startBtn.querySelector("span");
-          if (span) span.textContent = "🚀 Join Live Battle Now";
-        }
-      } else if (currentPhase === "leaderboard") {
-        phaseText.textContent = "🏆 Final Standings Announced! Check out the Hall of Future Builders!";
-        if (startBtn && !state.participant) {
-          const span = startBtn.querySelector("span");
-          if (span) span.textContent = "View Final Standings";
-        }
-      } else {
-        phaseText.textContent = "🟢 Competition Lobby: Waiting for the host to start Battle Round.";
-        if (startBtn && !state.participant) {
-          const span = startBtn.querySelector("span");
-          if (span) span.textContent = "Launch Prompt Arena & Reveal Challenge";
-        }
-      }
-    }
-
-    // 3. Leaderboard Button Visibility
+    // Leaderboard button visibility: accessible for admin or once user generated or completed
     if (topLbBtn) {
-      if (currentPhase === "leaderboard" || state.isAdmin || (state.participant && state.hasGenerated)) {
+      if (state.isAdmin || (state.participant && state.hasGenerated)) {
         topLbBtn.classList.remove("hidden");
-      } else {
-        topLbBtn.classList.add("hidden");
-      }
-    }
-
-    // 4. Live Global Screen Control & Transitions across All Tabs
-    const isFirstRun = lastHandledPhase === null;
-    const phaseChanged = lastHandledPhase !== currentPhase;
-
-    if (phaseChanged) {
-      lastHandledPhase = currentPhase;
-
-      if (currentPhase === "battle") {
-        // --- 1. START BATTLE ROUND: Launch all players into Arena ---
-        if (!state.isAdmin) {
-          await ensureParticipantActive();
-          unlockWorkspaceForNewSession();
-          showScreen("game");
-          startChallengeTimer(payload.time_remaining || state.timerDuration || 180);
-        }
-        playAudioTone("success");
-        showToast(`⚔️ Round ${payload.round_number || 1} Live! 180 seconds on the clock!`, "success");
-
-      } else if (currentPhase === "leaderboard") {
-        // --- 2. FINAL STANDINGS: Reveal official final rankings ---
-        stopChallengeTimer();
-        if (!state.isAdmin) {
-          showScreen("leaderboard");
-        }
-        loadLeaderboard();
-        playAudioTone("success");
-        showToast("🏆 Final Standings Announced! Check out the Hall of Future Builders!", "success");
-
-      } else if (currentPhase === "lobby") {
-        // --- 4. LOBBY MODE: Return everyone to Lobby ---
-        stopChallengeTimer();
-        if (!state.isAdmin) {
-          showScreen("identifier");
-        }
-        if (!isFirstRun) {
-          showToast("🟢 Competition returned to Lobby Mode.", "info");
-        }
-      }
-    } else {
-      // Sync running timer during active battle if needed
-      if (currentPhase === "battle" && !state.hasGenerated && !state.timerInterval) {
-        startChallengeTimer(payload.time_remaining || 180);
       }
     }
   }
-
-  // Smooth 1-second timer tick for active battle
-  setInterval(() => {
-    if (state.compState && state.compState.status === "battle" && state.timeRemaining > 0) {
-      state.timeRemaining -= 1;
-      const homeTimerEl = document.getElementById("home-stat-timer");
-      if (homeTimerEl) homeTimerEl.textContent = formatSecondsToHMS(state.timeRemaining);
-    }
-  }, 1000);
 
   async function refreshCompetitionState() {
     try {
@@ -725,13 +589,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const name = identifierNameInput ? identifierNameInput.value.trim() : "";
     const email = identifierEmailInput ? identifierEmailInput.value.trim().toLowerCase() : "";
-    const currentPhase = state.compState ? state.compState.status : "lobby";
-
-    if (!name && !email && currentPhase === "leaderboard") {
-      showScreen("leaderboard");
-      loadLeaderboard();
-      return;
-    }
 
     if (!name) {
       showIdentifierError("Please enter your builder alias or full name.");
@@ -1896,7 +1753,6 @@ document.addEventListener("DOMContentLoaded", () => {
       adminModal.classList.remove("hidden");
       if (state.isAdmin) {
         loadAdminChallenges();
-        updateAdminPhaseButtons();
       }
     });
   }
@@ -1944,7 +1800,6 @@ document.addEventListener("DOMContentLoaded", () => {
           playAudioTone("success");
           loadAdminChallenges();
           loadLeaderboard();
-          updateAdminPhaseButtons();
         } else {
           if (adminAuthError) adminAuthError.classList.remove("hidden");
         }
@@ -1962,54 +1817,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const target = document.getElementById(btn.dataset.tab);
       if (target) {
         target.classList.add("active");
-        if (btn.dataset.tab === "tab-competition") {
-          updateAdminPhaseButtons();
-        }
-      }
-    });
-  });
-
-  document.querySelectorAll(".btn-phase-ctrl").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const phase = btn.dataset.phase;
-      if (!phase) return;
-
-      if (!state.adminToken) {
-        showToast("Admin authorization required. Please authenticate in the admin panel first.", "warning");
-        if (adminAuthPanel) adminAuthPanel.classList.remove("hidden");
-        if (adminDashPanel) adminDashPanel.classList.add("hidden");
-        if (adminCodeInput) adminCodeInput.focus();
-        return;
-      }
-
-      playAudioTone("click");
-      updateAdminPhaseButtons(phase);
-
-      try {
-        const resp = await fetch("/api/admin/phase", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Admin-Code": state.adminToken
-          },
-          body: JSON.stringify({ phase })
-        });
-        const data = await resp.json();
-        if (data.success) {
-          applyLiveCompetitionState(data.state);
-          updateAdminPhaseButtons(phase);
-          const phaseNames = {
-            lobby: "LOBBY MODE",
-            battle: "BATTLE ROUND",
-            leaderboard: "FINAL STANDINGS"
-          };
-          showToast(`Competition phase live switched to: ${phaseNames[phase] || phase.toUpperCase()}`, "success");
-        } else {
-          showToast(data.error || "Unable to switch competition phase.", "error");
-        }
-      } catch (e) {
-        console.error("Phase switch error:", e);
-        showToast("Error updating competition phase.", "error");
       }
     });
   });

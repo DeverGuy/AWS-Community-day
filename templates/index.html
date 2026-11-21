@@ -157,12 +157,6 @@
             </div>
           </div>
 
-          <!-- Live Competition Phase Banner for Players -->
-          <div id="live-phase-banner" class="live-phase-banner phase-lobby">
-            <span class="phase-indicator-dot">●</span>
-            <span id="live-phase-text">Lobby Open — Waiting for the host to start Battle Round.</span>
-          </div>
-
           <!-- 2. CENTERED ARENA BUILDER LOGIN CARD -->
           <div class="pq-registration-section pq-login-centered" id="registration-card-dock">
             <div class="pq-dash-card identifier-card pq-login-card-center">
@@ -648,7 +642,7 @@
 
         <div class="awsui-modal-tabs">
           <button type="button" class="modal-tab-btn active" data-tab="tab-challenges">Challenge Catalog</button>
-          <button type="button" class="modal-tab-btn" data-tab="tab-competition">Competition Phase &amp; Reset</button>
+          <button type="button" class="modal-tab-btn" data-tab="tab-competition">Reset Competition</button>
         </div>
 
         <!-- Tab 1: Challenges -->
@@ -744,46 +738,17 @@
 
         </div>
 
-        <!-- Tab 2: Competition Controls -->
+        <!-- Tab 2: Reset Competition -->
         <div class="modal-tab-content" id="tab-competition">
           <div class="admin-control-cards-grid">
-            <div class="admin-panel-card">
-              <h4>Competition Phase Control</h4>
-              <p>Switch active competition phase and round timer for all connected players:</p>
-
-              <div class="admin-phase-status-strip"
-                style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:8px 12px; background:rgba(182,154,255,0.08); border:1px solid rgba(182,154,255,0.25); border-radius:8px;">
-                <div>
-                  <span
-                    style="font-size:12px; color:var(--pq-text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Live
-                    Status:</span>
-                  <strong id="admin-live-phase-badge"
-                    style="color:var(--sbg-purple-light); font-size:13px; margin-left:6px;">🟢 LOBBY MODE</strong>
-                </div>
-                <div>
-                  <span style="font-size:12px; color:var(--pq-text-secondary);">Active Players: </span>
-                  <strong id="admin-live-players-count" style="color:var(--aws-orange); font-size:13px;">0</strong>
-                </div>
-              </div>
-
-              <div class="phase-btn-group" id="admin-phase-btn-group">
-                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="lobby">Lobby Mode</button>
-                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="battle">Start Battle Round</button>
-                <button type="button" class="pq-btn-outline-pill btn-phase-ctrl" data-phase="leaderboard">Final Standings</button>
-              </div>
-
-              <div
-                style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:12px; color:var(--pq-text-secondary);">Testing multi-player?</span>
-                <a href="/" target="_blank" class="pq-btn-outline-pill btn-sm"
-                  style="text-decoration:none; font-size:11.5px; padding:4px 10px;">↗ Open Player View in New Tab</a>
-              </div>
-            </div>
-
             <div class="admin-panel-card danger-panel">
               <h4>Reset Competition Data</h4>
               <p>Clears all participants, generations, and locked-in leaderboard submissions:</p>
-              <button type="button" class="awsui-btn-danger" id="reset-comp-btn">RESET ALL DATA</button>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+                <button type="button" class="awsui-btn-danger" id="reset-comp-btn">RESET ALL DATA</button>
+                <a href="/" target="_blank" class="pq-btn-outline-pill btn-sm"
+                  style="text-decoration:none; font-size:11.5px; padding:6px 14px;">↗ Open Player View in New Tab</a>
+              </div>
             </div>
           </div>
         </div>
