@@ -163,45 +163,42 @@
             </div>
           </div>
 
-          <!-- 2. CENTERED ARENA DRIVER LOGIN CARD -->
+          <!-- 2. CENTERED ARENA DRIVER & TEAM LOGIN CARD -->
           <div class="pq-registration-section pq-login-centered" id="registration-card-dock">
             <div class="pq-dash-card identifier-card pq-login-card-center">
 
-              <!-- Login Form (Team Access & Assignment) -->
+              <!-- Login Form (Team Access & Password Authentication) -->
               <form id="identifier-form" class="identifier-form" novalidate>
 
                 <div class="awsui-form-group">
                   <label for="identifier-name" class="awsui-label">
-                    Driver Name / Racing Alias <span class="required-star">*</span>
+                    Team Name <span class="required-star">*</span>
                   </label>
                   <input type="text" id="identifier-name" class="awsui-text-input"
-                    placeholder="Enter your driver or team name (e.g. Scuderia Ferrari)" maxlength="50"
-                    autocomplete="name">
-                  <!-- Quick-pick dropdown populated from authorized teams -->
-                  <div id="quick-team-select-box" class="hidden" style="margin-top:8px;">
-                    <label
-                      style="font-size:11.5px; color:var(--pq-text-secondary); display:block; margin-bottom:4px;">Or
-                      choose your registered racing team:</label>
-                    <select id="team-dropdown-select" class="awsui-text-input" style="cursor:pointer; width:100%;">
-                      <option value="">-- Select Registered Racing Team --</option>
-                    </select>
-                  </div>
+                    placeholder="Enter your registered team name (e.g. Scuderia Ferrari)" maxlength="60"
+                    autocomplete="username" required>
                 </div>
 
                 <div class="awsui-form-group">
-                  <label for="identifier-email" class="awsui-label">
-                    Driver Telemetry Email <span class="required-star">*</span>
-                    <span class="label-hint">(Locks in your official lap score on the championship standings)</span>
+                  <label for="identifier-password" class="awsui-label">
+                    Team Password <span class="required-star">*</span>
                   </label>
-                  <input type="email" id="identifier-email" class="awsui-text-input" placeholder="driver@f1-grandprix.com"
-                    autocomplete="email">
+                  <div class="password-input-wrapper" style="position:relative; display:flex; align-items:center;">
+                    <input type="password" id="identifier-password" class="awsui-text-input"
+                      placeholder="Enter your team password" autocomplete="current-password" required
+                      style="width:100%; padding-right:42px;">
+                    <button type="button" id="toggle-team-password-btn" class="pq-btn-toggle-pw"
+                      title="Show/Hide Password" style="position:absolute; right:10px; background:none; border:none; color:var(--pq-text-secondary); cursor:pointer; font-size:16px; line-height:1;">
+                      👁️
+                    </button>
+                  </div>
                 </div>
 
                 <div id="identifier-error" class="identifier-error-msg hidden" role="alert"></div>
 
                 <div class="form-action-group">
                   <button type="button" class="pq-btn-orange-pill full-width-btn" id="start-game-btn">
-                    <span>Enter Paddock &amp; Start Qualifying</span>
+                    <span>Authenticate &amp; Start Qualifying</span>
                     <span class="btn-arrow">🏎️</span>
                   </button>
                 </div>
@@ -681,22 +678,20 @@
           <!-- Upload Teams Card -->
           <div class="pq-dash-card add-challenge-box" style="margin-bottom: 20px;">
             <div class="accordion-head" id="toggle-upload-teams-form">
-              <h4>👥 Upload List of Authorized Teams</h4>
-              <span style="font-size:12px; color:var(--pq-text-secondary);">Upload .csv / .txt or paste team names
-                ▼</span>
+              <h4>👥 Upload List of Authorized Teams &amp; Passwords</h4>
+              <span style="font-size:12px; color:var(--pq-text-secondary);">Upload .csv / .txt or paste team names &amp; passwords ▼</span>
             </div>
             <div class="accordion-content" id="upload-teams-form-body" style="padding:16px 20px;">
               <p style="font-size:12.5px; color:var(--pq-text-secondary); margin-bottom:10px;">
-                Upload a text or CSV file with your team names (one team per line, or CSV with
-                <code>Team Name, Assigned Challenge ID, Email</code>):
+                Upload a text or CSV file with your team names and passwords (format: <code>Team Name, Password</code>, or CSV with <code>Team Name, Password, Assigned Challenge ID</code>):
               </p>
               <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
                 <input type="file" id="team-file-input" accept=".txt,.csv,.json" class="awsui-text-input"
                   style="max-width:320px; padding:6px 12px;">
-                <span style="font-size:12px; color:var(--pq-text-muted);">OR type/paste team names below:</span>
+                <span style="font-size:12px; color:var(--pq-text-muted);">OR type/paste team names &amp; passwords below:</span>
               </div>
               <textarea id="teams-text-input" class="awsui-textarea" rows="4"
-                placeholder="Scuderia Ferrari&#10;Red Bull Racing&#10;Mercedes AMG F1&#10;McLaren Formula 1&#10;Aston Martin F1"></textarea>
+                placeholder="Scuderia Ferrari, ferrari2026&#10;Oracle Red Bull Racing, redbull2026&#10;Mercedes AMG F1, mercedes2026&#10;McLaren F1 Team, mclaren2026"></textarea>
               <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:12px;">
                 <button type="button" class="pq-btn-orange-pill" id="import-teams-btn">
                   <span>Import &amp; Whitelist Teams</span>
@@ -709,9 +704,8 @@
           <div class="catalog-table-box">
             <div class="catalog-top-toolbar">
               <div>
-                <h5>Registered Teams &amp; Image Assignments (<span id="teams-count-badge">0</span> teams)</h5>
-                <span style="font-size:11.5px; color:var(--pq-text-secondary);">Assign which target reference image each
-                  team receives when they enter the arena.</span>
+                <h5>Registered Teams &amp; Passwords (<span id="teams-count-badge">0</span> teams)</h5>
+                <span style="font-size:11.5px; color:var(--pq-text-secondary);">Teams must enter their registered password to access the qualifying arena.</span>
               </div>
               <div class="catalog-actions-group">
                 <button type="button" class="pq-btn-outline-pill btn-sm" id="auto-assign-teams-btn"
@@ -725,14 +719,15 @@
                 <thead>
                   <tr>
                     <th style="width:25%;">Team Name</th>
-                    <th style="width:45%;">Assigned Target Image</th>
-                    <th style="width:15%;">Status</th>
-                    <th style="width:15%;">Actions</th>
+                    <th style="width:20%;">Password</th>
+                    <th style="width:30%;">Assigned Target Image</th>
+                    <th style="width:12%;">Status</th>
+                    <th style="width:13%;">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="admin-teams-table-body">
                   <tr>
-                    <td colspan="4" class="table-empty">No teams uploaded yet. Upload a team list above.</td>
+                    <td colspan="5" class="table-empty">No teams uploaded yet. Upload a team CSV above.</td>
                   </tr>
                 </tbody>
               </table>

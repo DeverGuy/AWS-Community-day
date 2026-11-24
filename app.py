@@ -284,19 +284,17 @@ def _has_email_completed_attempt(email):
 def join_competition():
     data = request.get_json() or {}
     name = data.get("name", "").strip() or f"Team-{uuid.uuid4().hex[:4].upper()}"
+    password = str(data.get("password") or "").strip()
     email = data.get("email", "").strip().lower()
     participant_id = data.get("participant_id") or str(uuid.uuid4())
 
-    if not email:
-        return jsonify({"success": False, "error": "Email address is required to enter the arena."}), 400
-
-    # Team Whitelist & Access Control Verification
+    # Team & Password Access Control Verification
     teams_data = _load_teams()
     whitelist_enabled = teams_data.get("whitelist_enabled", False)
     teams_list = teams_data.get("teams", [])
 
     matched_team = None
-    if whitelist_enabled and teams_list:
+    if teams_list:
         norm_name = name.lower()
         norm_email = email.lower()
         for t in teams_list:
@@ -307,24 +305,49 @@ def join_competition():
                 matched_team = t
                 break
 
-        if not matched_team:
+    # If team list exists:
+    if teams_list:
+        if whitelist_enabled and not matched_team:
             return jsonify({
                 "success": False,
-                "error": f"Access Denied: '{name}' is not on the authorized team access list. Only registered teams can enter."
+                "error": f"Access Denied: Team '{name}' is not on the authorized team list."
             }), 403
 
-        if matched_team.get("has_completed"):
-            return jsonify({
-                "success": False,
-                "error": f"Team '{matched_team['name']}' has already completed their prompt challenge round. Only 1 attempt per team is allowed.",
-                "already_completed": True
-            }), 403
+        # Password Approval Check
+        if matched_team:
+            expected_pw = str(matched_team.get("password") or "").strip()
+            if expected_pw:
+                if not password:
+                    return jsonify({
+                        "success": False,
+                        "error": f"Password required for team '{matched_team['name']}'."
+                    }), 401
+                if password != expected_pw:
+                    return jsonify({
+                        "success": False,
+                        "error": "Incorrect team password. Access denied."
+                    }), 401
 
-    # 1 TRY PER EMAIL ID ENFORCEMENT
+            if matched_team.get("has_completed"):
+                return jsonify({
+                    "success": False,
+                    "error": f"Team '{matched_team['name']}' has already completed their prompt challenge round. Only 1 attempt per team is allowed.",
+                    "already_completed": True
+                }), 403
+
+    # Derive email if not supplied on the frontend
+    if not email:
+        if matched_team and matched_team.get("email"):
+            email = matched_team.get("email").strip().lower()
+        else:
+            safe_slug = re.sub(r'[^a-z0-9]+', '', name.lower()) or "team"
+            email = f"{safe_slug}@f1-team.com"
+
+    # 1 TRY PER TEAM / EMAIL ENFORCEMENT
     if _has_email_completed_attempt(email):
         return jsonify({
             "success": False,
-            "error": "This email ID has already completed an arena round. Only 1 try per email ID is allowed.",
+            "error": f"Team '{name}' has already completed their arena round. Only 1 try per email ID / team is allowed.",
             "already_completed": True
         }), 403
 
@@ -861,10 +884,15 @@ def get_leaderboard():
 @app.route("/api/teams", methods=["GET"])
 def get_teams():
     data = _load_teams()
+    teams = data.get("teams", [])
+    is_admin = verify_admin(request)
+    # Sanitize passwords for non-admin public requests to prevent leaks
+    if not is_admin:
+        teams = [{k: v for k, v in t.items() if k != "password"} for t in teams]
     return jsonify({
         "success": True,
-        "whitelist_enabled": data.get("whitelist_enabled", True),
-        "teams": data.get("teams", [])
+        "whitelist_enabled": data.get("whitelist_enabled", False),
+        "teams": teams
     })
 
 @app.route("/api/teams/upload", methods=["POST"])
@@ -905,10 +933,12 @@ def upload_teams():
         for item in parsed_json:
             if isinstance(item, dict) and item.get("name"):
                 name = str(item["name"]).strip()
+                password = str(item.get("password") or item.get("pass") or item.get("pwd") or "").strip()
                 cid = item.get("assigned_challenge_id") or item.get("challenge_id")
                 email = str(item.get("email", "")).strip()
                 norm = name.lower()
                 if norm in existing_by_name:
+                    if password: existing_by_name[norm]["password"] = password
                     if cid: existing_by_name[norm]["assigned_challenge_id"] = cid
                     if email: existing_by_name[norm]["email"] = email
                 else:
@@ -916,7 +946,8 @@ def upload_teams():
                     t = {
                         "id": tid,
                         "name": name,
-                        "email": email,
+                        "password": password,
+                        "email": email or f"{tid}@f1-team.com",
                         "assigned_challenge_id": cid,
                         "has_completed": False,
                         "score": None,
@@ -924,19 +955,43 @@ def upload_teams():
                     }
                     existing_by_name[norm] = t
     else:
-        # Parse CSV or line-by-line
+        # Parse CSV or line-by-line (Supports: Team Name, Password or Team Name, Password, Challenge ID)
         reader = csv.reader(io.StringIO(raw_text))
         for row in reader:
             if not row or not row[0].strip():
                 continue
             first_col = row[0].strip()
-            if first_col.lower() in ["team name", "team", "name", "teams"]:
+            if first_col.lower() in ["team name", "team", "name", "teams", "team_name"]:
                 continue
             name = first_col
-            cid = row[1].strip() if len(row) > 1 and row[1].strip() else None
-            email = row[2].strip() if len(row) > 2 and row[2].strip() else ""
+            col1 = row[1].strip() if len(row) > 1 and row[1].strip() else ""
+            col2 = row[2].strip() if len(row) > 2 and row[2].strip() else ""
+
+            password = ""
+            cid = None
+            email = ""
+
+            # Check if col1 is a known challenge id from challenge_manager
+            if col1 and challenge_manager.get_challenge_by_id(col1):
+                cid = col1
+                if col2:
+                    if "@" in col2:
+                        email = col2
+                    else:
+                        password = col2
+            else:
+                password = col1
+                if col2:
+                    if challenge_manager.get_challenge_by_id(col2):
+                        cid = col2
+                    elif "@" in col2:
+                        email = col2
+                    else:
+                        cid = col2
+
             norm = name.lower()
             if norm in existing_by_name:
+                if password: existing_by_name[norm]["password"] = password
                 if cid: existing_by_name[norm]["assigned_challenge_id"] = cid
                 if email: existing_by_name[norm]["email"] = email
             else:
@@ -944,7 +999,8 @@ def upload_teams():
                 t = {
                     "id": tid,
                     "name": name,
-                    "email": email,
+                    "password": password,
+                    "email": email or f"{tid}@f1-team.com",
                     "assigned_challenge_id": cid,
                     "has_completed": False,
                     "score": None,

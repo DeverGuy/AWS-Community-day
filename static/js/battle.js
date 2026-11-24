@@ -553,26 +553,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---------------------------------------------------------------------------
   // 1. IDENTIFIER REGISTRATION (Name + Email)
   // ---------------------------------------------------------------------------
+  // 1. IDENTIFIER REGISTRATION (Team Name + Password Authentication)
+  // ---------------------------------------------------------------------------
   const identifierForm = document.getElementById("identifier-form");
   const identifierNameInput = document.getElementById("identifier-name");
-  const identifierEmailInput = document.getElementById("identifier-email");
+  const identifierPasswordInput = document.getElementById("identifier-password");
+  const togglePasswordBtn = document.getElementById("toggle-team-password-btn");
   const identifierError = document.getElementById("identifier-error");
   const startBtn = document.getElementById("start-game-btn");
-  const quickDemoFillBtn = document.getElementById("quick-demo-fill-btn");
 
-  if (quickDemoFillBtn) {
-    quickDemoFillBtn.addEventListener("click", () => {
-      playAudioTone("click");
-      const demoNames = ["ScuderiaFerrari", "RedBullRacing", "MercedesAMGF1", "McLarenF1", "AstonMartinF1"];
-      const picked = demoNames[Math.floor(Math.random() * demoNames.length)];
-      if (identifierNameInput) identifierNameInput.value = picked;
-      if (identifierEmailInput) identifierEmailInput.value = `${picked.toLowerCase()}@f1-grandprix.com`;
-      hideIdentifierError();
+  if (togglePasswordBtn && identifierPasswordInput) {
+    togglePasswordBtn.addEventListener("click", () => {
+      const isPw = identifierPasswordInput.type === "password";
+      identifierPasswordInput.type = isPw ? "text" : "password";
+      togglePasswordBtn.textContent = isPw ? "🙈" : "👁️";
     });
-  }
-
-  function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   function showIdentifierError(msg) {
@@ -596,17 +591,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (isSubmittingIdentifier) return;
 
     const name = identifierNameInput ? identifierNameInput.value.trim() : "";
-    const email = identifierEmailInput ? identifierEmailInput.value.trim().toLowerCase() : "";
+    const password = identifierPasswordInput ? identifierPasswordInput.value.trim() : "";
 
     if (!name) {
-      showIdentifierError("Please enter your driver alias or team name.");
+      showIdentifierError("Please enter your registered team name.");
       if (identifierNameInput) identifierNameInput.focus();
       return;
     }
 
-    if (!email || !validateEmail(email)) {
-      showIdentifierError("Please enter a valid driver telemetry email address (e.g. driver@f1-grandprix.com).");
-      if (identifierEmailInput) identifierEmailInput.focus();
+    if (!password) {
+      showIdentifierError("Please enter your team password.");
+      if (identifierPasswordInput) identifierPasswordInput.focus();
       return;
     }
 
@@ -615,14 +610,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (startBtn) {
       startBtn.disabled = true;
-      startBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Entering F1 Paddock...</span>`;
+      startBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Authenticating & Entering Paddock...</span>`;
     }
 
     try {
       const resp = await fetch("/api/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email })
+        body: JSON.stringify({ name, password })
       });
       const data = await resp.json();
 
@@ -634,46 +629,49 @@ document.addEventListener("DOMContentLoaded", () => {
         const target = data.target_challenge || data.challenge;
         state.currentChallenge = target;
 
+        const pEmail = data.participant.email || `${name.toLowerCase()}@f1-team.com`;
         try {
+          localStorage.setItem("sbg_team_name", name);
           localStorage.setItem("sbg_builder_name", name);
-          localStorage.setItem("sbg_builder_email", email);
+          localStorage.setItem("sbg_team_password", password);
+          localStorage.setItem("sbg_builder_email", pEmail);
           localStorage.setItem("sbg_participant_id", data.participant.id);
         } catch (storageErr) { }
 
-        updateUserNavProfile(name, email);
+        updateUserNavProfile(name, pEmail);
 
         const gName = document.getElementById("game-builder-name");
         const gEmail = document.getElementById("game-builder-email");
         if (gName) gName.textContent = name;
-        if (gEmail) gEmail.textContent = `(${email})`;
+        if (gEmail) gEmail.textContent = `(${pEmail})`;
 
         renderAssignedChallenge(target);
         refreshCompetitionState();
 
         const watermarkEl = document.getElementById("arena-watermark");
         if (watermarkEl) {
-          watermarkEl.textContent = `🏎️ F1 PROMPT GRAND PRIX • DRIVER: ${name.toUpperCase()} (${email}) • SESSION PROTECTED • 1 ATTEMPT PER DRIVER`;
+          watermarkEl.textContent = `🏎️ F1 PROMPT GRAND PRIX • TEAM: ${name.toUpperCase()} • SESSION PROTECTED • 1 ATTEMPT PER TEAM`;
         }
 
         showScreen("game");
         startChallengeTimer(state.timerDuration);
-        showToast(`Welcome, ${name}! You have ${state.timerDuration}s and 1 final generation attempt.`, "success");
+        showToast(`Welcome, ${name}! Your team password is verified.`, "success");
       } else {
-        showIdentifierError(data.error || "Unable to register session. Please try again.");
+        playAudioTone("error");
+        showIdentifierError(data.error || "Unable to register session. Please verify team name and password.");
         if (data.already_completed) {
-          playAudioTone("click");
           const topLbBtn = document.getElementById("nav-leaderboard-btn");
           if (topLbBtn) topLbBtn.classList.remove("hidden");
         }
       }
     } catch (err) {
       console.error("Join error:", err);
-      showIdentifierError("Network connection error. Please ensure the local server is running.");
+      showIdentifierError("Network connection error. Please ensure the server is reachable.");
     } finally {
       isSubmittingIdentifier = false;
       if (startBtn) {
         startBtn.disabled = false;
-        startBtn.innerHTML = `<span>Launch Prompt Arena &amp; Reveal Challenge</span><span class="btn-arrow">→</span>`;
+        startBtn.innerHTML = `<span>Enter Paddock &amp; Start Qualifying</span><span class="btn-arrow">🏎️</span>`;
       }
     }
   }
@@ -2028,45 +2026,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const resp = await fetch("/api/teams");
       const data = await resp.json();
       if (!data.success) return;
-
       state.whitelistEnabled = data.whitelist_enabled;
-      const teams = data.teams || [];
-      const teamSelect = document.getElementById("team-dropdown-select");
-      const selectBox = document.getElementById("quick-team-select-box");
-
-      if (teamSelect && selectBox) {
-        if (teams.length > 0) {
-          teamSelect.innerHTML = `<option value="">-- Choose Authorized Team (${teams.length} available) --</option>`;
-          teams.forEach(t => {
-            const opt = document.createElement("option");
-            opt.value = t.name;
-            opt.dataset.email = t.email || "";
-            opt.textContent = t.name + (t.has_completed ? " (Completed)" : "");
-            teamSelect.appendChild(opt);
-          });
-          selectBox.classList.remove("hidden");
-        } else {
-          selectBox.classList.add("hidden");
-        }
-      }
     } catch (e) {
       console.error("[Teams] Error loading public teams:", e);
     }
-  }
-
-  const teamSelectEl = document.getElementById("team-dropdown-select");
-  if (teamSelectEl) {
-    teamSelectEl.addEventListener("change", () => {
-      const selectedOpt = teamSelectEl.options[teamSelectEl.selectedIndex];
-      if (selectedOpt && selectedOpt.value) {
-        if (identifierNameInput) identifierNameInput.value = selectedOpt.value;
-        if (identifierEmailInput) {
-          const emailVal = selectedOpt.dataset.email || `${selectedOpt.value.toLowerCase().replace(/[^a-z0-9]/g, "")}@f1-team.com`;
-          identifierEmailInput.value = emailVal;
-        }
-        hideIdentifierError();
-      }
-    });
   }
 
   async function loadAdminTeams() {
@@ -2082,8 +2045,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const chData = await chResp.json();
       cachedChallengesForTeams = chData.challenges || [];
 
-      // 2. Fetch teams
-      const resp = await fetch("/api/teams");
+      // 2. Fetch teams with admin token to reveal passwords
+      const resp = await fetch("/api/teams", {
+        headers: { "X-Admin-Code": state.adminToken }
+      });
       const data = await resp.json();
       if (!data.success) return;
 
@@ -2095,7 +2060,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (statusText) {
         statusText.textContent = isWhitelist
           ? "Whitelist ACTIVE (Only pre-registered teams can enter)"
-          : "Whitelist DISABLED (Anyone can enter)";
+          : "Whitelist DISABLED (Any team can enter)";
         statusText.style.color = isWhitelist ? "#00D2BE" : "#FFA500";
       }
       if (toggleBtn) {
@@ -2104,7 +2069,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tableBody.innerHTML = "";
       if (teams.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" class="table-empty">No teams registered yet. Upload a team list above.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="5" class="table-empty">No teams registered yet. Upload a team CSV above.</td></tr>`;
         return;
       }
 
@@ -2120,7 +2085,10 @@ document.addEventListener("DOMContentLoaded", () => {
         tr.innerHTML = `
           <td>
             <div style="font-weight:700; color:#FFFFFF;">${team.name}</div>
-            <div style="font-size:11px; color:var(--pq-text-secondary);">${team.email || "No email bound"}</div>
+            <div style="font-size:11px; color:var(--pq-text-secondary);">${team.email || ""}</div>
+          </td>
+          <td>
+            <code style="font-size:12px; color:#FFD200; background:rgba(255,210,0,0.12); padding:3px 8px; border-radius:4px; font-family:var(--font-mono);">${team.password || "—"}</code>
           </td>
           <td>
             <div style="display:flex; align-items:center; gap:8px;">

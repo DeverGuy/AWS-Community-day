@@ -397,6 +397,58 @@ class TestReversePromptBattle(unittest.TestCase):
         other_resp = self.client.post('/api/join', json={'name': 'Other Builder', 'email': 'other_builder@university.edu'})
         self.assertEqual(other_resp.status_code, 200)
 
+    def test_team_password_authentication_and_csv_upload(self):
+        import shutil
+        teams_path = "teams.json"
+        backup_path = "teams.json.testbak"
+        if os.path.exists(teams_path):
+            shutil.copyfile(teams_path, backup_path)
+        try:
+            # 1. Upload CSV with team name and password
+            csv_payload = "Red Bull Racing, redbull_pass_123\nScuderia Ferrari, ferrari_pass_456"
+            upload_resp = self.client.post(
+                '/api/teams/upload',
+                headers={'X-Admin-Code': ADMIN_CODE},
+                json={'text': csv_payload}
+            )
+            self.assertEqual(upload_resp.status_code, 200)
+            self.assertTrue(upload_resp.get_json()['success'])
+
+            # 2. Public /api/teams should NOT leak passwords
+            public_teams_resp = self.client.get('/api/teams')
+            self.assertEqual(public_teams_resp.status_code, 200)
+            public_teams = public_teams_resp.get_json()['teams']
+            for t in public_teams:
+                self.assertNotIn('password', t, "Public teams API must not expose passwords")
+
+            # 3. Admin /api/teams should include passwords
+            admin_teams_resp = self.client.get('/api/teams', headers={'X-Admin-Code': ADMIN_CODE})
+            self.assertEqual(admin_teams_resp.status_code, 200)
+            admin_teams = admin_teams_resp.get_json()['teams']
+            rb_team = next((t for t in admin_teams if t['name'] == 'Red Bull Racing'), None)
+            self.assertIsNotNone(rb_team)
+            self.assertEqual(rb_team.get('password'), 'redbull_pass_123')
+
+            # 4. Join with missing password should be rejected with 401
+            no_pw_resp = self.client.post('/api/join', json={'name': 'Red Bull Racing'})
+            self.assertEqual(no_pw_resp.status_code, 401)
+
+            # 5. Join with wrong password should be rejected with 401
+            wrong_pw_resp = self.client.post('/api/join', json={'name': 'Red Bull Racing', 'password': 'wrong_password'})
+            self.assertEqual(wrong_pw_resp.status_code, 401)
+
+            # 6. Join with correct password should succeed with 200
+            correct_pw_resp = self.client.post('/api/join', json={'name': 'Red Bull Racing', 'password': 'redbull_pass_123'})
+            self.assertEqual(correct_pw_resp.status_code, 200)
+            self.assertTrue(correct_pw_resp.get_json()['success'])
+        finally:
+            if os.path.exists(backup_path):
+                shutil.copyfile(backup_path, teams_path)
+                try:
+                    os.remove(backup_path)
+                except Exception:
+                    pass
+
 
 if __name__ == '__main__':
     unittest.main()
