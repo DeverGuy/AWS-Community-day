@@ -599,18 +599,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    if (!password) {
-      showIdentifierError("Please enter your team password.");
-      if (identifierPasswordInput) identifierPasswordInput.focus();
-      return;
-    }
-
     hideIdentifierError();
     isSubmittingIdentifier = true;
 
     if (startBtn) {
       startBtn.disabled = true;
-      startBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Authenticating & Entering Paddock...</span>`;
+      startBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Entering Arena Paddock...</span>`;
     }
 
     try {
@@ -655,10 +649,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         showScreen("game");
         startChallengeTimer(state.timerDuration);
-        showToast(`Welcome, ${name}! Your team password is verified.`, "success");
+        showToast(`Welcome, ${name}! Entering Paddock...`, "success");
       } else {
         playAudioTone("error");
-        showIdentifierError(data.error || "Unable to register session. Please verify team name and password.");
+        showIdentifierError(data.error || "Unable to register session. Please check your credentials.");
         if (data.already_completed) {
           const topLbBtn = document.getElementById("nav-leaderboard-btn");
           if (topLbBtn) topLbBtn.classList.remove("hidden");
@@ -1741,28 +1735,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------------------------------------------------------------------------
-  // 9. ADMIN MODAL & CONTROLS
+  // 9. ADMIN MODAL & CONTROLS (DIRECT ACCESS - VERIFICATION REMOVED)
   // ---------------------------------------------------------------------------
   const adminModal = document.getElementById("admin-modal");
   const openAdminBtn = document.getElementById("open-admin-btn");
   const closeAdminModal = document.getElementById("close-admin-modal");
-  const adminLoginBtn = document.getElementById("admin-login-btn");
-  const adminCodeInput = document.getElementById("admin-code-input");
-  const adminAuthError = document.getElementById("admin-auth-error");
   const adminAuthPanel = document.getElementById("admin-auth-panel");
   const adminDashPanel = document.getElementById("admin-dashboard-panel");
 
-  // Restore persistent admin session if available
+  // Direct access: Admin authentication bypass
+  state.isAdmin = true;
+  state.adminToken = "builder2026";
   try {
-    const savedAdminToken = sessionStorage.getItem("sbg_admin_token");
-    if (savedAdminToken) {
-      state.adminToken = savedAdminToken;
-      state.isAdmin = true;
-      if (adminAuthPanel) adminAuthPanel.classList.add("hidden");
-      if (adminDashPanel) adminDashPanel.classList.remove("hidden");
-      if (adminAuthError) adminAuthError.classList.add("hidden");
-    }
+    sessionStorage.setItem("sbg_admin_token", "builder2026");
   } catch (e) { }
+
+  if (adminAuthPanel) adminAuthPanel.classList.add("hidden");
+  if (adminDashPanel) adminDashPanel.classList.remove("hidden");
 
   if (openAdminBtn) {
     if (isAdminRoute) {
@@ -1772,64 +1761,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     openAdminBtn.addEventListener("click", () => {
       adminModal.classList.remove("hidden");
-      if (state.isAdmin) {
-        loadAdminChallenges();
-        loadAdminTeams();
-      }
+      loadAdminChallenges();
+      loadAdminTeams();
     });
   }
 
-  if (adminCodeInput && adminLoginBtn) {
-    adminCodeInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        adminLoginBtn.click();
-      }
-    });
-  }
-
-  // Automatically open Admin Command Center login when visiting /admin directly
+  // Open Race Control Dashboard directly when on /admin
   if (isAdminRoute && adminModal) {
     adminModal.classList.remove("hidden");
-    if (adminCodeInput) {
-      setTimeout(() => adminCodeInput.focus(), 80);
-    }
+    loadAdminChallenges();
+    loadAdminTeams();
   }
 
   if (closeAdminModal) {
     closeAdminModal.addEventListener("click", () => adminModal.classList.add("hidden"));
-  }
-
-  if (adminLoginBtn) {
-    adminLoginBtn.addEventListener("click", async () => {
-      const code = adminCodeInput ? adminCodeInput.value.trim() : "";
-      try {
-        const resp = await fetch("/api/admin/auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ admin_code: code })
-        });
-        const data = await resp.json();
-        if (data.success) {
-          state.isAdmin = true;
-          state.adminToken = code;
-          try {
-            sessionStorage.setItem("sbg_admin_token", code);
-          } catch (e) { }
-          if (adminAuthPanel) adminAuthPanel.classList.add("hidden");
-          if (adminDashPanel) adminDashPanel.classList.remove("hidden");
-          if (adminAuthError) adminAuthError.classList.add("hidden");
-          playAudioTone("success");
-          loadAdminChallenges();
-          loadAdminTeams();
-          loadLeaderboard();
-        } else {
-          if (adminAuthError) adminAuthError.classList.remove("hidden");
-        }
-      } catch (e) {
-        if (adminAuthError) adminAuthError.classList.remove("hidden");
-      }
-    });
   }
 
   document.querySelectorAll(".modal-tab-btn").forEach(btn => {

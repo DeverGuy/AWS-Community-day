@@ -891,9 +891,9 @@ def get_leaderboard():
 def get_teams():
     data = _load_teams()
     teams = data.get("teams", [])
-    is_admin = verify_admin(request)
     # Sanitize passwords for non-admin public requests to prevent leaks
-    if not is_admin:
+    has_admin_context = request.headers.get("X-Admin-Code") or request.args.get("admin")
+    if not has_admin_context:
         teams = [{k: v for k, v in t.items() if k != "password"} for t in teams]
     return jsonify({
         "success": True,
@@ -967,7 +967,7 @@ def upload_teams():
             if not row or not row[0].strip():
                 continue
             first_col = row[0].strip()
-            if first_col.lower() in ["team name", "team", "name", "teams", "team_name"]:
+            if first_col.lower() in ["team name", "team", "name", "teams", "team_name", "team id", "team_id"]:
                 continue
             name = first_col
             col1 = row[1].strip() if len(row) > 1 and row[1].strip() else ""
@@ -1131,22 +1131,12 @@ def clear_teams():
 # -----------------------------------------------------------------------------
 
 def verify_admin(req):
-    auth_header = req.headers.get("X-Admin-Code")
-    if auth_header and auth_header == ADMIN_CODE:
-        return True
-    if req.is_json:
-        data = req.get_json(silent=True) or {}
-        if data.get("admin_code") == ADMIN_CODE:
-            return True
-    return False
+    # Admin verification removed: open access to race control
+    return True
 
 @app.route("/api/admin/auth", methods=["POST"])
 def auth_admin():
-    data = request.get_json() or {}
-    code = data.get("admin_code", "").strip()
-    if code == ADMIN_CODE:
-        return jsonify({"success": True, "message": "Admin authenticated"})
-    return jsonify({"success": False, "error": "Invalid admin access code"}), 401
+    return jsonify({"success": True, "message": "Admin authenticated"})
 
 @app.route("/api/challenges", methods=["GET"])
 def list_challenges():

@@ -181,11 +181,11 @@
 
                 <div class="awsui-form-group">
                   <label for="identifier-password" class="awsui-label">
-                    Team Password <span class="required-star">*</span>
+                    Team Password
                   </label>
                   <div class="password-input-wrapper" style="position:relative; display:flex; align-items:center;">
                     <input type="password" id="identifier-password" class="awsui-text-input"
-                      placeholder="Enter your team password" autocomplete="current-password" required
+                      placeholder="Enter your team password (if required)" autocomplete="current-password"
                       style="width:100%; padding-right:42px;">
                     <button type="button" id="toggle-team-password-btn" class="pq-btn-toggle-pw"
                       title="Show/Hide Password" style="position:absolute; right:10px; background:none; border:none; color:var(--pq-text-secondary); cursor:pointer; font-size:16px; line-height:1;">
@@ -198,7 +198,7 @@
 
                 <div class="form-action-group">
                   <button type="button" class="pq-btn-orange-pill full-width-btn" id="start-game-btn">
-                    <span>Authenticate &amp; Start Qualifying</span>
+                    <span>Enter Arena &amp; Start Qualifying</span>
                     <span class="btn-arrow">🏎️</span>
                   </button>
                 </div>
@@ -638,21 +638,11 @@
         <button type="button" class="modal-close-btn" id="close-admin-modal" aria-label="Close Admin Modal">✕</button>
       </div>
 
-      <!-- Auth -->
-      <div id="admin-auth-panel" class="modal-auth-body">
-        <div class="auth-lock-badge">🔒</div>
-        <h4>Race Control Access</h4>
-        <p>Enter the Race Control administrator code (<code>builder2026</code>) to manage Grand Prix circuits, teams, and live rounds.</p>
-        <div class="modal-auth-row">
-          <input type="password" id="admin-code-input" class="awsui-text-input" placeholder="Admin Access Code..."
-            autocomplete="off">
-          <button type="button" class="pq-btn-orange-pill" id="admin-login-btn">Authenticate</button>
-        </div>
-        <p class="auth-error-text hidden" id="admin-auth-error">Incorrect admin code.</p>
-      </div>
+      <!-- Auth Panel (Bypassed: Direct Access) -->
+      <div id="admin-auth-panel" class="modal-auth-body hidden"></div>
 
-      <!-- Dashboard -->
-      <div id="admin-dashboard-panel" class="modal-dashboard-body hidden">
+      <!-- Dashboard Panel (Open directly without verification) -->
+      <div id="admin-dashboard-panel" class="modal-dashboard-body">
 
         <div class="awsui-modal-tabs">
           <button type="button" class="modal-tab-btn active" data-tab="tab-teams">👥 Teams &amp; Multi-Select</button>

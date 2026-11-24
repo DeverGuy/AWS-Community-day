@@ -1,4 +1,845 @@
 {
-  "whitelist_enabled": true,
-  "teams": []
+  "whitelist_enabled": false,
+  "teams": [
+    {
+      "id": "ivc-ry-101",
+      "name": "IVC-RY-101",
+      "password": "VV26-RCCZB",
+      "email": "ivc-ry-101@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-102",
+      "name": "IVC-RY-102",
+      "password": "VV26-ZE7U8",
+      "email": "ivc-ry-102@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-103",
+      "name": "IVC-RY-103",
+      "password": "VV26-QDKKF",
+      "email": "ivc-ry-103@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-104",
+      "name": "IVC-RY-104",
+      "password": "VV26-3EP4M",
+      "email": "ivc-ry-104@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-105",
+      "name": "IVC-RY-105",
+      "password": "VV26-RWTS6",
+      "email": "ivc-ry-105@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-106",
+      "name": "IVC-RY-106",
+      "password": "VV26-QRRDJ",
+      "email": "ivc-ry-106@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-107",
+      "name": "IVC-RY-107",
+      "password": "VV26-UEW9T",
+      "email": "ivc-ry-107@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-108",
+      "name": "IVC-RY-108",
+      "password": "VV26-UHDKY",
+      "email": "ivc-ry-108@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-109",
+      "name": "IVC-RY-109",
+      "password": "VV26-EVPTG",
+      "email": "ivc-ry-109@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-110",
+      "name": "IVC-RY-110",
+      "password": "VV26-C8QCG",
+      "email": "ivc-ry-110@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-111",
+      "name": "IVC-RY-111",
+      "password": "VV26-YA379",
+      "email": "ivc-ry-111@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-112",
+      "name": "IVC-RY-112",
+      "password": "VV26-8W5ZG",
+      "email": "ivc-ry-112@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-113",
+      "name": "IVC-RY-113",
+      "password": "VV26-RJYAT",
+      "email": "ivc-ry-113@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-114",
+      "name": "IVC-RY-114",
+      "password": "VV26-BEUXD",
+      "email": "ivc-ry-114@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-115",
+      "name": "IVC-RY-115",
+      "password": "VV26-P8TXD",
+      "email": "ivc-ry-115@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-116",
+      "name": "IVC-RY-116",
+      "password": "VV26-GEHK3",
+      "email": "ivc-ry-116@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-117",
+      "name": "IVC-RY-117",
+      "password": "VV26-LXHHM",
+      "email": "ivc-ry-117@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-118",
+      "name": "IVC-RY-118",
+      "password": "VV26-TZWXV",
+      "email": "ivc-ry-118@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-119",
+      "name": "IVC-RY-119",
+      "password": "VV26-N8695",
+      "email": "ivc-ry-119@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-120",
+      "name": "IVC-RY-120",
+      "password": "VV26-9WE8Q",
+      "email": "ivc-ry-120@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-121",
+      "name": "IVC-RY-121",
+      "password": "VV26-78V96",
+      "email": "ivc-ry-121@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-122",
+      "name": "IVC-RY-122",
+      "password": "VV26-2QDUZ",
+      "email": "ivc-ry-122@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-123",
+      "name": "IVC-RY-123",
+      "password": "VV26-EQ4PQ",
+      "email": "ivc-ry-123@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-124",
+      "name": "IVC-RY-124",
+      "password": "VV26-PPBBE",
+      "email": "ivc-ry-124@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-125",
+      "name": "IVC-RY-125",
+      "password": "VV26-BY7MX",
+      "email": "ivc-ry-125@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-126",
+      "name": "IVC-RY-126",
+      "password": "VV26-KYF6N",
+      "email": "ivc-ry-126@f1-team.com",
+      "assigned_challenge_id": "custom-ef753761",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-127",
+      "name": "IVC-RY-127",
+      "password": "VV26-M23VC",
+      "email": "ivc-ry-127@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-128",
+      "name": "IVC-RY-128",
+      "password": "VV26-PUR86",
+      "email": "ivc-ry-128@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-129",
+      "name": "IVC-RY-129",
+      "password": "VV26-98APH",
+      "email": "ivc-ry-129@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-130",
+      "name": "IVC-RY-130",
+      "password": "VV26-LCPZC",
+      "email": "ivc-ry-130@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-131",
+      "name": "IVC-RY-131",
+      "password": "VV26-25YQA",
+      "email": "ivc-ry-131@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-132",
+      "name": "IVC-RY-132",
+      "password": "VV26-22GUH",
+      "email": "ivc-ry-132@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-133",
+      "name": "IVC-RY-133",
+      "password": "VV26-S72HV",
+      "email": "ivc-ry-133@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-134",
+      "name": "IVC-RY-134",
+      "password": "VV26-4LCLE",
+      "email": "ivc-ry-134@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-135",
+      "name": "IVC-RY-135",
+      "password": "VV26-KLN2J",
+      "email": "ivc-ry-135@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-136",
+      "name": "IVC-RY-136",
+      "password": "VV26-R7SV9",
+      "email": "ivc-ry-136@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-137",
+      "name": "IVC-RY-137",
+      "password": "VV26-8XU3N",
+      "email": "ivc-ry-137@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-138",
+      "name": "IVC-RY-138",
+      "password": "VV26-WGWS4",
+      "email": "ivc-ry-138@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-139",
+      "name": "IVC-RY-139",
+      "password": "VV26-7G7XZ",
+      "email": "ivc-ry-139@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-140",
+      "name": "IVC-RY-140",
+      "password": "VV26-3BY6S",
+      "email": "ivc-ry-140@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-141",
+      "name": "IVC-RY-141",
+      "password": "VV26-VTWXU",
+      "email": "ivc-ry-141@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-142",
+      "name": "IVC-RY-142",
+      "password": "VV26-DBM3X",
+      "email": "ivc-ry-142@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-143",
+      "name": "IVC-RY-143",
+      "password": "VV26-LJQWD",
+      "email": "ivc-ry-143@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-144",
+      "name": "IVC-RY-144",
+      "password": "VV26-TCDJN",
+      "email": "ivc-ry-144@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-145",
+      "name": "IVC-RY-145",
+      "password": "VV26-R8SVS",
+      "email": "ivc-ry-145@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-146",
+      "name": "IVC-RY-146",
+      "password": "VV26-RY8ED",
+      "email": "ivc-ry-146@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-147",
+      "name": "IVC-RY-147",
+      "password": "VV26-DVZ3J",
+      "email": "ivc-ry-147@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-148",
+      "name": "IVC-RY-148",
+      "password": "VV26-S8TKD",
+      "email": "ivc-ry-148@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-149",
+      "name": "IVC-RY-149",
+      "password": "VV26-ZEASY",
+      "email": "ivc-ry-149@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-150",
+      "name": "IVC-RY-150",
+      "password": "VV26-P8G3Y",
+      "email": "ivc-ry-150@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-151",
+      "name": "IVC-RY-151",
+      "password": "VV26-T96FV",
+      "email": "ivc-ry-151@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-201",
+      "name": "IVC-RY-201",
+      "password": "VV26-F7ZJZ",
+      "email": "ivc-ry-201@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-202",
+      "name": "IVC-RY-202",
+      "password": "VV26-LKREB",
+      "email": "ivc-ry-202@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-203",
+      "name": "IVC-RY-203",
+      "password": "VV26-G36YX",
+      "email": "ivc-ry-203@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-204",
+      "name": "IVC-RY-204",
+      "password": "VV26-5K8SR",
+      "email": "ivc-ry-204@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-205",
+      "name": "IVC-RY-205",
+      "password": "VV26-AYBNM",
+      "email": "ivc-ry-205@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-206",
+      "name": "IVC-RY-206",
+      "password": "VV26-9BQHR",
+      "email": "ivc-ry-206@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-207",
+      "name": "IVC-RY-207",
+      "password": "VV26-WQPYP",
+      "email": "ivc-ry-207@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-208",
+      "name": "IVC-RY-208",
+      "password": "VV26-J4K3Y",
+      "email": "ivc-ry-208@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-209",
+      "name": "IVC-RY-209",
+      "password": "VV26-NZXM7",
+      "email": "ivc-ry-209@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-210",
+      "name": "IVC-RY-210",
+      "password": "VV26-DRAZQ",
+      "email": "ivc-ry-210@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-211",
+      "name": "IVC-RY-211",
+      "password": "VV26-LYE25",
+      "email": "ivc-ry-211@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-212",
+      "name": "IVC-RY-212",
+      "password": "VV26-NNAXQ",
+      "email": "ivc-ry-212@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-213",
+      "name": "IVC-RY-213",
+      "password": "VV26-FVPNN",
+      "email": "ivc-ry-213@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-214",
+      "name": "IVC-RY-214",
+      "password": "VV26-TCNSH",
+      "email": "ivc-ry-214@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-215",
+      "name": "IVC-RY-215",
+      "password": "VV26-7D4VL",
+      "email": "ivc-ry-215@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-216",
+      "name": "IVC-RY-216",
+      "password": "VV26-G8SRH",
+      "email": "ivc-ry-216@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-217",
+      "name": "IVC-RY-217",
+      "password": "VV26-YALM6",
+      "email": "ivc-ry-217@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-218",
+      "name": "IVC-RY-218",
+      "password": "VV26-U835C",
+      "email": "ivc-ry-218@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-219",
+      "name": "IVC-RY-219",
+      "password": "VV26-JM9DU",
+      "email": "ivc-ry-219@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-220",
+      "name": "IVC-RY-220",
+      "password": "VV26-GMZJ3",
+      "email": "ivc-ry-220@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-221",
+      "name": "IVC-RY-221",
+      "password": "VV26-E282A",
+      "email": "ivc-ry-221@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-222",
+      "name": "IVC-RY-222",
+      "password": "VV26-KZB9K",
+      "email": "ivc-ry-222@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-223",
+      "name": "IVC-RY-223",
+      "password": "VV26-95XJ7",
+      "email": "ivc-ry-223@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-224",
+      "name": "IVC-RY-224",
+      "password": "VV26-SFEJJ",
+      "email": "ivc-ry-224@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-225",
+      "name": "IVC-RY-225",
+      "password": "VV26-GKZLT",
+      "email": "ivc-ry-225@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-226",
+      "name": "IVC-RY-226",
+      "password": "VV26-3DGK9",
+      "email": "ivc-ry-226@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-227",
+      "name": "IVC-RY-227",
+      "password": "VV26-B9Q7S",
+      "email": "ivc-ry-227@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-228",
+      "name": "IVC-RY-228",
+      "password": "VV26-PEQYF",
+      "email": "ivc-ry-228@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-229",
+      "name": "IVC-RY-229",
+      "password": "VV26-9H7YP",
+      "email": "ivc-ry-229@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-230",
+      "name": "IVC-RY-230",
+      "password": "VV26-CKQ9J",
+      "email": "ivc-ry-230@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-231",
+      "name": "IVC-RY-231",
+      "password": "VV26-KHWKF",
+      "email": "ivc-ry-231@f1-team.com",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-232",
+      "name": "IVC-RY-232",
+      "password": "VV26-MRDH5",
+      "email": "ivc-ry-232@f1-team.com",
+      "assigned_challenge_id": "custom-600b7981",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-233",
+      "name": "IVC-RY-233",
+      "password": "VV26-RPD55",
+      "email": "ivc-ry-233@f1-team.com",
+      "assigned_challenge_id": "custom-600b7981",
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    }
+  ]
 }
