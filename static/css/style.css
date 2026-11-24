@@ -4043,3 +4043,67 @@ img, picture, canvas {
 .awsui-table tbody tr:hover {
   background: rgba(225, 6, 0, 0.08) !important;
 }
+
+/* ==========================================================================
+   DEDICATED FULL-PAGE RACE CONTROL ADMIN DASHBOARD & MULTI-SELECT
+   ========================================================================== */
+body[data-admin-route="true"] #admin-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #09090E;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+body[data-admin-route="true"] #admin-modal .awsui-modal-card {
+  max-width: 1360px;
+  width: 96vw;
+  max-height: 94vh;
+  border-radius: 16px;
+  border: 1px solid rgba(225, 6, 0, 0.45);
+  background: #111118;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(225, 6, 0, 0.18);
+}
+
+.batch-action-bar {
+  animation: fadeInDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.team-thumb-preview {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+}
+
+.team-thumb-preview:hover {
+  transform: scale(1.5);
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+}
+
+.admin-image-card {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.admin-image-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(225, 6, 0, 0.7) !important;
+  box-shadow: 0 8px 24px rgba(225, 6, 0, 0.22);
+}
+

@@ -628,8 +628,18 @@ class ChallengeManager:
             "created_by": created_by
         }
         if image_data:
-            self.save_challenge_image(challenge_id, image_data)
-            new_challenge["static_url"] = f"/static/images/challenges/{challenge_id}.jpg"
+            if isinstance(image_data, str) and "base64," in image_data:
+                new_challenge["image_data"] = image_data
+            elif isinstance(image_data, bytes):
+                new_challenge["image_data"] = f"data:image/jpeg;base64,{base64.b64encode(image_data).decode('utf-8')}"
+            try:
+                saved_url = self.save_challenge_image(challenge_id, image_data)
+                if saved_url:
+                    new_challenge["static_url"] = saved_url
+            except Exception:
+                pass
+            if "static_url" not in new_challenge and "image_data" in new_challenge:
+                new_challenge["static_url"] = new_challenge["image_data"]
 
         self.challenges.append(new_challenge)
         self._init_deck()

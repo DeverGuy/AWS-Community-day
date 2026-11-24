@@ -1025,28 +1025,39 @@ def assign_team_challenge():
         return jsonify({"error": "Admin authorization required"}), 403
 
     data = request.get_json() or {}
-    team_id = data.get("team_id")
-    challenge_id = data.get("challenge_id") or None
+    team_ids = data.get("team_ids")
+    if not team_ids:
+        single_id = data.get("team_id")
+        team_ids = [single_id] if single_id else []
 
+    challenge_id = data.get("challenge_id") or None
     current = _load_teams()
-    matched = None
+    matched = []
+    target_ids = set(team_ids)
     for t in current.get("teams", []):
-        if t.get("id") == team_id:
+        if t.get("id") in target_ids:
             t["assigned_challenge_id"] = challenge_id
-            matched = t
-            break
+            matched.append(t)
 
     if not matched:
-        return jsonify({"error": "Team not found"}), 404
+        return jsonify({"error": "No matching teams found"}), 404
 
     _save_teams(current)
-    socketio.emit("teams_updated", {"action": "assigned", "team": matched})
-    return jsonify({"success": True, "team": matched})
+    socketio.emit("teams_updated", {"action": "assigned", "count": len(matched), "challenge_id": challenge_id})
+    return jsonify({
+        "success": True,
+        "count": len(matched),
+        "challenge_id": challenge_id,
+        "team": matched[0] if len(matched) == 1 else None
+    })
 
 @app.route("/api/teams/auto-assign", methods=["POST"])
 def auto_assign_teams():
     if not verify_admin(request):
         return jsonify({"error": "Admin authorization required"}), 403
+
+    data = request.get_json() or {}
+    team_ids = data.get("team_ids")
 
     current = _load_teams()
     teams_list = current.get("teams", [])
@@ -1057,13 +1068,18 @@ def auto_assign_teams():
     if not active_challenges:
         return jsonify({"error": "No active challenges available to assign"}), 400
 
+    target_set = set(team_ids) if team_ids else None
+    assigned_count = 0
     for idx, team in enumerate(teams_list):
-        assigned_ch = active_challenges[idx % len(active_challenges)]
+        if target_set is not None and team.get("id") not in target_set:
+            continue
+        assigned_ch = active_challenges[assigned_count % len(active_challenges)]
         team["assigned_challenge_id"] = assigned_ch["id"]
+        assigned_count += 1
 
     _save_teams(current)
-    socketio.emit("teams_updated", {"action": "auto_assigned", "count": len(teams_list)})
-    return jsonify({"success": True, "count": len(teams_list)})
+    socketio.emit("teams_updated", {"action": "auto_assigned", "count": assigned_count})
+    return jsonify({"success": True, "count": assigned_count})
 
 @app.route("/api/teams/toggle-whitelist", methods=["POST"])
 def toggle_whitelist():
@@ -1084,10 +1100,19 @@ def delete_team():
         return jsonify({"error": "Admin authorization required"}), 403
 
     data = request.get_json() or {}
-    team_id = data.get("team_id")
+    team_ids = data.get("team_ids")
+    if not team_ids:
+        single_id = data.get("team_id")
+        team_ids = [single_id] if single_id else []
+
+    target_set = set(team_ids)
     current = _load_teams()
-    current["teams"] = [t for t in current.get("teams", []) if t.get("id") != team_id]
+    initial_len = len(current.get("teams", []))
+    current["teams"] = [t for t in current.get("teams", []) if t.get("id") not in target_set]
+    deleted_count = initial_len - len(current["teams"])
     _save_teams(current)
+    socketio.emit("teams_updated", {"action": "deleted", "count": deleted_count})
+    return jsonify({"success": True, "deleted_count": deleted_count})
     socketio.emit("teams_updated", {"action": "deleted", "team_id": team_id})
     return jsonify({"success": True})
 
@@ -1167,8 +1192,10 @@ def add_challenge():
         is_active = data.get("is_active", True)
         image_data = data.get("image_data")
 
-    if not title or not brief:
-        return jsonify({"error": "Title and brief are required"}), 400
+    if not title:
+        return jsonify({"error": "Image title is required"}), 400
+    if not brief:
+        brief = f"Visual recreation scene for {title}"
 
     new_item = challenge_manager.add_challenge(
         title=title,

@@ -441,6 +441,24 @@ class TestReversePromptBattle(unittest.TestCase):
             correct_pw_resp = self.client.post('/api/join', json={'name': 'Red Bull Racing', 'password': 'redbull_pass_123'})
             self.assertEqual(correct_pw_resp.status_code, 200)
             self.assertTrue(correct_pw_resp.get_json()['success'])
+
+            # 7. Test Multi-select Batch Assignment
+            batch_assign_resp = self.client.post(
+                '/api/teams/assign',
+                headers={'X-Admin-Code': ADMIN_CODE},
+                json={'team_ids': ['red-bull-racing', 'scuderia-ferrari'], 'challenge_id': 'coffee-latte-book'}
+            )
+            self.assertEqual(batch_assign_resp.status_code, 200)
+            self.assertEqual(batch_assign_resp.get_json()['count'], 2)
+
+            # 8. Test Multi-select Batch Deletion
+            batch_del_resp = self.client.post(
+                '/api/teams/delete',
+                headers={'X-Admin-Code': ADMIN_CODE},
+                json={'team_ids': ['red-bull-racing', 'scuderia-ferrari']}
+            )
+            self.assertEqual(batch_del_resp.status_code, 200)
+            self.assertEqual(batch_del_resp.get_json()['deleted_count'], 2)
         finally:
             if os.path.exists(backup_path):
                 shutil.copyfile(backup_path, teams_path)

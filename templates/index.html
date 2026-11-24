@@ -655,16 +655,15 @@
       <div id="admin-dashboard-panel" class="modal-dashboard-body hidden">
 
         <div class="awsui-modal-tabs">
-          <button type="button" class="modal-tab-btn active" data-tab="tab-teams">👥 Teams &amp; Assignments</button>
-          <button type="button" class="modal-tab-btn" data-tab="tab-upload-image">🖼️ Upload Target Images</button>
-          <button type="button" class="modal-tab-btn" data-tab="tab-challenges">📚 Challenge Catalog</button>
-          <button type="button" class="modal-tab-btn" data-tab="tab-competition">⚙️ Reset Competition</button>
+          <button type="button" class="modal-tab-btn active" data-tab="tab-teams">👥 Teams &amp; Multi-Select</button>
+          <button type="button" class="modal-tab-btn" data-tab="tab-upload-image">🖼️ Target Images &amp; Catalog</button>
+          <button type="button" class="modal-tab-btn" data-tab="tab-competition">⚙️ Race Control &amp; Reset</button>
         </div>
 
         <!-- Tab 1: Teams & Assignments (Active by default) -->
         <div class="modal-tab-content active" id="tab-teams">
           <div
-            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:rgba(22,22,31,0.85); padding:14px 20px; border-radius:12px; border:1px solid rgba(225,6,0,0.3);">
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:rgba(22,22,31,0.85); padding:14px 20px; border-radius:12px; border:1px solid rgba(225,6,0,0.3); flex-wrap:wrap; gap:10px;">
             <div>
               <strong style="font-size:14px; color:#FFFFFF;">Team Access Control:</strong>
               <span id="whitelist-status-text"
@@ -700,34 +699,67 @@
             </div>
           </div>
 
+          <!-- Batch Actions Toolbar (Shown when 1+ teams are selected) -->
+          <div id="batch-action-bar" class="batch-action-bar hidden" style="margin-bottom:16px; background:rgba(30,16,20,0.95); border:1px solid #E10600; border-radius:10px; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; box-shadow:0 4px 18px rgba(225,6,0,0.25);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span id="selected-teams-badge" style="background:#E10600; color:#FFF; font-weight:800; font-size:12px; padding:3px 10px; border-radius:20px;">0</span>
+              <span style="font-weight:700; font-size:13px; color:#FFFFFF;">Teams Selected</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <select id="batch-image-select" class="awsui-text-input" style="padding:6px 10px; font-size:12px; max-width:240px; background:#16161F; color:#FFF; border-color:rgba(225,6,0,0.5);">
+                  <option value="">-- Choose Image to Assign --</option>
+                </select>
+                <button type="button" class="pq-btn-orange-pill btn-sm" id="batch-assign-btn" style="padding:6px 14px; font-size:12px;">
+                  <span>🎯 Assign Image</span>
+                </button>
+              </div>
+              <button type="button" class="pq-btn-outline-pill btn-sm" id="batch-auto-distribute-btn" style="padding:6px 12px; font-size:12px;" title="Distribute active challenges evenly across selected teams">
+                ⚡ Distribute
+              </button>
+              <button type="button" class="pq-btn-outline-pill btn-sm" id="batch-clear-assign-btn" style="padding:6px 12px; font-size:12px;" title="Unassign image for selected teams">
+                ✕ Clear
+              </button>
+              <button type="button" class="awsui-btn-danger btn-sm" id="batch-delete-btn" style="margin:0; padding:6px 12px; font-size:11px;">
+                🗑️ Delete Selected
+              </button>
+              <button type="button" class="pq-btn-outline-pill btn-sm" id="batch-deselect-all-btn" style="padding:6px 10px; font-size:12px; border-color:transparent;">
+                Deselect
+              </button>
+            </div>
+          </div>
+
           <!-- Teams & Image Assignments Table -->
           <div class="catalog-table-box">
             <div class="catalog-top-toolbar">
               <div>
                 <h5>Registered Teams &amp; Passwords (<span id="teams-count-badge">0</span> teams)</h5>
-                <span style="font-size:11.5px; color:var(--pq-text-secondary);">Teams must enter their registered password to access the qualifying arena.</span>
+                <span style="font-size:11.5px; color:var(--pq-text-secondary);">Select multiple teams using checkboxes to assign target images in bulk.</span>
               </div>
               <div class="catalog-actions-group">
                 <button type="button" class="pq-btn-outline-pill btn-sm" id="auto-assign-teams-btn"
-                  title="Distribute active challenges across all teams">⚡ Auto-Distribute Images</button>
+                  title="Distribute active challenges across all teams">⚡ Auto-Distribute (All)</button>
                 <button type="button" class="pq-btn-outline-pill btn-sm" id="clear-teams-btn"
-                  style="color:#EF4444; border-color:rgba(239,68,68,0.4);">🗑️ Clear Teams</button>
+                  style="color:#EF4444; border-color:rgba(239,68,68,0.4);">🗑️ Clear All Teams</button>
               </div>
             </div>
             <div class="catalog-table-scroll">
               <table class="awsui-table compact-table">
                 <thead>
                   <tr>
-                    <th style="width:25%;">Team Name</th>
-                    <th style="width:20%;">Password</th>
-                    <th style="width:30%;">Assigned Target Image</th>
+                    <th style="width:36px; text-align:center;">
+                      <input type="checkbox" id="select-all-teams-cb" title="Select all teams" style="cursor:pointer; width:16px; height:16px; accent-color:#E10600;">
+                    </th>
+                    <th style="width:24%;">Team Name</th>
+                    <th style="width:16%;">Password</th>
+                    <th style="width:36%;">Assigned Target Image</th>
                     <th style="width:12%;">Status</th>
-                    <th style="width:13%;">Actions</th>
+                    <th style="width:12%;">Actions</th>
                   </tr>
                 </thead>
                 <tbody id="admin-teams-table-body">
                   <tr>
-                    <td colspan="5" class="table-empty">No teams uploaded yet. Upload a team CSV above.</td>
+                    <td colspan="6" class="table-empty">No teams uploaded yet. Upload a team CSV above.</td>
                   </tr>
                 </tbody>
               </table>
@@ -735,13 +767,12 @@
           </div>
         </div>
 
-        <!-- Tab 2: Upload Target Images -->
+        <!-- Tab 2: Upload Target Images & Catalog -->
         <div class="modal-tab-content" id="tab-upload-image">
-          <div class="pq-dash-card add-challenge-box">
+          <div class="pq-dash-card add-challenge-box" style="margin-bottom:24px;">
             <div class="accordion-head">
-              <h4>🖼️ Upload Target Reference Image</h4>
-              <span style="font-size:12px; color:var(--pq-text-secondary);">Provide your own images for teams to
-                match</span>
+              <h4>🖼️ Quick Add / Upload Target Reference Image</h4>
+              <span style="font-size:12px; color:var(--pq-text-secondary);">Add new visual targets for teams to reverse engineer</span>
             </div>
             <form id="upload-target-image-form" style="padding:16px 20px;">
               <div class="form-grid-two">
@@ -759,28 +790,32 @@
                     placeholder="e.g. Formula 1 Wet Weather Apex" required>
                 </div>
                 <div class="form-cell full-width">
-                  <label class="awsui-label">Scene Description / Visual Details *</label>
+                  <label class="awsui-label">Scene Description / Visual Details (optional)</label>
                   <textarea id="custom-image-brief" class="awsui-textarea" rows="2"
-                    placeholder="Describe the scene that participants must craft a prompt to match..."
-                    required></textarea>
-                </div>
-                <div class="form-cell">
-                  <label class="awsui-label">Key Visual Cues (optional)</label>
-                  <input type="text" id="custom-image-visual" class="awsui-text-input"
-                    placeholder="e.g. Red race car, glowing brake disc, rain spray">
-                </div>
-                <div class="form-cell">
-                  <label class="awsui-label">Inspiration Keywords (comma separated)</label>
-                  <input type="text" id="custom-image-keywords" class="awsui-text-input"
-                    placeholder="e.g. F1, Apex, Wet Asphalt, Rain">
+                    placeholder="Describe the scene that participants must craft a prompt to match..."></textarea>
                 </div>
               </div>
               <div class="form-actions-bar" style="margin-top:16px;">
                 <button type="submit" class="pq-btn-orange-pill" id="upload-custom-image-submit-btn">
-                  <span>Upload &amp; Activate Challenge Image</span>
+                  <span>➕ Upload &amp; Activate Target Image</span>
                 </button>
               </div>
             </form>
+          </div>
+
+          <!-- Target Image Cards Gallery -->
+          <div class="catalog-table-box">
+            <div class="catalog-top-toolbar">
+              <div>
+                <h5>Target Image Catalog (<span id="stat-total-challenges">0</span> images)</h5>
+                <span style="font-size:11.5px; color:var(--pq-text-secondary);">Browse all active targets, preview scenes, and assign them directly to selected teams.</span>
+              </div>
+              <button type="button" class="pq-btn-outline-pill btn-sm" id="reset-default-challenges-btn"
+                title="Restore default curated F1 challenges">↻ Restore Defaults</button>
+            </div>
+            <div id="admin-images-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; padding:16px 0;">
+              <!-- Populated dynamically via battle.js -->
+            </div>
           </div>
         </div>
 

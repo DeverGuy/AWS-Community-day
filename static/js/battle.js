@@ -1854,10 +1854,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const adminCatFilter = document.getElementById("admin-cat-filter");
 
   async function loadAdminChallenges() {
-    if (!adminChallengesTable) return;
+    const imagesGrid = document.getElementById("admin-images-grid");
     try {
       const resp = await fetch("/api/challenges");
       const data = await resp.json();
+      const challenges = data.challenges || [];
+      cachedChallengesForTeams = challenges;
 
       if (data.stats) {
         const t = document.getElementById("stat-total-challenges");
@@ -1866,51 +1868,174 @@ document.addEventListener("DOMContentLoaded", () => {
         if (a) a.textContent = data.stats.active;
       }
 
-      adminChallengesTable.innerHTML = "";
-      (data.challenges || []).forEach(ch => {
-        const tr = document.createElement("tr");
-        const isActive = ch.is_active;
+      // 1. Populate Table (if present)
+      if (adminChallengesTable) {
+        adminChallengesTable.innerHTML = "";
+        challenges.forEach(ch => {
+          const tr = document.createElement("tr");
+          const isActive = ch.is_active;
 
-        tr.innerHTML = `
-          <td><span class="status-badge ${isActive ? "active" : "inactive"}">${isActive ? "ACTIVE" : "INACTIVE"}</span></td>
-          <td>
-            <div style="font-weight:700;">${ch.title}</div>
-            <div style="font-size:11.5px; color:var(--pq-text-secondary);">${ch.brief.slice(0, 110)}...</div>
-          </td>
-          <td>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <button type="button" class="pq-btn-outline-pill btn-sm toggle-act-btn">${isActive ? "Deactivate" : "Activate"}</button>
-              <button type="button" class="awsui-btn-danger btn-sm delete-ch-btn" style="margin-top:0;">Delete</button>
-            </div>
-          </td>
-        `;
+          tr.innerHTML = `
+            <td><span class="status-badge ${isActive ? "active" : "inactive"}">${isActive ? "ACTIVE" : "INACTIVE"}</span></td>
+            <td>
+              <div style="font-weight:700;">${ch.title}</div>
+              <div style="font-size:11.5px; color:var(--pq-text-secondary);">${(ch.brief || "").slice(0, 110)}...</div>
+            </td>
+            <td>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button type="button" class="pq-btn-outline-pill btn-sm toggle-act-btn">${isActive ? "Deactivate" : "Activate"}</button>
+                <button type="button" class="awsui-btn-danger btn-sm delete-ch-btn" style="margin-top:0;">Delete</button>
+              </div>
+            </td>
+          `;
 
-        tr.querySelector(".toggle-act-btn").addEventListener("click", async () => {
-          playAudioTone("click");
-          await fetch(`/api/challenges/${ch.id}/toggle`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Admin-Code": state.adminToken
-            },
-            body: JSON.stringify({ is_active: !isActive })
-          });
-          loadAdminChallenges();
-        });
-
-        tr.querySelector(".delete-ch-btn").addEventListener("click", async () => {
-          if (confirm(`Delete challenge "${ch.title}"?`)) {
+          tr.querySelector(".toggle-act-btn").addEventListener("click", async () => {
             playAudioTone("click");
-            await fetch(`/api/challenges/${ch.id}`, {
-              method: "DELETE",
-              headers: { "X-Admin-Code": state.adminToken }
+            await fetch(`/api/challenges/${ch.id}/toggle`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Admin-Code": state.adminToken
+              },
+              body: JSON.stringify({ is_active: !isActive })
             });
             loadAdminChallenges();
-          }
-        });
+          });
 
-        adminChallengesTable.appendChild(tr);
-      });
+          tr.querySelector(".delete-ch-btn").addEventListener("click", async () => {
+            if (confirm(`Delete challenge "${ch.title}"?`)) {
+              playAudioTone("click");
+              await fetch(`/api/challenges/${ch.id}`, {
+                method: "DELETE",
+                headers: { "X-Admin-Code": state.adminToken }
+              });
+              loadAdminChallenges();
+              loadAdminTeams();
+            }
+          });
+
+          adminChallengesTable.appendChild(tr);
+        });
+      }
+
+      // 2. Populate Visual Cards Grid (#admin-images-grid)
+      if (imagesGrid) {
+        imagesGrid.innerHTML = "";
+        if (challenges.length === 0) {
+          imagesGrid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:32px; color:var(--pq-text-secondary);">No target images available. Upload one above or click 'Restore Defaults'.</div>`;
+          return;
+        }
+
+        challenges.forEach(ch => {
+          const card = document.createElement("div");
+          card.className = "pq-dash-card admin-image-card";
+          card.style.cssText = "padding:12px; display:flex; flex-direction:column; gap:8px; border:1px solid rgba(225,6,0,0.3); background:rgba(22,22,31,0.9); border-radius:10px; transition:transform 0.15s ease;";
+
+          const assignedCount = cachedAdminTeamsList.filter(t => t.assigned_challenge_id === ch.id).length;
+          const imgUrl = ch.static_url || ch.image_data || "/static/images/f1-logo.svg";
+
+          card.innerHTML = `
+            <div style="position:relative; width:100%; height:135px; border-radius:6px; overflow:hidden; background:#000;">
+              <img src="${imgUrl}" alt="${ch.title}" style="width:100%; height:100%; object-fit:cover;">
+              <span class="status-badge ${ch.is_active ? 'active' : 'inactive'}" style="position:absolute; top:6px; right:6px; font-size:10px; padding:2px 8px;">
+                ${ch.is_active ? 'ACTIVE' : 'INACTIVE'}
+              </span>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:baseline; gap:6px;">
+                <h5 style="margin:0; font-size:13.5px; color:#FFFFFF; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${ch.title}</h5>
+                <span style="font-size:11px; color:#FFD200; font-family:var(--font-mono); font-weight:700; flex-shrink:0;">
+                  ${assignedCount} team${assignedCount === 1 ? '' : 's'}
+                </span>
+              </div>
+              <p style="margin:4px 0 0; font-size:11.5px; color:var(--pq-text-secondary); line-height:1.3; height:30px; overflow:hidden; text-overflow:ellipsis;">
+                ${ch.brief || "Reference target image"}
+              </p>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:auto; padding-top:4px;">
+              <button type="button" class="pq-btn-orange-pill btn-sm assign-card-to-sel-btn" data-ch-id="${ch.id}" style="flex:1; font-size:11px; padding:5px 8px;" title="Assign this image to currently selected teams">
+                <span>🎯 Assign to Selected</span>
+              </button>
+              <button type="button" class="pq-btn-outline-pill btn-sm toggle-card-act-btn" data-ch-id="${ch.id}" style="font-size:11px; padding:5px 8px;">
+                ${ch.is_active ? "Disable" : "Enable"}
+              </button>
+              <button type="button" class="awsui-btn-danger btn-sm del-card-btn" data-ch-id="${ch.id}" style="font-size:11px; padding:5px 8px; margin:0;" title="Delete challenge">
+                🗑️
+              </button>
+            </div>
+          `;
+
+          // Assign to currently selected teams button
+          const assignSelBtn = card.querySelector(".assign-card-to-sel-btn");
+          assignSelBtn.addEventListener("click", async () => {
+            if (selectedTeamIds.size === 0) {
+              showToast("Please select one or more teams first using the checkboxes in the Teams tab.", "warning");
+              const teamsTabBtn = document.querySelector('.modal-tab-btn[data-tab="tab-teams"]');
+              if (teamsTabBtn) teamsTabBtn.click();
+              return;
+            }
+            playAudioTone("click");
+            try {
+              const aResp = await fetch("/api/teams/assign", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Admin-Code": state.adminToken
+                },
+                body: JSON.stringify({
+                  team_ids: Array.from(selectedTeamIds),
+                  challenge_id: ch.id
+                })
+              });
+              const aData = await aResp.json();
+              if (aData.success) {
+                playAudioTone("success");
+                showToast(`Assigned "${ch.title}" to ${aData.count} selected teams!`, "success");
+                loadAdminTeams();
+                loadAdminChallenges();
+              } else {
+                showToast(aData.error || "Assignment failed.", "error");
+              }
+            } catch (err) {
+              showToast("Network error assigning challenge.", "error");
+            }
+          });
+
+          // Toggle card active
+          const toggleCardBtn = card.querySelector(".toggle-card-act-btn");
+          toggleCardBtn.addEventListener("click", async () => {
+            playAudioTone("click");
+            await fetch(`/api/challenges/${ch.id}/toggle`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Admin-Code": state.adminToken
+              },
+              body: JSON.stringify({ is_active: !ch.is_active })
+            });
+            loadAdminChallenges();
+          });
+
+          // Delete card
+          const delCardBtn = card.querySelector(".del-card-btn");
+          delCardBtn.addEventListener("click", async () => {
+            if (confirm(`Delete target image challenge "${ch.title}"?`)) {
+              playAudioTone("click");
+              await fetch(`/api/challenges/${ch.id}`, {
+                method: "DELETE",
+                headers: { "X-Admin-Code": state.adminToken }
+              });
+              loadAdminChallenges();
+              loadAdminTeams();
+            }
+          });
+
+          imagesGrid.appendChild(card);
+        });
+      }
+
+      // Update batch image select dropdown in Tab 1
+      updateBatchBarUI();
     } catch (e) {
       console.error(e);
     }
@@ -2032,11 +2157,48 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const selectedTeamIds = new Set();
+  let cachedAdminTeamsList = [];
+
+  function updateBatchBarUI() {
+    const batchBar = document.getElementById("batch-action-bar");
+    const badge = document.getElementById("selected-teams-badge");
+    const selectAllCb = document.getElementById("select-all-teams-cb");
+    const batchSelect = document.getElementById("batch-image-select");
+
+    const count = selectedTeamIds.size;
+    if (badge) badge.textContent = count;
+
+    if (batchBar) {
+      if (count > 0) {
+        batchBar.classList.remove("hidden");
+      } else {
+        batchBar.classList.add("hidden");
+      }
+    }
+
+    if (selectAllCb) {
+      selectAllCb.checked = count > 0 && count === cachedAdminTeamsList.length;
+      selectAllCb.indeterminate = count > 0 && count < cachedAdminTeamsList.length;
+    }
+
+    if (batchSelect && cachedChallengesForTeams.length > 0) {
+      const curVal = batchSelect.value;
+      let opts = `<option value="">-- Choose Target Image to Assign --</option>`;
+      cachedChallengesForTeams.forEach(ch => {
+        opts += `<option value="${ch.id}">${ch.title}</option>`;
+      });
+      batchSelect.innerHTML = opts;
+      if (curVal) batchSelect.value = curVal;
+    }
+  }
+
   async function loadAdminTeams() {
     const tableBody = document.getElementById("admin-teams-table-body");
     const countBadge = document.getElementById("teams-count-badge");
     const statusText = document.getElementById("whitelist-status-text");
     const toggleBtn = document.getElementById("toggle-whitelist-btn");
+    const selectAllCb = document.getElementById("select-all-teams-cb");
     if (!tableBody) return;
 
     try {
@@ -2053,6 +2215,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!data.success) return;
 
       const teams = data.teams || [];
+      cachedAdminTeamsList = teams;
       const isWhitelist = data.whitelist_enabled;
       state.whitelistEnabled = isWhitelist;
 
@@ -2069,29 +2232,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tableBody.innerHTML = "";
       if (teams.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="table-empty">No teams registered yet. Upload a team CSV above.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="6" class="table-empty">No teams registered yet. Upload a team CSV above.</td></tr>`;
+        selectedTeamIds.clear();
+        updateBatchBarUI();
         return;
       }
 
       teams.forEach(team => {
         const tr = document.createElement("tr");
+        const isChecked = selectedTeamIds.has(team.id);
 
-        let challengeOptions = `<option value="">-- Random / Unassigned --</option>`;
+        let assignedCh = cachedChallengesForTeams.find(c => c.id === team.assigned_challenge_id);
+        let challengeOptions = `<option value="">-- Random on Entry --</option>`;
         cachedChallengesForTeams.forEach(ch => {
           const isSelected = team.assigned_challenge_id === ch.id;
           challengeOptions += `<option value="${ch.id}" ${isSelected ? "selected" : ""}>${ch.title}</option>`;
         });
 
+        const thumbUrl = assignedCh ? (assignedCh.static_url || assignedCh.image_data || "/static/images/f1-logo.svg") : "/static/images/f1-logo.svg";
+
         tr.innerHTML = `
+          <td style="text-align:center;">
+            <input type="checkbox" class="team-select-cb" data-team-id="${team.id}" ${isChecked ? "checked" : ""} style="cursor:pointer; width:16px; height:16px; accent-color:#E10600;">
+          </td>
           <td>
-            <div style="font-weight:700; color:#FFFFFF;">${team.name}</div>
+            <div style="font-weight:700; color:#FFFFFF; font-size:13.5px;">${team.name}</div>
             <div style="font-size:11px; color:var(--pq-text-secondary);">${team.email || ""}</div>
           </td>
           <td>
-            <code style="font-size:12px; color:#FFD200; background:rgba(255,210,0,0.12); padding:3px 8px; border-radius:4px; font-family:var(--font-mono);">${team.password || "—"}</code>
+            <code style="font-size:12px; color:#FFD200; background:rgba(255,210,0,0.12); padding:3px 8px; border-radius:4px; font-family:var(--font-mono); font-weight:700;">${team.password || "—"}</code>
           </td>
           <td>
             <div style="display:flex; align-items:center; gap:8px;">
+              <img src="${thumbUrl}" class="team-thumb-preview" alt="Preview" style="width:36px; height:36px; border-radius:6px; object-fit:cover; border:1px solid rgba(225,6,0,0.4); background:#16161F; flex-shrink:0;">
               <select class="awsui-text-input team-challenge-select" data-team-id="${team.id}" style="padding:4px 8px; font-size:12px; cursor:pointer; flex:1;">
                 ${challengeOptions}
               </select>
@@ -2107,11 +2280,27 @@ document.addEventListener("DOMContentLoaded", () => {
           </td>
         `;
 
-        // Handle challenge assignment change
+        // Checkbox toggle
+        const cb = tr.querySelector(".team-select-cb");
+        cb.addEventListener("change", () => {
+          if (cb.checked) {
+            selectedTeamIds.add(team.id);
+          } else {
+            selectedTeamIds.delete(team.id);
+          }
+          updateBatchBarUI();
+        });
+
+        // Challenge assignment select
         const selectEl = tr.querySelector(".team-challenge-select");
+        const thumbEl = tr.querySelector(".team-thumb-preview");
         selectEl.addEventListener("change", async () => {
           const chosenId = selectEl.value;
           playAudioTone("click");
+          const newlyAssigned = cachedChallengesForTeams.find(c => c.id === chosenId);
+          if (thumbEl) {
+            thumbEl.src = newlyAssigned ? (newlyAssigned.static_url || newlyAssigned.image_data || "/static/images/f1-logo.svg") : "/static/images/f1-logo.svg";
+          }
           try {
             const aResp = await fetch("/api/teams/assign", {
               method: "POST",
@@ -2119,12 +2308,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Content-Type": "application/json",
                 "X-Admin-Code": state.adminToken
               },
-              body: JSON.stringify({ team_id: team.id, challenge_id: chosenId })
+              body: JSON.stringify({ team_id: team.id, challenge_id: chosenId || null })
             });
             const aData = await aResp.json();
             if (aData.success) {
               const chTitle = selectEl.options[selectEl.selectedIndex].text;
               showToast(`Assigned "${chTitle}" to ${team.name}!`, "success");
+              team.assigned_challenge_id = chosenId || null;
             } else {
               showToast(aData.error || "Assignment failed.", "error");
             }
@@ -2133,7 +2323,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
 
-        // Handle team deletion
+        // Delete button
         const delBtn = tr.querySelector(".delete-team-btn");
         delBtn.addEventListener("click", async () => {
           if (confirm(`Remove team "${team.name}" from whitelist?`)) {
@@ -2146,6 +2336,7 @@ document.addEventListener("DOMContentLoaded", () => {
               },
               body: JSON.stringify({ team_id: team.id })
             });
+            selectedTeamIds.delete(team.id);
             loadAdminTeams();
             loadPublicTeams();
           }
@@ -2153,10 +2344,187 @@ document.addEventListener("DOMContentLoaded", () => {
 
         tableBody.appendChild(tr);
       });
+
+      updateBatchBarUI();
+
+      // Select all checkbox handler
+      if (selectAllCb) {
+        selectAllCb.onclick = () => {
+          const shouldCheck = selectAllCb.checked;
+          const allRowCbs = tableBody.querySelectorAll(".team-select-cb");
+          allRowCbs.forEach(rCb => {
+            rCb.checked = shouldCheck;
+            const tid = rCb.getAttribute("data-team-id");
+            if (shouldCheck) selectedTeamIds.add(tid);
+            else selectedTeamIds.delete(tid);
+          });
+          updateBatchBarUI();
+        };
+      }
     } catch (e) {
       console.error("[Teams] Error loading admin teams:", e);
     }
   }
+
+  // Set up Batch Action Bar Buttons
+  function setupBatchActionHandlers() {
+    const batchAssignBtn = document.getElementById("batch-assign-btn");
+    const batchAutoDistBtn = document.getElementById("batch-auto-distribute-btn");
+    const batchClearBtn = document.getElementById("batch-clear-assign-btn");
+    const batchDeleteBtn = document.getElementById("batch-delete-btn");
+    const batchDeselectBtn = document.getElementById("batch-deselect-all-btn");
+    const batchImageSelect = document.getElementById("batch-image-select");
+
+    if (batchAssignBtn) {
+      batchAssignBtn.addEventListener("click", async () => {
+        if (selectedTeamIds.size === 0) {
+          showToast("Please select at least one team using the checkboxes.", "warning");
+          return;
+        }
+        const chosenId = batchImageSelect ? batchImageSelect.value : "";
+        if (!chosenId) {
+          showToast("Please pick a target image from the dropdown to assign.", "warning");
+          return;
+        }
+
+        playAudioTone("click");
+        batchAssignBtn.disabled = true;
+        try {
+          const resp = await fetch("/api/teams/assign", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Admin-Code": state.adminToken
+            },
+            body: JSON.stringify({
+              team_ids: Array.from(selectedTeamIds),
+              challenge_id: chosenId
+            })
+          });
+          const data = await resp.json();
+          if (data.success) {
+            playAudioTone("success");
+            const chTitle = batchImageSelect.options[batchImageSelect.selectedIndex].text;
+            showToast(`Assigned "${chTitle}" to ${data.count} selected teams!`, "success");
+            loadAdminTeams();
+            loadAdminChallenges();
+          } else {
+            showToast(data.error || "Batch assignment failed.", "error");
+          }
+        } catch (e) {
+          showToast("Network error in batch assignment.", "error");
+        } finally {
+          batchAssignBtn.disabled = false;
+        }
+      });
+    }
+
+    if (batchAutoDistBtn) {
+      batchAutoDistBtn.addEventListener("click", async () => {
+        if (selectedTeamIds.size === 0) {
+          showToast("Please select at least one team.", "warning");
+          return;
+        }
+        playAudioTone("click");
+        batchAutoDistBtn.disabled = true;
+        try {
+          const resp = await fetch("/api/teams/auto-assign", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Admin-Code": state.adminToken
+            },
+            body: JSON.stringify({
+              team_ids: Array.from(selectedTeamIds)
+            })
+          });
+          const data = await resp.json();
+          if (data.success) {
+            playAudioTone("success");
+            showToast(`Evenly distributed target images across ${data.count} selected teams!`, "success");
+            loadAdminTeams();
+            loadAdminChallenges();
+          } else {
+            showToast(data.error || "Failed to auto-distribute.", "error");
+          }
+        } catch (e) {
+          showToast("Network error distributing images.", "error");
+        } finally {
+          batchAutoDistBtn.disabled = false;
+        }
+      });
+    }
+
+    if (batchClearBtn) {
+      batchClearBtn.addEventListener("click", async () => {
+        if (selectedTeamIds.size === 0) return;
+        playAudioTone("click");
+        try {
+          const resp = await fetch("/api/teams/assign", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Admin-Code": state.adminToken
+            },
+            body: JSON.stringify({
+              team_ids: Array.from(selectedTeamIds),
+              challenge_id: null
+            })
+          });
+          const data = await resp.json();
+          if (data.success) {
+            showToast(`Reset target image assignment for ${data.count} teams to random on entry.`, "info");
+            loadAdminTeams();
+            loadAdminChallenges();
+          }
+        } catch (e) {
+          showToast("Network error clearing assignments.", "error");
+        }
+      });
+    }
+
+    if (batchDeleteBtn) {
+      batchDeleteBtn.addEventListener("click", async () => {
+        if (selectedTeamIds.size === 0) return;
+        if (!confirm(`Are you sure you want to permanently delete ${selectedTeamIds.size} selected teams?`)) return;
+        playAudioTone("click");
+        try {
+          const resp = await fetch("/api/teams/delete", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Admin-Code": state.adminToken
+            },
+            body: JSON.stringify({
+              team_ids: Array.from(selectedTeamIds)
+            })
+          });
+          const data = await resp.json();
+          if (data.success) {
+            showToast(`Deleted ${data.deleted_count} teams.`, "info");
+            selectedTeamIds.clear();
+            loadAdminTeams();
+            loadPublicTeams();
+          }
+        } catch (e) {
+          showToast("Network error deleting teams.", "error");
+        }
+      });
+    }
+
+    if (batchDeselectBtn) {
+      batchDeselectBtn.addEventListener("click", () => {
+        selectedTeamIds.clear();
+        const selectAllCb = document.getElementById("select-all-teams-cb");
+        if (selectAllCb) selectAllCb.checked = false;
+        const allRowCbs = document.querySelectorAll(".team-select-cb");
+        allRowCbs.forEach(cb => cb.checked = false);
+        updateBatchBarUI();
+      });
+    }
+  }
+
+  setupBatchActionHandlers();
 
   // Import Teams button
   const importTeamsBtn = document.getElementById("import-teams-btn");
@@ -2378,6 +2746,20 @@ document.addEventListener("DOMContentLoaded", () => {
       } finally {
         if (submitBtn) submitBtn.disabled = false;
       }
+    });
+  }
+
+  const resetDefaultChBtn = document.getElementById("reset-default-challenges-btn");
+  if (resetDefaultChBtn) {
+    resetDefaultChBtn.addEventListener("click", async () => {
+      if (!confirm("Reset image catalog back to default curated Formula 1 challenges?")) return;
+      playAudioTone("click");
+      await fetch("/api/challenges/reset", {
+        method: "POST",
+        headers: { "X-Admin-Code": state.adminToken }
+      });
+      loadAdminChallenges();
+      loadAdminTeams();
     });
   }
 
