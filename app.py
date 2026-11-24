@@ -5,6 +5,8 @@ Inspired by the AWS Student Builder Groups philosophy
 """
 
 import os
+import re
+import csv
 import time
 import json
 import uuid
@@ -117,15 +119,40 @@ competition_state = {
     "round_duration": ROUND_DURATION,
     "round_start_time": None,
     "round_end_time": None,
-    "theme": "BUILD THE FUTURE – Imagine. Innovate. Create.",
-    "subtitle": "An AI-powered creative challenge at AWS Community Day.",
-    "philosophy": "Inspired by the AWS Student Builder Groups philosophy of empowering students to explore cloud technology, develop technical skills, collaborate, and build innovative solutions."
+    "theme": "F1 PROMPT GRAND PRIX – Speed. Precision. Pole Position.",
+    "subtitle": "The Ultimate Formula 1 AI Prompt Engineering Championship",
+    "philosophy": "Inspired by Formula 1 engineering excellence, split-second telemetry precision, and relentless pursuit of aerodynamic and visual perfection."
 }
 
 # In-memory storage for active session with serverless-safe local persistence
 participants = {}    # participant_id -> dict
 socket_to_id = {}    # socket_id -> participant_id
 submissions = {}     # submission_id -> dict
+
+
+TEAMS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "teams.json")
+
+def _load_teams():
+    if not os.path.exists(TEAMS_FILE):
+        return {"whitelist_enabled": False, "teams": []}
+    try:
+        with open(TEAMS_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if "whitelist_enabled" not in data:
+                data["whitelist_enabled"] = False
+            if "teams" not in data:
+                data["teams"] = []
+            return data
+    except Exception as e:
+        print(f"[Teams] Load error: {e}")
+        return {"whitelist_enabled": False, "teams": []}
+
+def _save_teams(data):
+    try:
+        with open(TEAMS_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        print(f"[Teams] Save error: {e}")
 
 STATE_FILE = os.path.join(tempfile.gettempdir() if os.environ.get("VERCEL") else "data", "competition_runtime_state.json")
 
@@ -256,12 +283,42 @@ def _has_email_completed_attempt(email):
 @app.route("/api/join", methods=["POST"])
 def join_competition():
     data = request.get_json() or {}
-    name = data.get("name", "").strip() or f"Builder-{uuid.uuid4().hex[:4].upper()}"
+    name = data.get("name", "").strip() or f"Team-{uuid.uuid4().hex[:4].upper()}"
     email = data.get("email", "").strip().lower()
     participant_id = data.get("participant_id") or str(uuid.uuid4())
 
     if not email:
         return jsonify({"success": False, "error": "Email address is required to enter the arena."}), 400
+
+    # Team Whitelist & Access Control Verification
+    teams_data = _load_teams()
+    whitelist_enabled = teams_data.get("whitelist_enabled", False)
+    teams_list = teams_data.get("teams", [])
+
+    matched_team = None
+    if whitelist_enabled and teams_list:
+        norm_name = name.lower()
+        norm_email = email.lower()
+        for t in teams_list:
+            t_name = t.get("name", "").strip().lower()
+            t_id = t.get("id", "").strip().lower()
+            t_email = t.get("email", "").strip().lower()
+            if norm_name == t_name or norm_name == t_id or (norm_email and norm_email == t_email):
+                matched_team = t
+                break
+
+        if not matched_team:
+            return jsonify({
+                "success": False,
+                "error": f"Access Denied: '{name}' is not on the authorized team access list. Only registered teams can enter."
+            }), 403
+
+        if matched_team.get("has_completed"):
+            return jsonify({
+                "success": False,
+                "error": f"Team '{matched_team['name']}' has already completed their prompt challenge round. Only 1 attempt per team is allowed.",
+                "already_completed": True
+            }), 403
 
     # 1 TRY PER EMAIL ID ENFORCEMENT
     if _has_email_completed_attempt(email):
@@ -283,10 +340,20 @@ def join_competition():
         participant = existing_active
         if name:
             participant["name"] = name
+        if matched_team and matched_team.get("assigned_challenge_id"):
+            team_assigned = challenge_manager.get_by_id(matched_team["assigned_challenge_id"])
+            if team_assigned:
+                participant["target_challenge"] = team_assigned
+                participant["assigned_challenge"] = team_assigned
         target_challenge = participant.get("target_challenge") or participant.get("assigned_challenge")
     else:
-        # Generate or assign a unique target challenge from agents under "BUILD THE FUTURE"
-        target_challenge = challenge_manager.get_unique_target_challenge(participant_id=participant_id)
+        # Check if team has an assigned target image/challenge
+        target_challenge = None
+        if matched_team and matched_team.get("assigned_challenge_id"):
+            target_challenge = challenge_manager.get_by_id(matched_team["assigned_challenge_id"])
+
+        if not target_challenge:
+            target_challenge = challenge_manager.get_unique_target_challenge(participant_id=participant_id)
         seen_set = set([target_challenge["id"]])
 
         now_ts = time.time()
@@ -423,6 +490,25 @@ def _record_submission(participant, target_challenge, prompt, image_data, eval_r
     participant["submission"] = submission
     participant["status"] = "submitted"
     _save_runtime_state()
+
+    # Update team completion in teams.json
+    try:
+        teams_data = _load_teams()
+        t_changed = False
+        p_name = participant.get("name", "").strip().lower()
+        p_email = participant.get("email", "").strip().lower()
+        for t in teams_data.get("teams", []):
+            if t.get("name", "").strip().lower() == p_name or (p_email and t.get("email", "").strip().lower() == p_email):
+                t["has_completed"] = True
+                t["score"] = eval_result["total_score"]
+                t["completed_at"] = time.time()
+                t_changed = True
+                break
+        if t_changed:
+            _save_teams(teams_data)
+            socketio.emit("teams_updated", {"action": "team_completed"})
+    except Exception as te:
+        print(f"[Teams] Error updating team status: {te}")
 
     socketio.emit("new_submission", {
         "submission_id": submission_id,
@@ -767,6 +853,193 @@ def get_leaderboard():
     })
 
 # -----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
+# REST APIS - TEAM ACCESS & IMAGE ASSIGNMENT MANAGEMENT
+# -----------------------------------------------------------------------------
+
+@app.route("/api/teams", methods=["GET"])
+def get_teams():
+    data = _load_teams()
+    return jsonify({
+        "success": True,
+        "whitelist_enabled": data.get("whitelist_enabled", True),
+        "teams": data.get("teams", [])
+    })
+
+@app.route("/api/teams/upload", methods=["POST"])
+def upload_teams():
+    if not verify_admin(request):
+        return jsonify({"error": "Admin authorization required"}), 403
+
+    import csv
+    import io
+
+    current = _load_teams()
+    teams_list = current.get("teams", [])
+    existing_by_name = {t["name"].strip().lower(): t for t in teams_list}
+
+    raw_text = ""
+    if "file" in request.files:
+        f = request.files["file"]
+        if f and f.filename:
+            raw_text = f.read().decode("utf-8", errors="replace")
+    elif request.is_json:
+        raw_text = (request.get_json() or {}).get("text", "")
+    elif request.form:
+        raw_text = request.form.get("text", "")
+
+    if not raw_text.strip():
+        return jsonify({"error": "No team data provided"}), 400
+
+    # Parse JSON if raw_text is valid JSON array
+    parsed_json = None
+    try:
+        trimmed = raw_text.strip()
+        if trimmed.startswith("[") and trimmed.endswith("]"):
+            parsed_json = json.loads(trimmed)
+    except Exception:
+        pass
+
+    if isinstance(parsed_json, list):
+        for item in parsed_json:
+            if isinstance(item, dict) and item.get("name"):
+                name = str(item["name"]).strip()
+                cid = item.get("assigned_challenge_id") or item.get("challenge_id")
+                email = str(item.get("email", "")).strip()
+                norm = name.lower()
+                if norm in existing_by_name:
+                    if cid: existing_by_name[norm]["assigned_challenge_id"] = cid
+                    if email: existing_by_name[norm]["email"] = email
+                else:
+                    tid = re.sub(r'[^a-z0-9]+', '-', norm).strip('-') or str(uuid.uuid4())[:8]
+                    t = {
+                        "id": tid,
+                        "name": name,
+                        "email": email,
+                        "assigned_challenge_id": cid,
+                        "has_completed": False,
+                        "score": None,
+                        "completed_at": None
+                    }
+                    existing_by_name[norm] = t
+    else:
+        # Parse CSV or line-by-line
+        reader = csv.reader(io.StringIO(raw_text))
+        for row in reader:
+            if not row or not row[0].strip():
+                continue
+            first_col = row[0].strip()
+            if first_col.lower() in ["team name", "team", "name", "teams"]:
+                continue
+            name = first_col
+            cid = row[1].strip() if len(row) > 1 and row[1].strip() else None
+            email = row[2].strip() if len(row) > 2 and row[2].strip() else ""
+            norm = name.lower()
+            if norm in existing_by_name:
+                if cid: existing_by_name[norm]["assigned_challenge_id"] = cid
+                if email: existing_by_name[norm]["email"] = email
+            else:
+                tid = re.sub(r'[^a-z0-9]+', '-', norm).strip('-') or str(uuid.uuid4())[:8]
+                t = {
+                    "id": tid,
+                    "name": name,
+                    "email": email,
+                    "assigned_challenge_id": cid,
+                    "has_completed": False,
+                    "score": None,
+                    "completed_at": None
+                }
+                existing_by_name[norm] = t
+
+    current["teams"] = list(existing_by_name.values())
+    _save_teams(current)
+    socketio.emit("teams_updated", {"action": "uploaded", "count": len(current["teams"])})
+    return jsonify({"success": True, "count": len(current["teams"]), "teams": current["teams"]})
+
+@app.route("/api/teams/assign", methods=["POST"])
+def assign_team_challenge():
+    if not verify_admin(request):
+        return jsonify({"error": "Admin authorization required"}), 403
+
+    data = request.get_json() or {}
+    team_id = data.get("team_id")
+    challenge_id = data.get("challenge_id") or None
+
+    current = _load_teams()
+    matched = None
+    for t in current.get("teams", []):
+        if t.get("id") == team_id:
+            t["assigned_challenge_id"] = challenge_id
+            matched = t
+            break
+
+    if not matched:
+        return jsonify({"error": "Team not found"}), 404
+
+    _save_teams(current)
+    socketio.emit("teams_updated", {"action": "assigned", "team": matched})
+    return jsonify({"success": True, "team": matched})
+
+@app.route("/api/teams/auto-assign", methods=["POST"])
+def auto_assign_teams():
+    if not verify_admin(request):
+        return jsonify({"error": "Admin authorization required"}), 403
+
+    current = _load_teams()
+    teams_list = current.get("teams", [])
+    if not teams_list:
+        return jsonify({"error": "No teams registered to assign"}), 400
+
+    active_challenges = challenge_manager.get_active_challenges()
+    if not active_challenges:
+        return jsonify({"error": "No active challenges available to assign"}), 400
+
+    for idx, team in enumerate(teams_list):
+        assigned_ch = active_challenges[idx % len(active_challenges)]
+        team["assigned_challenge_id"] = assigned_ch["id"]
+
+    _save_teams(current)
+    socketio.emit("teams_updated", {"action": "auto_assigned", "count": len(teams_list)})
+    return jsonify({"success": True, "count": len(teams_list)})
+
+@app.route("/api/teams/toggle-whitelist", methods=["POST"])
+def toggle_whitelist():
+    if not verify_admin(request):
+        return jsonify({"error": "Admin authorization required"}), 403
+
+    data = request.get_json() or {}
+    current = _load_teams()
+    enabled = data.get("enabled", not current.get("whitelist_enabled", True))
+    current["whitelist_enabled"] = bool(enabled)
+    _save_teams(current)
+    socketio.emit("teams_updated", {"action": "whitelist_toggled", "whitelist_enabled": current["whitelist_enabled"]})
+    return jsonify({"success": True, "whitelist_enabled": current["whitelist_enabled"]})
+
+@app.route("/api/teams/delete", methods=["POST"])
+def delete_team():
+    if not verify_admin(request):
+        return jsonify({"error": "Admin authorization required"}), 403
+
+    data = request.get_json() or {}
+    team_id = data.get("team_id")
+    current = _load_teams()
+    current["teams"] = [t for t in current.get("teams", []) if t.get("id") != team_id]
+    _save_teams(current)
+    socketio.emit("teams_updated", {"action": "deleted", "team_id": team_id})
+    return jsonify({"success": True})
+
+@app.route("/api/teams/clear", methods=["POST"])
+def clear_teams():
+    if not verify_admin(request):
+        return jsonify({"error": "Admin authorization required"}), 403
+
+    current = _load_teams()
+    current["teams"] = []
+    _save_teams(current)
+    socketio.emit("teams_updated", {"action": "cleared"})
+    return jsonify({"success": True})
+
 # REST APIS - CHALLENGE MANAGEMENT (ADMIN)
 # -----------------------------------------------------------------------------
 
@@ -809,15 +1082,28 @@ def add_challenge():
     if not verify_admin(request):
         return jsonify({"error": "Admin authorization required"}), 403
 
-    data = request.get_json() or {}
-    category = data.get("category", "") or "General"
-    title = data.get("title")
-    brief = data.get("brief")
-    visual_goals = data.get("visual_goals", "")
-    inspiration_keywords = data.get("inspiration_keywords", "")
-    evaluation_focus = data.get("evaluation_focus", "")
-    is_active = data.get("is_active", True)
-    image_data = data.get("image_data")
+    image_data = None
+    if request.files and "file" in request.files:
+        f = request.files["file"]
+        if f and f.filename:
+            image_data = f.read()
+        category = request.form.get("category", "") or "General"
+        title = request.form.get("title")
+        brief = request.form.get("brief")
+        visual_goals = request.form.get("visual_goals", "")
+        inspiration_keywords = request.form.get("inspiration_keywords", "")
+        evaluation_focus = request.form.get("evaluation_focus", "")
+        is_active = request.form.get("is_active", "true").lower() in ["true", "1", "yes"]
+    else:
+        data = request.get_json(silent=True) or {}
+        category = data.get("category", "") or "General"
+        title = data.get("title")
+        brief = data.get("brief")
+        visual_goals = data.get("visual_goals", "")
+        inspiration_keywords = data.get("inspiration_keywords", "")
+        evaluation_focus = data.get("evaluation_focus", "")
+        is_active = data.get("is_active", True)
+        image_data = data.get("image_data")
 
     if not title or not brief:
         return jsonify({"error": "Title and brief are required"}), 400
@@ -991,7 +1277,7 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     print("=" * 70)
     print("BUILD THE FUTURE – Imagine. Innovate. Create.")
-    print("An AI-powered creative challenge at AWS Community Day.")
+    print("Formula 1 AI Prompt Grand Prix Championship.")
     print(f"Starting server on http://localhost:{port}")
     print("Admin Code:", ADMIN_CODE)
     print("=" * 70)

@@ -206,6 +206,12 @@ document.addEventListener("DOMContentLoaded", () => {
         refreshCompetitionState();
         loadLeaderboard();
       });
+      socket.on("teams_updated", () => {
+        loadPublicTeams();
+        if (state.isAdmin) {
+          loadAdminTeams();
+        }
+      });
     }
   } catch (err) {
     console.warn("[Socket.IO] Standard REST mode active:", err);
@@ -246,7 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${hrs}:${mins}:${secs}`;
   }
 
-  function updateAdminPhaseButtons() {}
+  function updateAdminPhaseButtons() { }
 
   let lastHandledPhase = null;
 
@@ -258,8 +264,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const inputName = identifierNameInput ? identifierNameInput.value.trim() : "";
       const inputEmail = identifierEmailInput ? identifierEmailInput.value.trim() : "";
 
-      const name = inputName || storedName || `Builder-${Math.floor(100 + Math.random() * 900)}`;
-      const email = inputEmail || storedEmail || `${name.toLowerCase()}@aws-community.dev`;
+      const name = inputName || storedName || `Driver-${Math.floor(100 + Math.random() * 900)}`;
+      const email = inputEmail || storedEmail || `${name.toLowerCase()}@f1-grandprix.com`;
 
       const resp = await fetch("/api/join", {
         method: "POST",
@@ -557,10 +563,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (quickDemoFillBtn) {
     quickDemoFillBtn.addEventListener("click", () => {
       playAudioTone("click");
-      const demoNames = ["CloudDreamer", "PromptPro", "AWSExplorer", "NovaArchitect"];
+      const demoNames = ["ScuderiaFerrari", "RedBullRacing", "MercedesAMGF1", "McLarenF1", "AstonMartinF1"];
       const picked = demoNames[Math.floor(Math.random() * demoNames.length)];
       if (identifierNameInput) identifierNameInput.value = picked;
-      if (identifierEmailInput) identifierEmailInput.value = `${picked.toLowerCase()}@aws-community.dev`;
+      if (identifierEmailInput) identifierEmailInput.value = `${picked.toLowerCase()}@f1-grandprix.com`;
       hideIdentifierError();
     });
   }
@@ -593,13 +599,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = identifierEmailInput ? identifierEmailInput.value.trim().toLowerCase() : "";
 
     if (!name) {
-      showIdentifierError("Please enter your builder alias or full name.");
+      showIdentifierError("Please enter your driver alias or team name.");
       if (identifierNameInput) identifierNameInput.focus();
       return;
     }
 
     if (!email || !validateEmail(email)) {
-      showIdentifierError("Please enter a valid email address (e.g. builder@university.edu).");
+      showIdentifierError("Please enter a valid driver telemetry email address (e.g. driver@f1-grandprix.com).");
       if (identifierEmailInput) identifierEmailInput.focus();
       return;
     }
@@ -609,7 +615,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (startBtn) {
       startBtn.disabled = true;
-      startBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Entering Prompt Quest Arena...</span>`;
+      startBtn.innerHTML = `<span class="awsui-spinner-inline"></span><span>Entering F1 Paddock...</span>`;
     }
 
     try {
@@ -646,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const watermarkEl = document.getElementById("arena-watermark");
         if (watermarkEl) {
-          watermarkEl.textContent = `🛡️ AWS PROMPT QUEST • BUILDER: ${name.toUpperCase()} (${email}) • SESSION PROTECTED • 1 ATTEMPT PER EMAIL`;
+          watermarkEl.textContent = `🏎️ F1 PROMPT GRAND PRIX • DRIVER: ${name.toUpperCase()} (${email}) • SESSION PROTECTED • 1 ATTEMPT PER DRIVER`;
         }
 
         showScreen("game");
@@ -1233,7 +1239,7 @@ document.addEventListener("DOMContentLoaded", () => {
               prompt: "",
               auto_triggered: true
             })
-          }).catch(() => {});
+          }).catch(() => { });
         }
         return;
       }
@@ -1551,9 +1557,9 @@ document.addEventListener("DOMContentLoaded", () => {
           score: `${e.composite_score} pts`
         }))
         : [
-          { rank: 1, name: "CloudDreamer", score: "98.5" },
-          { rank: 2, name: "PromptPro", score: "93.2" },
-          { rank: 3, name: "AWSExplorer", score: "89.7" }
+          { rank: 1, name: "ScuderiaFerrari", score: "98.5" },
+          { rank: 2, name: "RedBullRacing", score: "93.2" },
+          { rank: 3, name: "MercedesAMGF1", score: "89.7" }
         ];
 
     homeTopPlayersList.innerHTML = "";
@@ -1770,6 +1776,7 @@ document.addEventListener("DOMContentLoaded", () => {
       adminModal.classList.remove("hidden");
       if (state.isAdmin) {
         loadAdminChallenges();
+        loadAdminTeams();
       }
     });
   }
@@ -1816,6 +1823,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (adminAuthError) adminAuthError.classList.add("hidden");
           playAudioTone("success");
           loadAdminChallenges();
+          loadAdminTeams();
           loadLeaderboard();
         } else {
           if (adminAuthError) adminAuthError.classList.remove("hidden");
@@ -2010,6 +2018,401 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ===========================================================================
+  // TEAM MANAGEMENT & IMAGE ASSIGNMENT ENGINE
+  // ===========================================================================
+  let cachedChallengesForTeams = [];
+
+  async function loadPublicTeams() {
+    try {
+      const resp = await fetch("/api/teams");
+      const data = await resp.json();
+      if (!data.success) return;
+
+      state.whitelistEnabled = data.whitelist_enabled;
+      const teams = data.teams || [];
+      const teamSelect = document.getElementById("team-dropdown-select");
+      const selectBox = document.getElementById("quick-team-select-box");
+
+      if (teamSelect && selectBox) {
+        if (teams.length > 0) {
+          teamSelect.innerHTML = `<option value="">-- Choose Authorized Team (${teams.length} available) --</option>`;
+          teams.forEach(t => {
+            const opt = document.createElement("option");
+            opt.value = t.name;
+            opt.dataset.email = t.email || "";
+            opt.textContent = t.name + (t.has_completed ? " (Completed)" : "");
+            teamSelect.appendChild(opt);
+          });
+          selectBox.classList.remove("hidden");
+        } else {
+          selectBox.classList.add("hidden");
+        }
+      }
+    } catch (e) {
+      console.error("[Teams] Error loading public teams:", e);
+    }
+  }
+
+  const teamSelectEl = document.getElementById("team-dropdown-select");
+  if (teamSelectEl) {
+    teamSelectEl.addEventListener("change", () => {
+      const selectedOpt = teamSelectEl.options[teamSelectEl.selectedIndex];
+      if (selectedOpt && selectedOpt.value) {
+        if (identifierNameInput) identifierNameInput.value = selectedOpt.value;
+        if (identifierEmailInput) {
+          const emailVal = selectedOpt.dataset.email || `${selectedOpt.value.toLowerCase().replace(/[^a-z0-9]/g, "")}@f1-team.com`;
+          identifierEmailInput.value = emailVal;
+        }
+        hideIdentifierError();
+      }
+    });
+  }
+
+  async function loadAdminTeams() {
+    const tableBody = document.getElementById("admin-teams-table-body");
+    const countBadge = document.getElementById("teams-count-badge");
+    const statusText = document.getElementById("whitelist-status-text");
+    const toggleBtn = document.getElementById("toggle-whitelist-btn");
+    if (!tableBody) return;
+
+    try {
+      // 1. Fetch active challenges for assignment dropdown
+      const chResp = await fetch("/api/challenges");
+      const chData = await chResp.json();
+      cachedChallengesForTeams = chData.challenges || [];
+
+      // 2. Fetch teams
+      const resp = await fetch("/api/teams");
+      const data = await resp.json();
+      if (!data.success) return;
+
+      const teams = data.teams || [];
+      const isWhitelist = data.whitelist_enabled;
+      state.whitelistEnabled = isWhitelist;
+
+      if (countBadge) countBadge.textContent = teams.length;
+      if (statusText) {
+        statusText.textContent = isWhitelist
+          ? "Whitelist ACTIVE (Only pre-registered teams can enter)"
+          : "Whitelist DISABLED (Anyone can enter)";
+        statusText.style.color = isWhitelist ? "#00D2BE" : "#FFA500";
+      }
+      if (toggleBtn) {
+        toggleBtn.textContent = isWhitelist ? "Disable Whitelist" : "Enable Whitelist";
+      }
+
+      tableBody.innerHTML = "";
+      if (teams.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="4" class="table-empty">No teams registered yet. Upload a team list above.</td></tr>`;
+        return;
+      }
+
+      teams.forEach(team => {
+        const tr = document.createElement("tr");
+
+        let challengeOptions = `<option value="">-- Random / Unassigned --</option>`;
+        cachedChallengesForTeams.forEach(ch => {
+          const isSelected = team.assigned_challenge_id === ch.id;
+          challengeOptions += `<option value="${ch.id}" ${isSelected ? "selected" : ""}>${ch.title}</option>`;
+        });
+
+        tr.innerHTML = `
+          <td>
+            <div style="font-weight:700; color:#FFFFFF;">${team.name}</div>
+            <div style="font-size:11px; color:var(--pq-text-secondary);">${team.email || "No email bound"}</div>
+          </td>
+          <td>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <select class="awsui-text-input team-challenge-select" data-team-id="${team.id}" style="padding:4px 8px; font-size:12px; cursor:pointer; flex:1;">
+                ${challengeOptions}
+              </select>
+            </div>
+          </td>
+          <td>
+            <span class="status-badge ${team.has_completed ? "inactive" : "active"}">
+              ${team.has_completed ? `Completed (${team.score ? team.score.toFixed(1) : 0} pts)` : "Ready"}
+            </span>
+          </td>
+          <td>
+            <button type="button" class="awsui-btn-danger btn-sm delete-team-btn" data-team-id="${team.id}" style="margin:0; padding:4px 10px; font-size:11px;">Delete</button>
+          </td>
+        `;
+
+        // Handle challenge assignment change
+        const selectEl = tr.querySelector(".team-challenge-select");
+        selectEl.addEventListener("change", async () => {
+          const chosenId = selectEl.value;
+          playAudioTone("click");
+          try {
+            const aResp = await fetch("/api/teams/assign", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Admin-Code": state.adminToken
+              },
+              body: JSON.stringify({ team_id: team.id, challenge_id: chosenId })
+            });
+            const aData = await aResp.json();
+            if (aData.success) {
+              const chTitle = selectEl.options[selectEl.selectedIndex].text;
+              showToast(`Assigned "${chTitle}" to ${team.name}!`, "success");
+            } else {
+              showToast(aData.error || "Assignment failed.", "error");
+            }
+          } catch (err) {
+            showToast("Network error assigning challenge.", "error");
+          }
+        });
+
+        // Handle team deletion
+        const delBtn = tr.querySelector(".delete-team-btn");
+        delBtn.addEventListener("click", async () => {
+          if (confirm(`Remove team "${team.name}" from whitelist?`)) {
+            playAudioTone("click");
+            await fetch("/api/teams/delete", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Admin-Code": state.adminToken
+              },
+              body: JSON.stringify({ team_id: team.id })
+            });
+            loadAdminTeams();
+            loadPublicTeams();
+          }
+        });
+
+        tableBody.appendChild(tr);
+      });
+    } catch (e) {
+      console.error("[Teams] Error loading admin teams:", e);
+    }
+  }
+
+  // Import Teams button
+  const importTeamsBtn = document.getElementById("import-teams-btn");
+  if (importTeamsBtn) {
+    importTeamsBtn.addEventListener("click", async () => {
+      const fileInput = document.getElementById("team-file-input");
+      const textInput = document.getElementById("teams-text-input");
+
+      const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+      const text = textInput ? textInput.value.trim() : "";
+
+      if (!file && !text) {
+        showToast("Please select a file or paste team names.", "warning");
+        return;
+      }
+
+      playAudioTone("click");
+      importTeamsBtn.disabled = true;
+
+      try {
+        let resp;
+        if (file) {
+          const formData = new FormData();
+          formData.append("file", file);
+          resp = await fetch("/api/teams/upload", {
+            method: "POST",
+            headers: { "X-Admin-Code": state.adminToken },
+            body: formData
+          });
+        } else {
+          resp = await fetch("/api/teams/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Admin-Code": state.adminToken
+            },
+            body: JSON.stringify({ text })
+          });
+        }
+
+        const data = await resp.json();
+        if (data.success) {
+          playAudioTone("success");
+          showToast(`Successfully registered and whitelisted ${data.count} teams!`, "success");
+          if (fileInput) fileInput.value = "";
+          if (textInput) textInput.value = "";
+          loadAdminTeams();
+          loadPublicTeams();
+        } else {
+          showToast(data.error || "Failed to import teams.", "error");
+        }
+      } catch (err) {
+        showToast("Network error uploading teams.", "error");
+      } finally {
+        importTeamsBtn.disabled = false;
+      }
+    });
+  }
+
+  // Auto-distribute challenges across teams
+  const autoAssignBtn = document.getElementById("auto-assign-teams-btn");
+  if (autoAssignBtn) {
+    autoAssignBtn.addEventListener("click", async () => {
+      if (!confirm("Evenly distribute all active target challenge images across all registered teams?")) return;
+      playAudioTone("click");
+      try {
+        const resp = await fetch("/api/teams/auto-assign", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Code": state.adminToken
+          }
+        });
+        const data = await resp.json();
+        if (data.success) {
+          playAudioTone("success");
+          showToast(`Distributed challenge images across ${data.count} teams!`, "success");
+          loadAdminTeams();
+        } else {
+          showToast(data.error || "Failed to auto-distribute.", "error");
+        }
+      } catch (e) {
+        showToast("Network error distributing challenges.", "error");
+      }
+    });
+  }
+
+  // Toggle whitelist access
+  const toggleWhitelistBtn = document.getElementById("toggle-whitelist-btn");
+  if (toggleWhitelistBtn) {
+    toggleWhitelistBtn.addEventListener("click", async () => {
+      playAudioTone("click");
+      try {
+        const resp = await fetch("/api/teams/toggle-whitelist", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Code": state.adminToken
+          },
+          body: JSON.stringify({ enabled: !state.whitelistEnabled })
+        });
+        const data = await resp.json();
+        if (data.success) {
+          state.whitelistEnabled = data.whitelist_enabled;
+          showToast(`Team Whitelist Access is now ${state.whitelistEnabled ? "ACTIVE" : "OFF"}.`, "info");
+          loadAdminTeams();
+          loadPublicTeams();
+        }
+      } catch (e) {
+        showToast("Error updating whitelist state.", "error");
+      }
+    });
+  }
+
+  // Clear all teams
+  const clearTeamsBtn = document.getElementById("clear-teams-btn");
+  if (clearTeamsBtn) {
+    clearTeamsBtn.addEventListener("click", async () => {
+      if (!confirm("Are you sure you want to remove ALL registered teams?")) return;
+      playAudioTone("click");
+      try {
+        const resp = await fetch("/api/teams/clear", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Admin-Code": state.adminToken
+          }
+        });
+        const data = await resp.json();
+        if (data.success) {
+          showToast("All teams cleared.", "info");
+          loadAdminTeams();
+          loadPublicTeams();
+        }
+      } catch (e) {
+        showToast("Error clearing teams.", "error");
+      }
+    });
+  }
+
+  // Accordion for teams upload
+  const uploadTeamsHead = document.getElementById("toggle-upload-teams-form");
+  const uploadTeamsBody = document.getElementById("upload-teams-form-body");
+  if (uploadTeamsHead && uploadTeamsBody) {
+    uploadTeamsHead.addEventListener("click", () => uploadTeamsBody.classList.toggle("hidden"));
+  }
+
+  // Upload Custom Target Image Form
+  const customImgFileInput = document.getElementById("custom-image-file");
+  const customImgPreviewBox = document.getElementById("custom-img-preview-box");
+  const customImgPreviewEl = document.getElementById("custom-img-preview-el");
+
+  if (customImgFileInput && customImgPreviewBox && customImgPreviewEl) {
+    customImgFileInput.addEventListener("change", () => {
+      const file = customImgFileInput.files ? customImgFileInput.files[0] : null;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          customImgPreviewEl.src = e.target.result;
+          customImgPreviewBox.classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+      } else {
+        customImgPreviewBox.classList.add("hidden");
+      }
+    });
+  }
+
+  const uploadTargetImgForm = document.getElementById("upload-target-image-form");
+  if (uploadTargetImgForm) {
+    uploadTargetImgForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = customImgFileInput && customImgFileInput.files ? customImgFileInput.files[0] : null;
+      const title = document.getElementById("custom-image-title")?.value.trim();
+      const brief = document.getElementById("custom-image-brief")?.value.trim();
+      const visual = document.getElementById("custom-image-visual")?.value.trim();
+      const keywords = document.getElementById("custom-image-keywords")?.value.trim();
+
+      if (!file) {
+        showToast("Please choose an image file from your computer.", "warning");
+        return;
+      }
+      if (!title || !brief) {
+        showToast("Title and Description are required.", "warning");
+        return;
+      }
+
+      playAudioTone("click");
+      const submitBtn = document.getElementById("upload-custom-image-submit-btn");
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("title", title);
+        formData.append("brief", brief);
+        formData.append("visual_goals", visual);
+        formData.append("inspiration_keywords", keywords);
+        formData.append("is_active", "true");
+
+        const resp = await fetch("/api/challenges/add", {
+          method: "POST",
+          headers: { "X-Admin-Code": state.adminToken },
+          body: formData
+        });
+        const data = await resp.json();
+        if (data.success) {
+          playAudioTone("success");
+          showToast(`Target image challenge "${title}" created and ready to assign!`, "success");
+          uploadTargetImgForm.reset();
+          if (customImgPreviewBox) customImgPreviewBox.classList.add("hidden");
+          loadAdminChallenges();
+          loadAdminTeams();
+        } else {
+          showToast(data.error || "Failed to upload image challenge.", "error");
+        }
+      } catch (err) {
+        showToast("Network error uploading target image.", "error");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
   // Fetch initial challenge stats
   async function initChallengeStats() {
     try {
@@ -2045,9 +2448,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       try {
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText("Screenshots and prompt copying are disabled in the AWS AI Prompt Battle.").catch(() => {});
+          navigator.clipboard.writeText("Screenshots and prompt copying are disabled in the F1 Prompt Grand Prix.").catch(() => { });
         }
-      } catch (e) {}
+      } catch (e) { }
       showToast(`📸 ${reason}`, "error");
       playAudioTone("click");
     }
@@ -2145,8 +2548,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // DevTools: F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
       if (e.key === "F12" ||
-          ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "I" || e.key === "i" || e.key === "J" || e.key === "j" || e.key === "C" || e.key === "c")) ||
-          ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U"))) {
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === "I" || e.key === "i" || e.key === "J" || e.key === "j" || e.key === "C" || e.key === "c")) ||
+        ((e.ctrlKey || e.metaKey) && (e.key === "u" || e.key === "U"))) {
         e.preventDefault();
         showToast("🚫 Developer inspection tools are disabled.", "warning");
         return false;
@@ -2195,4 +2598,5 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCharCount();
   refreshCompetitionState();
   loadLeaderboard();
+  loadPublicTeams();
 });

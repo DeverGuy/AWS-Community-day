@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prompt Quest | AWS Community Day — AI Prompt Engineering Challenge</title>
-  <link rel="icon" type="image/png" href="/static/images/aws-logo.svg">
+  <title>F1 Prompt Grand Prix | Formula 1 AI Prompt Battle</title>
+  <link rel="icon" type="image/svg+xml" href="/static/images/f1-logo.svg">
 
   <!-- Typography: Plus Jakarta Sans, Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +13,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,600;0,700;0,800;1,700;1,800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/style.css?v=pq-mobile-opt1">
+  <link rel="stylesheet" href="/static/css/style.css?v=f1-gp-v1">
 
   <!-- Socket.IO Client -->
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" defer></script>
@@ -22,7 +22,7 @@
 <body class="pq-dark-theme" data-admin-route="{{ 'true' if open_admin else 'false' }}">
 
   <!-- =====================================================================
-       OPENING AWS LOGO STAGE & FLIP ANIMATION OVERLAY (Played on demand)
+       OPENING F1 LOGO STAGE & FLIP ANIMATION OVERLAY (Played on demand)
        ===================================================================== -->
   <div id="aws-intro-stage" class="aws-intro-stage stage-hidden" aria-hidden="true">
     <div id="aws-intro-backdrop" class="aws-intro-backdrop">
@@ -31,14 +31,14 @@
 
     <!-- Single Flying Logo Element (Animated via precision FLIP to #navbar-logo-slot) -->
     <div id="aws-flying-logo" class="aws-flying-logo">
-      <img src="/static/images/aws-logo.png?v=refined2" alt="AWS Logo" class="aws-flying-logo-img" draggable="false">
+      <img src="/static/images/f1-logo.svg?v=f1-v1" alt="Formula 1 Logo" class="aws-flying-logo-img" draggable="false">
     </div>
 
     <!-- Intro Stage Subtitle -->
     <div id="aws-intro-meta" class="aws-intro-meta">
       <div class="intro-accent-line"></div>
-      <p class="intro-event-kicker">PROMPT QUEST • AWS AI GAMING ARENA</p>
-      <p class="intro-event-motto">THINK. PROMPT. WIN. — BUILD THE FUTURE</p>
+      <p class="intro-event-kicker">F1 PROMPT GRAND PRIX • POLE POSITION ARENA</p>
+      <p class="intro-event-motto">LIGHTS OUT. PROMPT FAST. POLE POSITION. — F1 GRAND PRIX</p>
     </div>
   </div>
 
@@ -58,46 +58,47 @@
       <!-- TOP HEADER BAR -->
       <header class="pq-topbar">
         <div class="pq-topbar-left">
-          <div class="pq-topbar-brand" id="brand-home-trigger" role="button" tabindex="0" title="Prompt Quest Home">
+          <div class="pq-topbar-brand" id="brand-home-trigger" role="button" tabindex="0" title="F1 Prompt Grand Prix Home">
             <div class="navbar-logo-slot topbar-logo-slot" id="navbar-logo-slot">
-              <img src="/static/images/aws-logo.png?v=refined2" alt="AWS" class="aws-nav-logo-img" id="aws-navbar-logo"
-                draggable="false">
+              <img src="/static/images/f1-logo.svg?v=f1-v1" alt="Formula 1" class="aws-nav-logo-img"
+                id="aws-navbar-logo" draggable="false">
             </div>
           </div>
-          <span class="pq-sparkle-icon">✦</span>
-          <span class="pq-topbar-title">Prompt Quest</span>
-          <span class="pq-topbar-sub-pill">BUILD THE FUTURE</span>
+          <span class="pq-sparkle-icon">🏎️</span>
+          <span class="pq-topbar-title">F1 Prompt Grand Prix</span>
+          <span class="pq-topbar-sub-pill">POLE POSITION</span>
         </div>
 
         <div class="pq-topbar-right">
           <!-- Leaderboard Button (Hidden on login page; visible only after login) -->
           <button type="button" class="pq-btn-outline-pill btn-sm hidden" id="nav-leaderboard-btn"
-            title="View Leaderboard">
-            <span>🏆 Leaderboard</span>
+            title="View Standings">
+            <span>🏆 Standings</span>
             <span class="pq-nav-badge" id="nav-submissions-count">0</span>
           </button>
 
           <!-- Live Event Pill -->
           <div class="pq-live-event-pill" id="live-status-pill">
             <span class="pq-green-dot"></span>
-            <span id="nav-comp-status">Live Event</span>
+            <span id="nav-comp-status">Grand Prix Live</span>
           </div>
 
           <!-- Admin Settings Button (Visible only when typing /admin in URL bar) -->
-          <button type="button" class="pq-btn-outline-pill btn-sm {% if not open_admin %}hidden{% endif %}" id="open-admin-btn" title="Admin Settings">
-            <span>⚙️ Admin Settings</span>
+          <button type="button" class="pq-btn-outline-pill btn-sm {% if not open_admin %}hidden{% endif %}"
+            id="open-admin-btn" title="Race Control Settings">
+            <span>⚙️ Race Control</span>
           </button>
 
           <div class="pq-topbar-divider"></div>
 
-          <!-- Active Builder Profile Pill (When signed in) -->
+          <!-- Active Driver Profile Pill (When signed in) -->
           <div class="pq-user-pill hidden" id="top-nav-user-pill">
-            <span class="pq-avatar-circle" id="user-avatar-initials">A</span>
+            <span class="pq-avatar-circle" id="user-avatar-initials">D</span>
             <div class="pq-user-meta">
-              <span class="pq-user-name" id="top-nav-user-name">Builder</span>
-              <span class="pq-user-email" id="top-nav-user-email">email@domain.com</span>
+              <span class="pq-user-name" id="top-nav-user-name">Driver</span>
+              <span class="pq-user-email" id="top-nav-user-email">driver@f1-grandprix.com</span>
             </div>
-            <button type="button" class="pq-btn-switch" id="change-user-btn" title="Switch Builder">Switch</button>
+            <button type="button" class="pq-btn-switch" id="change-user-btn" title="Switch Driver">Switch</button>
           </div>
         </div>
 
@@ -111,87 +112,97 @@
       <main class="awsui-main-viewport pq-viewport">
 
         <!-- =============================================================== -->
-        <!-- SCREEN 1: HOME DASHBOARD (Exact Prompt Quest Reference Layout)  -->
+        <!-- SCREEN 1: HOME DASHBOARD (F1 Grand Prix Paddock)                -->
         <!-- =============================================================== -->
         <section id="identifier-screen" class="view-screen active">
 
-          <!-- 1. HERO BANNER (Centered 3D AI Robot First -> Prompt Quest Title) -->
+          <!-- 1. HERO BANNER -->
           <div class="pq-hero-banner">
-            <!-- Top-left angled lavender tech corner accent -->
+            <!-- Top-left angled tech corner accent -->
             <svg class="pq-hero-corner-line" viewBox="0 0 70 70" fill="none">
-              <path d="M2 52 L52 2 L70 2" stroke="#B69AFF" stroke-width="1.6" stroke-opacity="0.75" />
+              <path d="M2 52 L52 2 L70 2" stroke="#E10600" stroke-width="2" stroke-opacity="0.9" />
             </svg>
 
-            <!-- Centerpiece 3D AI Robot Illustration (High-performance WebP + PNG fallback) -->
+            <!-- Centerpiece Illustration -->
             <div class="pq-hero-illustration">
               <picture>
                 <source srcset="/static/images/hero-robot.webp?v=opt1" type="image/webp">
-                <img src="/static/images/hero-robot.png?v=refined2" alt="Prompt Quest AI Robot"
+                <img src="/static/images/hero-robot.png?v=refined2" alt="F1 Grand Prix"
                   class="pq-hero-robot-img" draggable="false" fetchpriority="high">
               </picture>
             </div>
 
             <div class="pq-hero-content">
               <div class="pq-hero-title-wrap">
-                <!-- Orbital Lavender Swoosh Arc + Sparkle above "Quest" -->
+                <!-- Orbital Red Swoosh Arc + Sparkle above Title -->
                 <svg class="pq-quest-arc-svg" viewBox="0 0 260 58" fill="none">
                   <path d="M8 46 C 72 8, 195 -4, 232 22 C 242 29, 224 44, 190 48" stroke="url(#arcGrad)"
                     stroke-width="2.4" stroke-linecap="round" fill="none" />
-                  <path d="M242 14 L245 22 L253 25 L245 28 L242 36 L239 28 L231 25 L239 22 Z" fill="#D8C8FF" />
+                  <path d="M242 14 L245 22 L253 25 L245 28 L242 36 L239 28 L231 25 L239 22 Z" fill="#FF1801" />
                   <defs>
                     <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stop-color="#B69AFF" stop-opacity="0.1" />
-                      <stop offset="55%" stop-color="#B69AFF" stop-opacity="0.95" />
-                      <stop offset="100%" stop-color="#D8C8FF" />
+                      <stop offset="0%" stop-color="#E10600" stop-opacity="0.1" />
+                      <stop offset="55%" stop-color="#FF1801" stop-opacity="0.95" />
+                      <stop offset="100%" stop-color="#FF4D4D" />
                     </linearGradient>
                   </defs>
                 </svg>
 
                 <h1 class="pq-hero-heading">
-                  <span class="pq-word-prompt">Prompt</span>
-                  <span class="pq-word-quest">Quest</span>
+                  <span class="pq-word-prompt">F1 Prompt</span>
+                  <span class="pq-word-quest">Grand Prix</span>
                 </h1>
               </div>
 
-              <h2 class="pq-hero-sub-spaced">THINK. PROMPT. WIN.</h2>
+              <h2 class="pq-hero-sub-spaced">LIGHTS OUT. PROMPT FAST. POLE POSITION.</h2>
 
               <p class="pq-hero-desc">
-                Craft the smartest prompts, tackle exciting challenges<br>
-                and climb the leaderboard!
+                Craft high-speed precision prompts in 180 seconds to match the target Grand Prix scene.<br>
+                Instant telemetry evaluation powered by real-time AI Vision Judge!
               </p>
             </div>
           </div>
 
-          <!-- 2. CENTERED ARENA BUILDER LOGIN CARD -->
+          <!-- 2. CENTERED ARENA DRIVER LOGIN CARD -->
           <div class="pq-registration-section pq-login-centered" id="registration-card-dock">
             <div class="pq-dash-card identifier-card pq-login-card-center">
 
-              <!-- Login Form (All original IDs preserved) -->
+              <!-- Login Form (Team Access & Assignment) -->
               <form id="identifier-form" class="identifier-form" novalidate>
 
                 <div class="awsui-form-group">
                   <label for="identifier-name" class="awsui-label">
-                    Builder Alias / Full Name <span class="required-star">*</span>
+                    Driver Name / Racing Alias <span class="required-star">*</span>
                   </label>
                   <input type="text" id="identifier-name" class="awsui-text-input"
-                    placeholder="e.g. CloudDreamer or Alex Morgan" maxlength="40" autocomplete="name">
+                    placeholder="Enter your driver or team name (e.g. Scuderia Ferrari)" maxlength="50"
+                    autocomplete="name">
+                  <!-- Quick-pick dropdown populated from authorized teams -->
+                  <div id="quick-team-select-box" class="hidden" style="margin-top:8px;">
+                    <label
+                      style="font-size:11.5px; color:var(--pq-text-secondary); display:block; margin-bottom:4px;">Or
+                      choose your registered racing team:</label>
+                    <select id="team-dropdown-select" class="awsui-text-input" style="cursor:pointer; width:100%;">
+                      <option value="">-- Select Registered Racing Team --</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div class="awsui-form-group">
                   <label for="identifier-email" class="awsui-label">
-                    Email Address <span class="required-star">*</span>
-                    <span class="label-hint">(Stores your score on the leaderboard)</span>
+                    Driver Telemetry Email <span class="required-star">*</span>
+                    <span class="label-hint">(Locks in your official lap score on the championship standings)</span>
                   </label>
-                  <input type="email" id="identifier-email" class="awsui-text-input"
-                    placeholder="builder@university.edu" autocomplete="email">
+                  <input type="email" id="identifier-email" class="awsui-text-input" placeholder="driver@f1-grandprix.com"
+                    autocomplete="email">
                 </div>
 
                 <div id="identifier-error" class="identifier-error-msg hidden" role="alert"></div>
 
                 <div class="form-action-group">
                   <button type="button" class="pq-btn-orange-pill full-width-btn" id="start-game-btn">
-                    <span>Launch Prompt Arena &amp; Reveal Challenge</span>
-                    <span class="btn-arrow">→</span>
+                    <span>Enter Paddock &amp; Start Qualifying</span>
+                    <span class="btn-arrow">🏎️</span>
                   </button>
                 </div>
 
@@ -212,15 +223,15 @@
             <div class="pq-dash-card game-header-strip">
               <div class="builder-welcome-meta">
                 <span class="pq-green-dot"></span>
-                <span class="meta-label">PLAYER:</span>
-                <strong class="builder-display-name" id="game-builder-name">CloudBuilder</strong>
-                <span class="builder-display-email" id="game-builder-email">(builder@aws.dev)</span>
+                <span class="meta-label">DRIVER:</span>
+                <strong class="builder-display-name" id="game-builder-name">Driver</strong>
+                <span class="builder-display-email" id="game-builder-email">(driver@f1-grandprix.dev)</span>
               </div>
 
               <div class="countdown-timer-pill" id="countdown-timer-pill"
-                title="When this 180-second timer ends, your current prompt is automatically finalized and generated.">
+                title="When this 180-second qualifying lap ends, your telemetry prompt is automatically finalized.">
                 <span class="timer-icon">⏱️</span>
-                <span class="timer-label" id="countdown-timer-label">AUTO-GENERATE IN</span>
+                <span class="timer-label" id="countdown-timer-label">QUALIFYING LAP:</span>
                 <strong class="timer-digits" id="countdown-timer-display">03:00</strong>
               </div>
             </div>
@@ -232,16 +243,16 @@
               <div class="pq-dash-card challenge-box pq-arena-equal-card" id="assigned-challenge-card">
                 <div class="challenge-top-meta"></div>
 
-                <h2 class="challenge-main-title" id="player-challenge-title">Target Reference Scene</h2>
+                <h2 class="challenge-main-title" id="player-challenge-title">Target Grand Prix Scene</h2>
 
                 <div class="reference-target-card pq-arena-ref-fill">
                   <div class="reference-target-header">
                     <span class="reference-badge-pill">
                       <span class="ref-dot"></span>
-                      <span>TARGET REFERENCE SCENE</span>
+                      <span>TARGET GRAND PRIX SCENE</span>
                     </span>
                     <button type="button" class="btn-inspect-ref" id="inspect-reference-btn">
-                      Inspect Reference ↗
+                      Inspect Telemetry ↗
                     </button>
                   </div>
                   <div class="reference-visual-frame pq-arena-viewport-match" id="reference-visual-frame">
@@ -249,7 +260,7 @@
                       alt="Challenge Reference Visual" draggable="false" oncontextmenu="return false;">
                   </div>
                   <div class="arena-security-watermark" id="arena-watermark">
-                    🛡️ AWS PROMPT QUEST • BUILDER SESSION PROTECTED • 1 ATTEMPT PER EMAIL
+                    🏎️ F1 PROMPT GRAND PRIX • POLE POSITION QUALIFYING • 1 ATTEMPT PER DRIVER
                   </div>
                 </div>
               </div>
@@ -259,27 +270,28 @@
                 <div class="prompt-header-row">
                   <div class="pq-card-heading-row">
                     <span class="pq-slash">/</span>
-                    <span class="prompt-title">Your Prompt</span>
+                    <span class="prompt-title">Race Telemetry Prompt</span>
                   </div>
                   <div class="prompt-metrics-right">
-                    <span class="prompt-quality-pill" id="prompt-quality-indicator">Readiness: Waiting</span>
+                    <span class="prompt-quality-pill" id="prompt-quality-indicator">Cockpit Readiness: Waiting</span>
                     <span class="char-counter" id="char-counter">0 chars / 0 words</span>
                   </div>
                 </div>
 
                 <!-- Single-Shot & Anti-Cheat Notice -->
                 <div class="anti-cheat-pill-strip">
-                  <span class="badge-lock">🔒 1-Shot Challenge:</span>
-                  <span><strong>180 seconds</strong> &amp; <strong>1 final generation</strong>. Auto-generates at 00:00
-                    or when you click <strong>Finalize &amp; Generate</strong>.</span>
+                  <span class="badge-lock">🏎️ Grand Prix Telemetry Match:</span>
+                  <span>Look at the target scene on the left. Describe every visual detail to <strong>match the
+                      scene</strong>. AI Vision Telemetry Judge compares both replicas (0–100 pts).</span>
                 </div>
 
                 <!-- Textarea (Copy & Paste Disabled) -->
                 <div class="prompt-input-box pq-prompt-box-grow">
                   <textarea id="prompt-input" class="awsui-textarea pq-textarea-tall" rows="10"
-                    placeholder="Look at the image on the left. Describe what you see: the main subject(s), visible objects, colors, and setting..."
-                    autocomplete="off" autocorrect="off" spellcheck="false"
-                    oncopy="return false;" onpaste="return false;" oncut="return false;" ondragstart="return false;" ondrop="return false;"></textarea>
+                    placeholder="Look at the Grand Prix scene on the left. Describe the car livery, aerodynamics, racing helmet, track asphalt, curbs, weather, and camera angle..."
+                    autocomplete="off" autocorrect="off" spellcheck="false" oncopy="return false;"
+                    onpaste="return false;" oncut="return false;" ondragstart="return false;"
+                    ondrop="return false;"></textarea>
                 </div>
 
                 <!-- Validation / Anti-Cheat Error Banner -->
@@ -289,7 +301,7 @@
                 <div class="prompt-actions-bar">
                   <button type="button" class="pq-btn-outline-pill" id="clear-prompt-btn">Clear</button>
                   <button type="button" class="pq-btn-orange-pill" id="generate-image-btn">
-                    <span>🚀 Finalize &amp; Generate Image</span>
+                    <span>🏁 Lock In Prompt &amp; Complete Lap</span>
                   </button>
                 </div>
               </div>
@@ -309,7 +321,7 @@
             <div class="pq-dash-card game-header-strip pq-results-header-bar">
               <div class="pq-card-heading-row">
                 <span class="pq-slash">/</span>
-                <h3 style="margin:0; font-size:18px;">Photo Comparison &amp; AI Judge Results</h3>
+                <h3 style="margin:0; font-size:18px;">Grand Prix Telemetry &amp; AI Race Control Results</h3>
               </div>
             </div>
 
@@ -322,12 +334,12 @@
                   <div class="canvas-status-tags">
                     <span class="reference-badge-pill">
                       <span class="ref-dot"></span>
-                      <span>TARGET REFERENCE PHOTO</span>
+                      <span>TARGET GRAND PRIX SCENE</span>
                     </span>
                     <span class="pq-result-sub-title" id="result-target-title">Target Scene</span>
                   </div>
                   <button type="button" class="pq-btn-outline-pill btn-sm" id="result-zoom-target-btn">
-                    ⛶ Zoom
+                    ⛶ Telemetry Zoom
                   </button>
                 </div>
                 <div class="pq-compare-photo-box">
@@ -340,7 +352,7 @@
                 <div class="canvas-top-bar">
                   <div class="canvas-status-tags">
                     <span class="pq-slash">/</span>
-                    <span class="canvas-state-label" id="canvas-state-label">Your Generated Photo</span>
+                    <span class="canvas-state-label" id="canvas-state-label">Your Generated Replica</span>
                   </div>
                   <button type="button" class="pq-btn-outline-pill btn-sm" id="view-full-image-btn" disabled>
                     ⛶ Full Screen
@@ -350,9 +362,8 @@
                   <img id="active-generated-image" class="pq-compare-photo-img hidden" alt="Your Generated Photo">
                   <div class="pq-results-loading-box" id="results-loading-overlay">
                     <div class="awsui-spinner"></div>
-                    <h4 id="gen-status-text">Generating Your Image &amp; Running AI Judge...</h4>
-                    <p id="gen-sub-text">Synthesizing your prompt via Cloudflare Workers AI &amp; comparing both photos
-                      with Gemini Vision</p>
+                    <h4 id="gen-status-text">Synthesizing Your Lap &amp; Running AI Telemetry Judge...</h4>
+                    <p id="gen-sub-text">Rendering Grand Prix visual replica &amp; comparing against target telemetry</p>
                     <div class="progress-track">
                       <div class="progress-fill"></div>
                     </div>
@@ -372,10 +383,10 @@
             <div class="eval-scorecard-card hidden" id="ai-eval-preview-card">
               <div class="eval-card-top">
                 <div class="eval-judge-info">
-                  <div class="judge-badge-icon">🤖</div>
+                  <div class="judge-badge-icon">🏎️</div>
                   <div>
-                    <h5>Unbiased AI Vision Judge Scorecard</h5>
-                    <span class="eval-sub" id="eval-challenge-name">Dual-Image Visual Comparison</span>
+                    <h5>AI Telemetry Vision Judge Scorecard</h5>
+                    <span class="eval-sub" id="eval-challenge-name">Grand Prix Visual Telemetry Match</span>
                   </div>
                 </div>
 
@@ -384,14 +395,14 @@
                     <span class="score-num" id="eval-total-score">0.0</span>
                     <span class="score-max">/ 100</span>
                   </div>
-                  <span class="tier-pill" id="eval-tier-pill">🎯 MATCH EVALUATED</span>
+                  <span class="tier-pill" id="eval-tier-pill">🏁 LAP VERIFIED</span>
                 </div>
               </div>
 
               <div class="eval-pillars-row">
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>1. Overall Scene &amp; Colors</span>
+                    <span>1. Overall Scene &amp; Track Atmosphere</span>
                     <strong id="score-rel">0 / 25</strong>
                   </div>
                   <div class="pillar-bar">
@@ -402,7 +413,7 @@
 
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>2. Core Subjects &amp; Objects</span>
+                    <span>2. Core Car &amp; Race Subjects</span>
                     <strong id="score-cre">0 / 25</strong>
                   </div>
                   <div class="pillar-bar">
@@ -413,7 +424,7 @@
 
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>3. Key Visible Details</span>
+                    <span>3. Aerodynamic &amp; Track Details</span>
                     <strong id="score-tec">0 / 25</strong>
                   </div>
                   <div class="pillar-bar">
@@ -424,7 +435,7 @@
 
                 <div class="pillar-box">
                   <div class="pillar-label-line">
-                    <span>4. Prompt Faithfulness</span>
+                    <span>4. Prompt Faithfulness &amp; Speed Precision</span>
                     <strong id="score-imp">0 / 25</strong>
                   </div>
                   <div class="pillar-bar">
@@ -436,11 +447,11 @@
 
               <div class="eval-observations-grid">
                 <div class="eval-obs-box">
-                  <span class="block-subtitle">TARGET SCENE DETAILS</span>
+                  <span class="block-subtitle">TARGET SCENE TELEMETRY</span>
                   <p id="target-obs-text"></p>
                 </div>
                 <div class="eval-obs-box">
-                  <span class="block-subtitle">YOUR GENERATED DETAILS</span>
+                  <span class="block-subtitle">YOUR GENERATED REPLICA</span>
                   <p id="user-obs-text"></p>
                 </div>
               </div>
@@ -455,7 +466,7 @@
             <!-- Next Contestant Redirect Footer (Shown After Results Load) -->
             <div class="pq-results-footer-bar hidden" id="results-next-footer">
               <button type="button" class="pq-btn-orange-pill pq-next-contestant-cta" id="next-contestant-btn">
-                <span>👤 Next Contestant</span>
+                <span>🏎️ Next Driver / Team</span>
                 <span class="btn-arrow">→</span>
               </button>
             </div>
@@ -473,15 +484,15 @@
               <div>
                 <div class="pq-card-heading-row">
                   <span class="pq-slash">/</span>
-                  <h2 class="leaderboard-title">Hall of Future Builders</h2>
+                  <h2 class="leaderboard-title">Drivers' &amp; Constructors' Championship Standings</h2>
                 </div>
-                <p class="leaderboard-sub">Official Prompt Quest final standings based on verified AI Vision Judge match scores (0 – 100 pts).</p>
+                <p class="leaderboard-sub">Official F1 Prompt Grand Prix classification powered by AI Telemetry Judge (0 – 100 pts).</p>
               </div>
 
               <div class="leaderboard-actions">
-                <button type="button" class="pq-btn-outline-pill" id="refresh-leaderboard-btn">↻ Refresh</button>
+                <button type="button" class="pq-btn-outline-pill" id="refresh-leaderboard-btn">↻ Refresh Telemetry</button>
                 <button type="button" class="pq-btn-orange-pill" id="back-to-game-btn">
-                  <span>← Back to Arena</span>
+                  <span>← Back to Paddock</span>
                 </button>
               </div>
             </div>
@@ -494,18 +505,18 @@
               <table class="awsui-table">
                 <thead>
                   <tr>
-                    <th>Rank</th>
-                    <th>Player</th>
-                    <th>Email</th>
-                    <th>Challenge Quest</th>
-                    <th>Match Score</th>
-                    <th>Tier Badge</th>
-                    <th>Inspect</th>
+                    <th>POS</th>
+                    <th>Driver / Team</th>
+                    <th>Telemetry Email</th>
+                    <th>Grand Prix Scene</th>
+                    <th>Lap Score</th>
+                    <th>Paddock Tier</th>
+                    <th>Telemetry</th>
                   </tr>
                 </thead>
                 <tbody id="leaderboard-table-body">
                   <tr>
-                    <td colspan="7" class="table-empty">No submissions locked in yet. Enter the Arena to claim Rank #1!
+                    <td colspan="7" class="table-empty">No laps locked in yet. Enter the Paddock to claim Pole Position!
                     </td>
                   </tr>
                 </tbody>
@@ -524,40 +535,39 @@
               <div>
                 <div class="pq-card-heading-row">
                   <span class="pq-slash">/</span>
-                  <h2 class="leaderboard-title">Builder Achievements &amp; Mastery</h2>
+                  <h2 class="leaderboard-title">Driver Honors &amp; Racing Mastery</h2>
                 </div>
-                <p class="leaderboard-sub">Unlock special AI evaluation honors and master all 8 AWS Frontier Innovation
-                  Tracks.</p>
+                <p class="leaderboard-sub">Unlock special AI evaluation honors and master all high-speed Formula 1 Grand Prix Circuits.</p>
               </div>
               <button type="button" class="pq-btn-orange-pill" id="ach-to-arena-btn">
-                <span>Enter the Arena →</span>
+                <span>Enter Paddock →</span>
               </button>
             </div>
 
             <div class="pq-achievements-grid">
               <div class="pq-dash-card pq-ach-card">
                 <div class="pq-ach-icon">🏆</div>
-                <h4>Grandmaster Builder</h4>
-                <p>Achieve an AI Evaluation Score of 88.0+ / 100 on any frontier prompt challenge.</p>
+                <h4>World Champion Driver</h4>
+                <p>Achieve an AI Evaluation Score of 88.0+ / 100 on any high-speed Grand Prix scene.</p>
                 <span class="pq-ach-tag">Tier 5 Honor</span>
               </div>
               <div class="pq-dash-card pq-ach-card">
-                <div class="pq-ach-icon">💡</div>
-                <h4>Lighting Virtuoso</h4>
-                <p>Master atmospheric lighting cues including volumetric god rays, caustics, and bioluminescence.</p>
+                <div class="pq-ach-icon">⚡</div>
+                <h4>Apex Master</h4>
+                <p>Master precision cornering, aerodynamic cues, rain spray, and track lighting.</p>
                 <span class="pq-ach-tag">Technical Badge</span>
               </div>
               <div class="pq-dash-card pq-ach-card">
-                <div class="pq-ach-icon">📷</div>
-                <h4>Cinematographer</h4>
-                <p>Engineer precise camera optics, depth of field, and rule-of-thirds composition.</p>
-                <span class="pq-ach-tag">Composition Badge</span>
+                <div class="pq-ach-icon">🏎️</div>
+                <h4>Pole Sitter</h4>
+                <p>Clock the fastest lap with split-second prompt precision and iconic camera framing.</p>
+                <span class="pq-ach-tag">Paddock Badge</span>
               </div>
               <div class="pq-dash-card pq-ach-card">
-                <div class="pq-ach-icon">🌍</div>
-                <h4>Future Visionary</h4>
-                <p>Synthesize sustainable, human-centric solutions aligned with the AWS Builder ethos.</p>
-                <span class="pq-ach-tag">Impact Badge</span>
+                <div class="pq-ach-icon">🏁</div>
+                <h4>Grand Prix Legend</h4>
+                <p>Synthesize high-precision prompt strategies worthy of a Formula 1 world champion.</p>
+                <span class="pq-ach-tag">Championship Badge</span>
               </div>
             </div>
 
@@ -573,36 +583,35 @@
               <div>
                 <div class="pq-card-heading-row">
                   <span class="pq-slash">/</span>
-                  <h2 class="leaderboard-title">Builder Profile &amp; Session Stats</h2>
+                  <h2 class="leaderboard-title">Driver Profile &amp; Session Stats</h2>
                 </div>
-                <p class="leaderboard-sub">Your registered AWS Community Day identity and active Prompt Quest
-                  performance.</p>
+                <p class="leaderboard-sub">Your registered Formula 1 Grand Prix identity and active session telemetry.</p>
               </div>
               <button type="button" class="pq-btn-orange-pill" id="profile-to-arena-btn">
-                <span>Go to Prompt Arena →</span>
+                <span>Go to Paddock →</span>
               </button>
             </div>
 
             <div class="pq-profile-grid">
               <div class="pq-dash-card pq-profile-card">
                 <div class="pq-profile-header">
-                  <div class="pq-profile-avatar-lg" id="profile-avatar-lg">A</div>
+                  <div class="pq-profile-avatar-lg" id="profile-avatar-lg">D</div>
                   <div>
-                    <h3 id="profile-display-name">Guest Builder</h3>
-                    <p id="profile-display-email">Not signed in yet — Register on Home</p>
+                    <h3 id="profile-display-name">Guest Driver</h3>
+                    <p id="profile-display-email">Not signed in yet — Register on Paddock Home</p>
                   </div>
                 </div>
                 <div class="pq-profile-stats-row">
                   <div class="pq-pstat">
-                    <span class="pq-pstat-label">Generations</span>
+                    <span class="pq-pstat-label">Fastest Laps</span>
                     <strong id="profile-gen-count">0</strong>
                   </div>
                   <div class="pq-pstat">
-                    <span class="pq-pstat-label">Best AI Score</span>
+                    <span class="pq-pstat-label">Best Lap Score</span>
                     <strong id="profile-best-score">0.0</strong>
                   </div>
                   <div class="pq-pstat">
-                    <span class="pq-pstat-label">Current Quest</span>
+                    <span class="pq-pstat-label">Current Scene</span>
                     <strong id="profile-quest-name">Unassigned</strong>
                   </div>
                 </div>
@@ -626,8 +635,8 @@
 
       <div class="awsui-modal-header">
         <div class="modal-header-title">
-          <img src="/static/images/aws-logo.png?v=refined2" alt="AWS" class="modal-aws-logo">
-          <h3 id="admin-modal-title">Settings &amp; Admin Command Center</h3>
+          <img src="/static/images/f1-logo.svg?v=f1-v1" alt="Formula 1" class="modal-aws-logo">
+          <h3 id="admin-modal-title">Settings &amp; Race Control Command Center</h3>
         </div>
         <button type="button" class="modal-close-btn" id="close-admin-modal" aria-label="Close Admin Modal">✕</button>
       </div>
@@ -635,9 +644,8 @@
       <!-- Auth -->
       <div id="admin-auth-panel" class="modal-auth-body">
         <div class="auth-lock-badge">🔒</div>
-        <h4>Administrator Access</h4>
-        <p>Enter the competition administrator code (<code>builder2026</code>) to manage challenges and live event
-          rounds.</p>
+        <h4>Race Control Access</h4>
+        <p>Enter the Race Control administrator code (<code>builder2026</code>) to manage Grand Prix circuits, teams, and live rounds.</p>
         <div class="modal-auth-row">
           <input type="password" id="admin-code-input" class="awsui-text-input" placeholder="Admin Access Code..."
             autocomplete="off">
@@ -650,12 +658,139 @@
       <div id="admin-dashboard-panel" class="modal-dashboard-body hidden">
 
         <div class="awsui-modal-tabs">
-          <button type="button" class="modal-tab-btn active" data-tab="tab-challenges">Admin Settings</button>
-          <button type="button" class="modal-tab-btn" data-tab="tab-competition">Reset Competition</button>
+          <button type="button" class="modal-tab-btn active" data-tab="tab-teams">👥 Teams &amp; Assignments</button>
+          <button type="button" class="modal-tab-btn" data-tab="tab-upload-image">🖼️ Upload Target Images</button>
+          <button type="button" class="modal-tab-btn" data-tab="tab-challenges">📚 Challenge Catalog</button>
+          <button type="button" class="modal-tab-btn" data-tab="tab-competition">⚙️ Reset Competition</button>
         </div>
 
-        <!-- Tab 1: Challenges -->
-        <div class="modal-tab-content active" id="tab-challenges">
+        <!-- Tab 1: Teams & Assignments (Active by default) -->
+        <div class="modal-tab-content active" id="tab-teams">
+          <div
+            style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:rgba(22,22,31,0.85); padding:14px 20px; border-radius:12px; border:1px solid rgba(225,6,0,0.3);">
+            <div>
+              <strong style="font-size:14px; color:#FFFFFF;">Team Access Control:</strong>
+              <span id="whitelist-status-text"
+                style="font-size:13px; color:#FFD200; margin-left:6px; font-weight:600;">Whitelist ACTIVE (Only Listed
+                Teams Allowed)</span>
+            </div>
+            <button type="button" class="pq-btn-outline-pill btn-sm" id="toggle-whitelist-btn">Toggle Whitelist
+              Access</button>
+          </div>
+
+          <!-- Upload Teams Card -->
+          <div class="pq-dash-card add-challenge-box" style="margin-bottom: 20px;">
+            <div class="accordion-head" id="toggle-upload-teams-form">
+              <h4>👥 Upload List of Authorized Teams</h4>
+              <span style="font-size:12px; color:var(--pq-text-secondary);">Upload .csv / .txt or paste team names
+                ▼</span>
+            </div>
+            <div class="accordion-content" id="upload-teams-form-body" style="padding:16px 20px;">
+              <p style="font-size:12.5px; color:var(--pq-text-secondary); margin-bottom:10px;">
+                Upload a text or CSV file with your team names (one team per line, or CSV with
+                <code>Team Name, Assigned Challenge ID, Email</code>):
+              </p>
+              <div style="display:flex; gap:12px; align-items:center; margin-bottom:12px; flex-wrap:wrap;">
+                <input type="file" id="team-file-input" accept=".txt,.csv,.json" class="awsui-text-input"
+                  style="max-width:320px; padding:6px 12px;">
+                <span style="font-size:12px; color:var(--pq-text-muted);">OR type/paste team names below:</span>
+              </div>
+              <textarea id="teams-text-input" class="awsui-textarea" rows="4"
+                placeholder="Scuderia Ferrari&#10;Red Bull Racing&#10;Mercedes AMG F1&#10;McLaren Formula 1&#10;Aston Martin F1"></textarea>
+              <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:12px;">
+                <button type="button" class="pq-btn-orange-pill" id="import-teams-btn">
+                  <span>Import &amp; Whitelist Teams</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Teams & Image Assignments Table -->
+          <div class="catalog-table-box">
+            <div class="catalog-top-toolbar">
+              <div>
+                <h5>Registered Teams &amp; Image Assignments (<span id="teams-count-badge">0</span> teams)</h5>
+                <span style="font-size:11.5px; color:var(--pq-text-secondary);">Assign which target reference image each
+                  team receives when they enter the arena.</span>
+              </div>
+              <div class="catalog-actions-group">
+                <button type="button" class="pq-btn-outline-pill btn-sm" id="auto-assign-teams-btn"
+                  title="Distribute active challenges across all teams">⚡ Auto-Distribute Images</button>
+                <button type="button" class="pq-btn-outline-pill btn-sm" id="clear-teams-btn"
+                  style="color:#EF4444; border-color:rgba(239,68,68,0.4);">🗑️ Clear Teams</button>
+              </div>
+            </div>
+            <div class="catalog-table-scroll">
+              <table class="awsui-table compact-table">
+                <thead>
+                  <tr>
+                    <th style="width:25%;">Team Name</th>
+                    <th style="width:45%;">Assigned Target Image</th>
+                    <th style="width:15%;">Status</th>
+                    <th style="width:15%;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-teams-table-body">
+                  <tr>
+                    <td colspan="4" class="table-empty">No teams uploaded yet. Upload a team list above.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Upload Target Images -->
+        <div class="modal-tab-content" id="tab-upload-image">
+          <div class="pq-dash-card add-challenge-box">
+            <div class="accordion-head">
+              <h4>🖼️ Upload Target Reference Image</h4>
+              <span style="font-size:12px; color:var(--pq-text-secondary);">Provide your own images for teams to
+                match</span>
+            </div>
+            <form id="upload-target-image-form" style="padding:16px 20px;">
+              <div class="form-grid-two">
+                <div class="form-cell full-width">
+                  <label class="awsui-label">Select Image File from Computer (JPG, PNG, WebP) *</label>
+                  <input type="file" id="custom-image-file" accept="image/*" class="awsui-text-input" required>
+                  <div id="custom-img-preview-box" class="hidden" style="margin-top:10px;">
+                    <img id="custom-img-preview-el"
+                      style="max-height:160px; border-radius:8px; border:1px solid rgba(225,6,0,0.4);" alt="Preview">
+                  </div>
+                </div>
+                <div class="form-cell full-width">
+                  <label class="awsui-label">Image Challenge Title *</label>
+                  <input type="text" id="custom-image-title" class="awsui-text-input"
+                    placeholder="e.g. Formula 1 Wet Weather Apex" required>
+                </div>
+                <div class="form-cell full-width">
+                  <label class="awsui-label">Scene Description / Visual Details *</label>
+                  <textarea id="custom-image-brief" class="awsui-textarea" rows="2"
+                    placeholder="Describe the scene that participants must craft a prompt to match..."
+                    required></textarea>
+                </div>
+                <div class="form-cell">
+                  <label class="awsui-label">Key Visual Cues (optional)</label>
+                  <input type="text" id="custom-image-visual" class="awsui-text-input"
+                    placeholder="e.g. Red race car, glowing brake disc, rain spray">
+                </div>
+                <div class="form-cell">
+                  <label class="awsui-label">Inspiration Keywords (comma separated)</label>
+                  <input type="text" id="custom-image-keywords" class="awsui-text-input"
+                    placeholder="e.g. F1, Apex, Wet Asphalt, Rain">
+                </div>
+              </div>
+              <div class="form-actions-bar" style="margin-top:16px;">
+                <button type="submit" class="pq-btn-orange-pill" id="upload-custom-image-submit-btn">
+                  <span>Upload &amp; Activate Challenge Image</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tab 3: Challenges Catalog -->
+        <div class="modal-tab-content" id="tab-challenges">
 
           <div class="admin-stats-strip">
             <div class="admin-stat-cell">
@@ -784,13 +919,13 @@
       <span class="screenshot-shield-icon">🛡️</span>
       <h3 class="screenshot-shield-title">SCREENSHOTS BLOCKED</h3>
       <p class="screenshot-shield-desc">
-        Screen capture and print commands are disabled during the live AWS AI Prompt Battle.
+        Screen capture and print commands are disabled during the live Formula 1 AI Prompt Grand Prix.
       </p>
     </div>
   </div>
 
   <!-- Client Script Engine (Deferred for instant HTML first contentful paint) -->
-  <script src="/static/js/battle.js?v=pq-instant-v1" defer></script>
+  <script src="/static/js/battle.js?v=pq-teams-v2" defer></script>
 </body>
 
 </html>

@@ -1,0 +1,761 @@
+{
+  "whitelist_enabled": false,
+  "teams": [
+    {
+      "id": "ivc-ry-101",
+      "name": "IVC-RY-101",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-102",
+      "name": "IVC-RY-102",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-103",
+      "name": "IVC-RY-103",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-104",
+      "name": "IVC-RY-104",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-105",
+      "name": "IVC-RY-105",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-106",
+      "name": "IVC-RY-106",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-107",
+      "name": "IVC-RY-107",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-108",
+      "name": "IVC-RY-108",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-109",
+      "name": "IVC-RY-109",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-110",
+      "name": "IVC-RY-110",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-111",
+      "name": "IVC-RY-111",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-112",
+      "name": "IVC-RY-112",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-113",
+      "name": "IVC-RY-113",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-114",
+      "name": "IVC-RY-114",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-115",
+      "name": "IVC-RY-115",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-116",
+      "name": "IVC-RY-116",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-117",
+      "name": "IVC-RY-117",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-118",
+      "name": "IVC-RY-118",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-119",
+      "name": "IVC-RY-119",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-120",
+      "name": "IVC-RY-120",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-121",
+      "name": "IVC-RY-121",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-122",
+      "name": "IVC-RY-122",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-123",
+      "name": "IVC-RY-123",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-124",
+      "name": "IVC-RY-124",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-125",
+      "name": "IVC-RY-125",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-126",
+      "name": "IVC-RY-126",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-127",
+      "name": "IVC-RY-127",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-128",
+      "name": "IVC-RY-128",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-129",
+      "name": "IVC-RY-129",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-130",
+      "name": "IVC-RY-130",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-131",
+      "name": "IVC-RY-131",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-132",
+      "name": "IVC-RY-132",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-133",
+      "name": "IVC-RY-133",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-134",
+      "name": "IVC-RY-134",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-135",
+      "name": "IVC-RY-135",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-136",
+      "name": "IVC-RY-136",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-137",
+      "name": "IVC-RY-137",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-138",
+      "name": "IVC-RY-138",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-139",
+      "name": "IVC-RY-139",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-140",
+      "name": "IVC-RY-140",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-141",
+      "name": "IVC-RY-141",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-142",
+      "name": "IVC-RY-142",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-143",
+      "name": "IVC-RY-143",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-144",
+      "name": "IVC-RY-144",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-145",
+      "name": "IVC-RY-145",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-146",
+      "name": "IVC-RY-146",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-147",
+      "name": "IVC-RY-147",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-148",
+      "name": "IVC-RY-148",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-149",
+      "name": "IVC-RY-149",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-150",
+      "name": "IVC-RY-150",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-151",
+      "name": "IVC-RY-151",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-201",
+      "name": "IVC-RY-201",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-202",
+      "name": "IVC-RY-202",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-203",
+      "name": "IVC-RY-203",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-204",
+      "name": "IVC-RY-204",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-205",
+      "name": "IVC-RY-205",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-206",
+      "name": "IVC-RY-206",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-207",
+      "name": "IVC-RY-207",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-208",
+      "name": "IVC-RY-208",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-209",
+      "name": "IVC-RY-209",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-210",
+      "name": "IVC-RY-210",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-211",
+      "name": "IVC-RY-211",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-212",
+      "name": "IVC-RY-212",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-213",
+      "name": "IVC-RY-213",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-214",
+      "name": "IVC-RY-214",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-215",
+      "name": "IVC-RY-215",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-216",
+      "name": "IVC-RY-216",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-217",
+      "name": "IVC-RY-217",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-218",
+      "name": "IVC-RY-218",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-219",
+      "name": "IVC-RY-219",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-220",
+      "name": "IVC-RY-220",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-221",
+      "name": "IVC-RY-221",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-222",
+      "name": "IVC-RY-222",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-223",
+      "name": "IVC-RY-223",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-224",
+      "name": "IVC-RY-224",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-225",
+      "name": "IVC-RY-225",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-226",
+      "name": "IVC-RY-226",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-227",
+      "name": "IVC-RY-227",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-228",
+      "name": "IVC-RY-228",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-229",
+      "name": "IVC-RY-229",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-230",
+      "name": "IVC-RY-230",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-231",
+      "name": "IVC-RY-231",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-232",
+      "name": "IVC-RY-232",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    },
+    {
+      "id": "ivc-ry-233",
+      "name": "IVC-RY-233",
+      "email": "",
+      "assigned_challenge_id": null,
+      "has_completed": false,
+      "score": null,
+      "completed_at": null
+    }
+  ]
+}

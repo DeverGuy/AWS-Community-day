@@ -1,65 +1,65 @@
 /* ==========================================================================
    PROMPT QUEST — AWS GAMING & AI PROMPT ENGINEERING DASHBOARD
-   Complete Black (#08080B), Dark Purple (#211832 / #35244F) & Soft Lavender (#B69AFF) Theme
+   Complete Black (#08080B), Dark Purple (#16161F / #22222E) & Soft Lavender (#E10600) Theme
    ========================================================================== */
 
 :root {
-  /* 1. Primary Black Backgrounds */
-  --pq-bg-main: #08080B;
-  --pq-bg-deep: #050507;
-  --pq-bg-sidebar: #0B0A10;
+  /* 1. Primary Asphalt & Carbon Backgrounds */
+  --pq-bg-main: #0B0B0E;
+  --pq-bg-deep: #060608;
+  --pq-bg-sidebar: #0E0E14;
 
-  /* 2. Dark Purple Cards, Containers & Interactive States (Layered Depth in #211832 / #35244F Family) */
-  --pq-bg-card: #211832;
-  --pq-bg-card-hover: #35244F;
-  --pq-bg-card-grad: linear-gradient(155deg, #271C3B 0%, #211832 62%, #191227 100%);
-  --pq-bg-card-elevated: linear-gradient(148deg, #2D2044 0%, #221834 55%, #1A1228 100%);
-  --pq-bg-card-feature: linear-gradient(155deg, #291D3E 0%, #211832 58%, #181126 100%);
-  --pq-bg-card-deep: linear-gradient(165deg, #241A37 0%, #1D152C 62%, #150F21 100%);
-  --pq-bg-card-hover-grad: linear-gradient(150deg, #382654 0%, #35244F 48%, #261A3A 100%);
-  --pq-bg-input: #120D1D;
-  --pq-bg-subtle: rgba(53, 36, 79, 0.38);
+  /* 2. Formula 1 Cockpit Cards, Containers & Interactive States */
+  --pq-bg-card: #16161F;
+  --pq-bg-card-hover: #22222E;
+  --pq-bg-card-grad: linear-gradient(155deg, #1C1C28 0%, #151520 62%, #0E0E16 100%);
+  --pq-bg-card-elevated: linear-gradient(148deg, #222230 0%, #171722 55%, #101018 100%);
+  --pq-bg-card-feature: linear-gradient(155deg, #242434 0%, #161622 58%, #0E0E16 100%);
+  --pq-bg-card-deep: linear-gradient(165deg, #191924 0%, #13131D 62%, #0B0B12 100%);
+  --pq-bg-card-hover-grad: linear-gradient(150deg, #2A2A3C 0%, #222230 48%, #171722 100%);
+  --pq-bg-input: #0E0E16;
+  --pq-bg-subtle: rgba(225, 6, 0, 0.12);
 
-  /* 3. Soft Lavender Accent Colours */
-  --pq-lavender: #B69AFF;
-  --pq-lilac: #D8C8FF;
-  --pq-purple-deep: #8C67EB;
-  --pq-lavender-glow: rgba(182, 154, 255, 0.28);
-  --pq-lavender-soft: rgba(182, 154, 255, 0.14);
+  /* 3. Formula 1 Red & Racing Accent Colours */
+  --pq-lavender: #E10600;
+  --pq-lilac: #FF3B30;
+  --pq-purple-deep: #B30500;
+  --pq-lavender-glow: rgba(225, 6, 0, 0.38);
+  --pq-lavender-soft: rgba(225, 6, 0, 0.14);
 
   /* Mapped Accent Variables */
-  --aws-orange: #B69AFF;
-  --aws-orange-bright: #D8C8FF;
-  --aws-orange-deep: #35244F;
-  --aws-orange-glow: rgba(182, 154, 255, 0.28);
-  --aws-orange-soft: rgba(182, 154, 255, 0.14);
+  --aws-orange: #E10600;
+  --aws-orange-bright: #FF2A23;
+  --aws-orange-deep: #900400;
+  --aws-orange-glow: rgba(225, 6, 0, 0.42);
+  --aws-orange-soft: rgba(225, 6, 0, 0.16);
 
-  /* Supporting Purple & Muted Tones */
-  --pq-purple-muted: #35244F;
-  --pq-purple-soft: rgba(53, 36, 79, 0.55);
-  --aws-blue: #B69AFF;
+  /* Supporting Racing & Pitlane Tones */
+  --pq-purple-muted: #242434;
+  --pq-purple-soft: rgba(225, 6, 0, 0.18);
+  --aws-blue: #FFD200;
 
   /* Legacy Variable Mappings for JS Compatibility */
-  --sbg-purple: #B69AFF;
-  --sbg-purple-dark: #35244F;
-  --sbg-purple-light: rgba(182, 154, 255, 0.14);
-  --sbg-purple-border: rgba(182, 154, 255, 0.36);
+  --sbg-purple: #E10600;
+  --sbg-purple-dark: #222230;
+  --sbg-purple-light: rgba(225, 6, 0, 0.14);
+  --sbg-purple-border: rgba(225, 6, 0, 0.45);
   --aws-squid-ink: #FFFFFF;
 
-  /* Typography Hierarchy (White & Soft Grey) */
+  /* Typography Hierarchy (White, Platinum & Pitlane Grey) */
   --pq-text-white: #FFFFFF;
-  --pq-text-secondary: #B4AFC2;
-  --pq-text-muted: #7E7890;
-  --aws-text-secondary: #B4AFC2;
+  --pq-text-secondary: #C0C0D0;
+  --pq-text-muted: #808096;
+  --aws-text-secondary: #C0C0D0;
 
-  /* Subtle Purple Borders & Depth Shadows */
-  --pq-border-subtle: rgba(182, 154, 255, 0.15);
-  --pq-border-mid: rgba(182, 154, 255, 0.26);
-  --pq-border-orange: rgba(182, 154, 255, 0.46);
+  /* F1 Racing Borders & Neon Shadows */
+  --pq-border-subtle: rgba(255, 255, 255, 0.10);
+  --pq-border-mid: rgba(225, 6, 0, 0.32);
+  --pq-border-orange: rgba(225, 6, 0, 0.65);
 
-  /* Status Colors */
-  --pq-green: #22C55E;
-  --pq-danger: #EF4444;
+  /* Status Colors: DRS Green & Pit Warning Yellow */
+  --pq-green: #00D2BE;
+  --pq-danger: #E10600;
 
   /* Typography */
   --font-display: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -73,8 +73,8 @@
   --radius-xl: 20px;
   --radius-pill: 9999px;
 
-  --shadow-card: inset 0 1px 0 rgba(216, 200, 255, 0.14), 0 16px 36px -8px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(182, 154, 255, 0.08);
-  --shadow-orange: 0 6px 22px rgba(182, 154, 255, 0.25);
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 36px -8px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(225, 6, 0, 0.20);
+  --shadow-orange: 0 6px 24px rgba(225, 6, 0, 0.45);
 }
 
 *, *::before, *::after {
@@ -117,7 +117,7 @@ html, body {
 .aws-intro-backdrop {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 45%, #211832 0%, #08080B 70%);
+  background: radial-gradient(circle at 50% 45%, #16161F 0%, #08080B 70%);
   opacity: 1;
   transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -133,7 +133,7 @@ html, body {
   transform: translate(-50%, -50%);
   width: 480px;
   height: 280px;
-  background: radial-gradient(circle, rgba(182, 154, 255, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(225, 6, 0, 0.18) 0%, transparent 70%);
 }
 
 .aws-flying-logo {
@@ -144,7 +144,7 @@ html, body {
   height: 123px; /* Exact 294:184 (1.5978:1) aspect ratio of complete aws-logo.png */
   transform-origin: 0 0;
   will-change: transform, filter;
-  filter: drop-shadow(0 10px 28px rgba(182, 154, 255, 0.28));
+  filter: drop-shadow(0 10px 28px rgba(225, 6, 0, 0.28));
   z-index: 10001;
   overflow: visible;
 }
@@ -183,7 +183,7 @@ html, body {
   background: var(--pq-lavender);
   border-radius: 2px;
   margin: 0 auto 12px;
-  box-shadow: 0 0 12px rgba(182, 154, 255, 0.5);
+  box-shadow: 0 0 12px rgba(225, 6, 0, 0.5);
 }
 
 .intro-event-kicker {
@@ -260,7 +260,7 @@ body.intro-complete .navbar-logo-slot {
 .pq-sidebar-brand {
   padding: 0 24px 22px;
   margin-bottom: 8px;
-  border-bottom: 1px solid rgba(182, 154, 255, 0.1);
+  border-bottom: 1px solid rgba(225, 6, 0, 0.1);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -314,15 +314,15 @@ body.intro-complete .navbar-logo-slot {
 
 .pq-nav-item:hover {
   color: var(--pq-text-white);
-  background: rgba(53, 36, 79, 0.55);
+  background: rgba(26, 26, 36, 0.55);
 }
 
-/* Active Navigation State (#35244F Lighter Purple + #B69AFF Lavender Highlight) */
+/* Active Navigation State (#22222E Lighter Purple + #E10600 Lavender Highlight) */
 .pq-nav-item.active {
   color: var(--pq-text-white);
   font-weight: 700;
-  background: linear-gradient(90deg, #35244F 0%, rgba(33, 24, 50, 0.65) 100%);
-  box-shadow: inset 0 0 0 1px rgba(182, 154, 255, 0.32);
+  background: linear-gradient(90deg, #22222E 0%, rgba(33, 24, 50, 0.65) 100%);
+  box-shadow: inset 0 0 0 1px rgba(225, 6, 0, 0.32);
 }
 
 .pq-nav-item.active::before {
@@ -334,7 +334,7 @@ body.intro-complete .navbar-logo-slot {
   width: 4px;
   border-radius: 0 4px 4px 0;
   background: var(--pq-lavender);
-  box-shadow: 0 0 10px rgba(182, 154, 255, 0.5);
+  box-shadow: 0 0 10px rgba(225, 6, 0, 0.5);
 }
 
 .pq-nav-icon {
@@ -355,8 +355,8 @@ body.intro-complete .navbar-logo-slot {
 
 .pq-nav-badge {
   margin-left: auto;
-  background: #35244F;
-  border: 1px solid rgba(182, 154, 255, 0.42);
+  background: #22222E;
+  border: 1px solid rgba(225, 6, 0, 0.42);
   color: var(--pq-lavender);
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -375,7 +375,7 @@ body.intro-complete .navbar-logo-slot {
 .pq-sidebar-cloud-card {
   position: relative;
   background: var(--pq-bg-card-elevated);
-  border: 1px solid rgba(182, 154, 255, 0.22);
+  border: 1px solid rgba(225, 6, 0, 0.22);
   border-radius: var(--radius-lg);
   padding: 26px 14px 18px;
   text-align: center;
@@ -391,7 +391,7 @@ body.intro-complete .navbar-logo-slot {
   background-color: var(--pq-bg-card);
   border-radius: var(--radius-pill);
   padding: 0 8px;
-  filter: drop-shadow(0 0 8px rgba(182, 154, 255, 0.3));
+  filter: drop-shadow(0 0 8px rgba(225, 6, 0, 0.3));
 }
 
 .pq-motto-stack {
@@ -426,7 +426,7 @@ body.intro-complete .navbar-logo-slot {
   min-width: 0;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 73% 17%, rgba(53, 36, 79, 0.34) 0%, transparent 42%),
+    radial-gradient(circle at 73% 17%, rgba(26, 26, 36, 0.34) 0%, transparent 42%),
     var(--pq-bg-main);
 }
 
@@ -449,8 +449,8 @@ body.intro-complete .navbar-logo-slot {
   left: 32px;
   width: 240px;
   height: 1.5px;
-  background: linear-gradient(90deg, var(--pq-lavender) 0%, rgba(182, 154, 255, 0.3) 55%, transparent 100%);
-  box-shadow: 0 0 10px rgba(182, 154, 255, 0.4);
+  background: linear-gradient(90deg, var(--pq-lavender) 0%, rgba(225, 6, 0, 0.3) 55%, transparent 100%);
+  box-shadow: 0 0 10px rgba(225, 6, 0, 0.4);
 }
 
 .pq-topbar-left {
@@ -474,7 +474,7 @@ body.intro-complete .navbar-logo-slot {
 .pq-sparkle-icon {
   color: var(--pq-lavender);
   font-size: 17px;
-  filter: drop-shadow(0 0 6px rgba(182, 154, 255, 0.45));
+  filter: drop-shadow(0 0 6px rgba(225, 6, 0, 0.45));
 }
 
 .pq-topbar-title {
@@ -567,7 +567,7 @@ body.intro-complete .navbar-logo-slot {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #35244F 0%, #211832 100%);
+  background: linear-gradient(135deg, #22222E 0%, #16161F 100%);
   border: 1px solid var(--pq-lavender);
   color: #FFFFFF;
   font-size: 13px;
@@ -611,7 +611,7 @@ body.intro-complete .navbar-logo-slot {
 
 .pq-btn-switch {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.3);
+  border: 1px solid rgba(225, 6, 0, 0.3);
   color: var(--pq-lavender);
   font-size: 11px;
   font-weight: 700;
@@ -726,11 +726,11 @@ body.intro-complete .navbar-logo-slot {
 }
 
 .pq-word-quest {
-  background: linear-gradient(180deg, #D8C8FF 0%, #B69AFF 65%, #9B7BFF 100%);
+  background: linear-gradient(180deg, #FF3B30 0%, #E10600 65%, #C00500 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 18px rgba(182, 154, 255, 0.22));
+  filter: drop-shadow(0 4px 18px rgba(225, 6, 0, 0.22));
 }
 
 .pq-hero-sub-spaced {
@@ -753,7 +753,7 @@ body.intro-complete .navbar-logo-slot {
 
 /* Primary Soft Lavender Pill Button ("Enter the Arena ->") */
 .pq-btn-orange-pill {
-  background: linear-gradient(135deg, #C7B0FF 0%, #B69AFF 60%, #9E7EFF 100%);
+  background: linear-gradient(135deg, #FF1801 0%, #E10600 60%, #C00500 100%);
   color: #08080B;
   font-family: var(--font-display);
   font-size: 14px;
@@ -761,7 +761,7 @@ body.intro-complete .navbar-logo-slot {
   height: 44px;
   padding: 0 26px;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(216, 200, 255, 0.65);
+  border: 1px solid rgba(255, 60, 50, 0.65);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -773,13 +773,13 @@ body.intro-complete .navbar-logo-slot {
 
 .pq-btn-orange-pill:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(182, 154, 255, 0.38);
+  box-shadow: 0 10px 26px rgba(225, 6, 0, 0.38);
   filter: brightness(1.06);
 }
 
 .pq-btn-outline-pill {
-  background: rgba(53, 36, 79, 0.45);
-  border: 1px solid rgba(182, 154, 255, 0.48);
+  background: rgba(26, 26, 36, 0.45);
+  border: 1px solid rgba(225, 6, 0, 0.48);
   color: #FFFFFF;
   font-family: var(--font-family);
   font-size: 13px;
@@ -798,7 +798,7 @@ body.intro-complete .navbar-logo-slot {
 .pq-btn-outline-pill:hover:not(:disabled) {
   background: var(--pq-bg-card-hover);
   border-color: var(--pq-lavender);
-  box-shadow: 0 0 14px rgba(182, 154, 255, 0.22);
+  box-shadow: 0 0 14px rgba(225, 6, 0, 0.22);
 }
 
 .pq-btn-gold-lock {
@@ -850,8 +850,8 @@ button:disabled {
   height: 110%;
   background: radial-gradient(
     ellipse at 50% 50%,
-    rgba(53, 36, 79, 0.72) 0%,
-    rgba(182, 154, 255, 0.2) 38%,
+    rgba(26, 26, 36, 0.72) 0%,
+    rgba(225, 6, 0, 0.2) 38%,
     transparent 72%
   );
   filter: blur(20px);
@@ -865,7 +865,7 @@ button:disabled {
   height: auto;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 28px rgba(182, 154, 255, 0.22));
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 28px rgba(225, 6, 0, 0.22));
   animation: heroFloat 5s ease-in-out infinite;
 }
 
@@ -875,7 +875,7 @@ button:disabled {
 }
 
 /* ==========================================================================
-   5. FOUR HORIZONTAL STAT CARDS ROW (#211832 Dark Purple Cards, #35244F Hover)
+   5. FOUR HORIZONTAL STAT CARDS ROW (#16161F Dark Purple Cards, #22222E Hover)
    ========================================================================== */
 
 .pq-stats-row {
@@ -890,7 +890,7 @@ button:disabled {
 .pq-stat-card {
   position: relative;
   background: var(--pq-bg-card-elevated);
-  border: 1px solid rgba(182, 154, 255, 0.2);
+  border: 1px solid rgba(225, 6, 0, 0.2);
   border-radius: var(--radius-lg);
   padding: 20px 22px;
   display: flex;
@@ -905,8 +905,8 @@ button:disabled {
 .pq-stat-card:hover {
   transform: translateY(-2px);
   background: var(--pq-bg-card-hover-grad);
-  border-color: rgba(182, 154, 255, 0.44);
-  box-shadow: inset 0 1px 0 rgba(216, 200, 255, 0.22), 0 18px 38px -8px rgba(0, 0, 0, 0.88), 0 0 18px rgba(182, 154, 255, 0.12);
+  border-color: rgba(225, 6, 0, 0.44);
+  box-shadow: inset 0 1px 0 rgba(255, 60, 50, 0.22), 0 18px 38px -8px rgba(0, 0, 0, 0.88), 0 0 18px rgba(225, 6, 0, 0.12);
 }
 
 /* Subtle Lavender Bottom Edge Line on Stat Cards */
@@ -918,7 +918,7 @@ button:disabled {
   right: 16%;
   height: 2px;
   background: linear-gradient(90deg, transparent 0%, var(--pq-lavender) 50%, transparent 100%);
-  box-shadow: 0 -2px 10px rgba(182, 154, 255, 0.35);
+  box-shadow: 0 -2px 10px rgba(225, 6, 0, 0.35);
 }
 
 .pq-stat-icon {
@@ -926,7 +926,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 0 8px rgba(182, 154, 255, 0.28));
+  filter: drop-shadow(0 0 8px rgba(225, 6, 0, 0.28));
   flex-shrink: 0;
 }
 
@@ -962,7 +962,7 @@ button:disabled {
 }
 
 /* ==========================================================================
-   6. THREE BOTTOM DASHBOARD CARDS (Layered #211832 Dark Purple Containers)
+   6. THREE BOTTOM DASHBOARD CARDS (Layered #16161F Dark Purple Containers)
    ========================================================================== */
 
 .pq-bottom-grid {
@@ -976,7 +976,7 @@ button:disabled {
 .pq-dash-card {
   position: relative;
   background: var(--pq-bg-card-grad);
-  border: 1px solid rgba(182, 154, 255, 0.17);
+  border: 1px solid rgba(225, 6, 0, 0.17);
   border-radius: var(--radius-lg);
   padding: 22px 24px;
   box-shadow: var(--shadow-card);
@@ -993,7 +993,7 @@ button:disabled {
   left: 12%;
   right: 12%;
   height: 1.5px;
-  background: linear-gradient(90deg, transparent 0%, rgba(182, 154, 255, 0.68) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(225, 6, 0, 0.68) 50%, transparent 100%);
 }
 
 .pq-card-heading-row {
@@ -1032,7 +1032,7 @@ button:disabled {
 /* Card A: About the Game (Feature Surface Tier) */
 .pq-about-card {
   background: var(--pq-bg-card-feature);
-  border-color: rgba(182, 154, 255, 0.2);
+  border-color: rgba(225, 6, 0, 0.2);
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
   align-items: center;
@@ -1068,7 +1068,7 @@ button:disabled {
 /* Card B: Top Players Mini Leaderboard (Deep Analytical Surface Tier) */
 .pq-top-players-card {
   background: var(--pq-bg-card-deep);
-  border-color: rgba(182, 154, 255, 0.16);
+  border-color: rgba(225, 6, 0, 0.16);
 }
 
 .pq-link-view-all {
@@ -1101,14 +1101,14 @@ button:disabled {
   gap: 10px;
   padding: 9px 12px;
   border-radius: var(--radius-md);
-  background: rgba(53, 36, 79, 0.45);
-  border: 1px solid rgba(182, 154, 255, 0.12);
+  background: rgba(26, 26, 36, 0.45);
+  border: 1px solid rgba(225, 6, 0, 0.12);
   transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .pq-mini-lb-row:hover {
   background: var(--pq-bg-card-hover);
-  border-color: rgba(182, 154, 255, 0.32);
+  border-color: rgba(225, 6, 0, 0.32);
 }
 
 .pq-mini-lb-left {
@@ -1131,9 +1131,9 @@ button:disabled {
   flex-shrink: 0;
 }
 
-.pq-medal-1 { background: linear-gradient(135deg, #D8C8FF, #B69AFF); }
+.pq-medal-1 { background: linear-gradient(135deg, #FF3B30, #E10600); }
 .pq-medal-2 { background: linear-gradient(135deg, #E4E4EC, #A8A2B8); }
-.pq-medal-3 { background: linear-gradient(135deg, #B69AFF, #6E4BC4); color: #FFFFFF; }
+.pq-medal-3 { background: linear-gradient(135deg, #E10600, #8B0000); color: #FFFFFF; }
 
 .pq-mini-rank-num {
   font-size: 12px;
@@ -1148,7 +1148,7 @@ button:disabled {
   height: 28px;
   border-radius: 50%;
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.32);
+  border: 1px solid rgba(225, 6, 0, 0.32);
   color: #FFFFFF;
   font-size: 11px;
   font-weight: 700;
@@ -1178,7 +1178,7 @@ button:disabled {
 /* Card C: Your Progress Circular Ring (Elevated Surface Tier) */
 .pq-progress-card {
   background: var(--pq-bg-card-elevated);
-  border-color: rgba(182, 154, 255, 0.2);
+  border-color: rgba(225, 6, 0, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1204,7 +1204,7 @@ button:disabled {
 
 .pq-circle-bg {
   fill: none;
-  stroke: rgba(182, 154, 255, 0.14);
+  stroke: rgba(225, 6, 0, 0.14);
   stroke-width: 9;
 }
 
@@ -1213,7 +1213,7 @@ button:disabled {
   stroke: var(--pq-lavender);
   stroke-width: 9;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 6px rgba(182, 154, 255, 0.38));
+  filter: drop-shadow(0 0 6px rgba(225, 6, 0, 0.38));
   transition: stroke-dashoffset 0.6s ease;
 }
 
@@ -1312,15 +1312,15 @@ button:disabled {
 
 .identifier-card {
   background: var(--pq-bg-card-feature);
-  border-color: rgba(182, 154, 255, 0.24);
+  border-color: rgba(225, 6, 0, 0.24);
   padding: 24px 28px;
 }
 
 .identifier-card.pq-login-card-center {
   width: min(100%, clamp(320px, 92vw, 560px));
   padding: clamp(20px, 3.2vw, 34px) clamp(18px, 3.6vw, 36px);
-  border: 1px solid rgba(182, 154, 255, 0.34);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.58), 0 0 36px rgba(182, 154, 255, 0.14);
+  border: 1px solid rgba(225, 6, 0, 0.34);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.58), 0 0 36px rgba(225, 6, 0, 0.14);
 }
 
 .identifier-card.pq-login-card-center .awsui-text-input {
@@ -1403,7 +1403,7 @@ button:disabled {
 
 .pq-reg-chip {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.32);
+  border: 1px solid rgba(225, 6, 0, 0.32);
   color: var(--pq-lavender);
   font-size: 11.5px;
   font-weight: 600;
@@ -1442,7 +1442,7 @@ button:disabled {
 
 .btn-quick-demo {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.36);
+  border: 1px solid rgba(225, 6, 0, 0.36);
   color: var(--pq-lavender);
   font-size: 11px;
   font-weight: 700;
@@ -1477,7 +1477,7 @@ button:disabled {
 .awsui-textarea:focus,
 .awsui-select:focus {
   border-color: var(--pq-lavender);
-  box-shadow: 0 0 0 3px rgba(182, 154, 255, 0.18);
+  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.18);
 }
 
 .awsui-select {
@@ -1514,7 +1514,7 @@ button:disabled {
 
 .game-header-strip {
   background: var(--pq-bg-card-elevated);
-  border-color: rgba(182, 154, 255, 0.22);
+  border-color: rgba(225, 6, 0, 0.22);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1587,7 +1587,7 @@ button:disabled {
 
 .prompt-card {
   background: var(--pq-bg-card-feature);
-  border-color: rgba(182, 154, 255, 0.22);
+  border-color: rgba(225, 6, 0, 0.22);
 }
 
 .canvas-card {
@@ -1606,7 +1606,7 @@ button:disabled {
   align-items: center;
   gap: 6px;
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.42);
+  border: 1px solid rgba(225, 6, 0, 0.42);
   color: var(--pq-lavender);
   font-size: 11px;
   font-weight: 700;
@@ -1661,7 +1661,7 @@ button:disabled {
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
-  background: rgba(53, 36, 79, 0.45);
+  background: rgba(26, 26, 36, 0.45);
   border-bottom: 1px solid var(--pq-border-subtle);
 }
 
@@ -1684,7 +1684,7 @@ button:disabled {
 
 .btn-inspect-ref {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.3);
+  border: 1px solid rgba(225, 6, 0, 0.3);
   color: var(--pq-lavender);
   font-size: 11px;
   font-weight: 600;
@@ -1727,7 +1727,7 @@ button:disabled {
 }
 
 .mission-brief-block p {
-  background: rgba(53, 36, 79, 0.38);
+  background: rgba(26, 26, 36, 0.38);
   border-left: 3px solid var(--pq-lavender);
   padding: 10px 12px;
   font-size: 12.5px;
@@ -1750,7 +1750,7 @@ button:disabled {
 }
 
 .keyword-chip {
-  background: rgba(53, 36, 79, 0.5);
+  background: rgba(26, 26, 36, 0.5);
   border: 1px solid var(--pq-border-mid);
   color: #FFFFFF;
   font-size: 11px;
@@ -1792,8 +1792,8 @@ button:disabled {
 }
 
 .rubric-pill-cell {
-  background: rgba(53, 36, 79, 0.4);
-  border: 1px solid rgba(182, 154, 255, 0.1);
+  background: rgba(26, 26, 36, 0.4);
+  border: 1px solid rgba(225, 6, 0, 0.1);
   padding: 6px 10px;
   border-radius: var(--radius-sm);
   display: flex;
@@ -1816,7 +1816,7 @@ button:disabled {
 
 .history-count {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.35);
+  border: 1px solid rgba(225, 6, 0, 0.35);
   color: var(--pq-lavender);
   font-family: var(--font-mono);
   font-size: 11px;
@@ -1878,13 +1878,13 @@ button:disabled {
   font-size: 11px;
   padding: 2px 10px;
   border-radius: var(--radius-pill);
-  background: rgba(53, 36, 79, 0.5);
+  background: rgba(26, 26, 36, 0.5);
   color: var(--pq-text-secondary);
 }
 
 .prompt-quality-pill.quality-good {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.35);
+  border: 1px solid rgba(225, 6, 0, 0.35);
   color: var(--pq-lavender);
 }
 
@@ -1913,7 +1913,7 @@ button:disabled {
 }
 
 .mod-pill-tag {
-  background: rgba(53, 36, 79, 0.48);
+  background: rgba(26, 26, 36, 0.48);
   border: 1px solid var(--pq-border-mid);
   color: #FFFFFF;
   font-size: 11px;
@@ -1962,7 +1962,7 @@ button:disabled {
 
 .engine-badge {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.35);
+  border: 1px solid rgba(225, 6, 0, 0.35);
   color: var(--pq-lavender);
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -1981,7 +1981,7 @@ button:disabled {
   position: relative;
   width: 100%;
   height: 420px;
-  background: radial-gradient(circle at 50% 45%, #1A1228 0%, #08080B 100%);
+  background: radial-gradient(circle at 50% 45%, #101018 0%, #08080B 100%);
   border: 1px solid var(--pq-border-mid);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -2049,7 +2049,7 @@ button:disabled {
   height: 56px;
   border-radius: 50%;
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.42);
+  border: 1px solid rgba(225, 6, 0, 0.42);
   color: var(--pq-lavender);
   font-size: 24px;
   display: flex;
@@ -2093,7 +2093,7 @@ button:disabled {
 .awsui-spinner {
   width: 44px;
   height: 44px;
-  border: 3px solid rgba(182, 154, 255, 0.16);
+  border: 3px solid rgba(225, 6, 0, 0.16);
   border-top-color: var(--pq-lavender);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -2117,7 +2117,7 @@ button:disabled {
 .progress-track {
   width: 220px;
   height: 4px;
-  background: rgba(182, 154, 255, 0.15);
+  background: rgba(225, 6, 0, 0.15);
   border-radius: 2px;
   overflow: hidden;
   margin-top: 12px;
@@ -2139,7 +2139,7 @@ button:disabled {
 .eval-scorecard-card {
   margin-top: 16px;
   background: #161024;
-  border: 1px solid rgba(182, 154, 255, 0.36);
+  border: 1px solid rgba(225, 6, 0, 0.36);
   border-radius: var(--radius-md);
   padding: 18px;
 }
@@ -2166,7 +2166,7 @@ button:disabled {
   height: 34px;
   border-radius: var(--radius-sm);
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.3);
+  border: 1px solid rgba(225, 6, 0, 0.3);
   color: var(--pq-lavender);
   display: flex;
   align-items: center;
@@ -2199,7 +2199,7 @@ button:disabled {
 
 .tier-pill {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.42);
+  border: 1px solid rgba(225, 6, 0, 0.42);
   color: var(--pq-lavender);
   font-size: 11px;
   font-weight: 700;
@@ -2229,14 +2229,14 @@ button:disabled {
 
 .pillar-bar {
   height: 6px;
-  background: rgba(182, 154, 255, 0.12);
+  background: rgba(225, 6, 0, 0.12);
   border-radius: 3px;
   overflow: hidden;
 }
 
 .pillar-bar .fill {
   height: 100%;
-  background: linear-gradient(90deg, #B69AFF, #D8C8FF);
+  background: linear-gradient(90deg, #E10600, #FF3B30);
   border-radius: 3px;
   transition: width 0.45s ease;
 }
@@ -2260,7 +2260,7 @@ button:disabled {
 
 .badge-tag {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.36);
+  border: 1px solid rgba(225, 6, 0, 0.36);
   color: var(--pq-lavender);
   font-size: 11px;
   font-weight: 600;
@@ -2310,7 +2310,7 @@ button:disabled {
 
 .podium-card {
   background: var(--pq-bg-card-elevated);
-  border: 1px solid rgba(182, 154, 255, 0.2);
+  border: 1px solid rgba(225, 6, 0, 0.2);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-card);
@@ -2320,7 +2320,7 @@ button:disabled {
 
 .podium-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(182, 154, 255, 0.44);
+  border-color: rgba(225, 6, 0, 0.44);
 }
 
 .podium-img-wrap {
@@ -2400,7 +2400,7 @@ button:disabled {
 }
 
 .awsui-table th {
-  background: rgba(53, 36, 79, 0.42);
+  background: rgba(26, 26, 36, 0.42);
   color: var(--pq-text-secondary);
   font-family: var(--font-mono);
   font-size: 11px;
@@ -2416,7 +2416,7 @@ button:disabled {
 }
 
 .awsui-table tr:hover td {
-  background: rgba(53, 36, 79, 0.55);
+  background: rgba(26, 26, 36, 0.55);
 }
 
 .table-rank {
@@ -2436,7 +2436,7 @@ button:disabled {
 
 .btn-vote-applause {
   background: var(--pq-bg-card-hover);
-  border: 1px solid rgba(182, 154, 255, 0.36);
+  border: 1px solid rgba(225, 6, 0, 0.36);
   color: var(--pq-lavender);
   font-family: var(--font-mono);
   font-size: 11.5px;
@@ -2470,7 +2470,7 @@ button:disabled {
 .pq-ach-card,
 .category-preview-card {
   background: var(--pq-bg-card-elevated);
-  border-color: rgba(182, 154, 255, 0.2);
+  border-color: rgba(225, 6, 0, 0.2);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -2482,7 +2482,7 @@ button:disabled {
 .category-preview-card:hover {
   transform: translateY(-2px);
   background: var(--pq-bg-card-hover-grad);
-  border-color: rgba(182, 154, 255, 0.42);
+  border-color: rgba(225, 6, 0, 0.42);
 }
 
 .pq-ach-icon {
@@ -2516,7 +2516,7 @@ button:disabled {
 /* Profile Card */
 .pq-profile-card {
   background: var(--pq-bg-card-feature);
-  border-color: rgba(182, 154, 255, 0.22);
+  border-color: rgba(225, 6, 0, 0.22);
   max-width: 680px;
 }
 
@@ -2531,7 +2531,7 @@ button:disabled {
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #35244F, #211832);
+  background: linear-gradient(135deg, #22222E, #16161F);
   border: 2px solid var(--pq-lavender);
   font-size: 24px;
   font-weight: 800;
@@ -2547,7 +2547,7 @@ button:disabled {
 }
 
 .pq-pstat {
-  background: rgba(53, 36, 79, 0.45);
+  background: rgba(26, 26, 36, 0.45);
   border: 1px solid var(--pq-border-subtle);
   border-radius: var(--radius-md);
   padding: 14px;
@@ -2594,7 +2594,7 @@ button:disabled {
 
 .awsui-modal-header {
   padding: 16px 22px;
-  background: rgba(53, 36, 79, 0.42);
+  background: rgba(26, 26, 36, 0.42);
   border-bottom: 1px solid var(--pq-border-subtle);
   display: flex;
   justify-content: space-between;
@@ -2699,7 +2699,7 @@ button:disabled {
 }
 
 .admin-stat-cell {
-  background: rgba(53, 36, 79, 0.42);
+  background: rgba(26, 26, 36, 0.42);
   border: 1px solid var(--pq-border-subtle);
   border-radius: var(--radius-md);
   padding: 12px;
@@ -2794,7 +2794,7 @@ button:disabled {
 }
 
 .admin-panel-card {
-  background: rgba(53, 36, 79, 0.42);
+  background: rgba(26, 26, 36, 0.42);
   border: 1px solid var(--pq-border-subtle);
   border-radius: var(--radius-md);
   padding: 16px;
@@ -2822,7 +2822,7 @@ button:disabled {
 }
 
 .btn-phase-ctrl.active-phase {
-  background: linear-gradient(135deg, #a78bfa 0%, #818cf8 100%) !important;
+  background: linear-gradient(135deg, #FF4D4D 0%, #818cf8 100%) !important;
   color: #0d071c !important;
   font-weight: 800 !important;
   border-color: rgba(255, 255, 255, 0.4) !important;
@@ -2882,11 +2882,11 @@ button:disabled {
 .live-phase-banner.phase-showcase {
   background: rgba(167, 139, 250, 0.16);
   border-color: rgba(167, 139, 250, 0.45);
-  color: #c4b5fd;
+  color: #FF8080;
   box-shadow: 0 0 24px rgba(167, 139, 250, 0.25);
 }
 .live-phase-banner.phase-showcase .phase-indicator-dot {
-  color: #a78bfa;
+  color: #FF4D4D;
 }
 
 .live-phase-banner.phase-leaderboard {
@@ -2914,8 +2914,8 @@ button:disabled {
   box-shadow: 0 0 14px rgba(167, 139, 250, 0.3);
 }
 .pq-live-event-pill.pill-phase-showcase .pq-green-dot {
-  background: #a78bfa;
-  box-shadow: 0 0 8px #a78bfa;
+  background: #FF4D4D;
+  box-shadow: 0 0 8px #FF4D4D;
 }
 
 .pq-live-event-pill.pill-phase-leaderboard {
@@ -2985,7 +2985,7 @@ button:disabled {
 
 .toast {
   background: var(--pq-bg-card);
-  border: 1px solid rgba(182, 154, 255, 0.42);
+  border: 1px solid rgba(225, 6, 0, 0.42);
   border-left: 4px solid var(--pq-lavender);
   color: #FFFFFF;
   padding: 12px 16px;
@@ -3387,10 +3387,10 @@ button:disabled {
   gap: 8px;
   padding: 7px 16px;
   border-radius: 999px;
-  background: linear-gradient(135deg, rgba(53, 36, 79, 0.95) 0%, rgba(28, 20, 44, 0.98) 100%);
+  background: linear-gradient(135deg, rgba(26, 26, 36, 0.95) 0%, rgba(28, 20, 44, 0.98) 100%);
   color: #F8FAFC;
-  border: 1px solid rgba(182, 154, 255, 0.45);
-  box-shadow: 0 0 18px rgba(182, 154, 255, 0.16);
+  border: 1px solid rgba(225, 6, 0, 0.45);
+  box-shadow: 0 0 18px rgba(225, 6, 0, 0.16);
   transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -3403,14 +3403,14 @@ button:disabled {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #C4B5FD;
+  color: #FF8080;
 }
 
 .countdown-timer-pill .timer-digits {
   font-family: var(--font-mono, monospace);
   font-size: 17px;
   font-weight: 800;
-  color: #FF9900;
+  color: #FFD200;
   min-width: 52px;
   text-align: center;
 }
@@ -3459,9 +3459,9 @@ button:disabled {
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  background: rgba(182, 154, 255, 0.08);
-  border: 1px solid rgba(182, 154, 255, 0.25);
-  color: #DDD6FE;
+  background: rgba(225, 6, 0, 0.08);
+  border: 1px solid rgba(225, 6, 0, 0.25);
+  color: #FFC2C2;
   padding: 8px 12px;
   border-radius: 10px;
   font-size: 12px;
@@ -3470,7 +3470,7 @@ button:disabled {
 }
 
 .anti-cheat-pill-strip .badge-lock {
-  color: #FF9900;
+  color: #FF3B30;
   font-weight: 700;
 }
 
@@ -3493,7 +3493,7 @@ button:disabled {
 .awsui-textarea:disabled {
   background-color: rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.55);
-  border-color: rgba(182, 154, 255, 0.15);
+  border-color: rgba(225, 6, 0, 0.15);
   cursor: not-allowed;
 }
 
@@ -3513,7 +3513,7 @@ button:disabled {
 
 .eval-obs-box {
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(182, 154, 255, 0.16);
+  border: 1px solid rgba(225, 6, 0, 0.16);
   border-radius: 10px;
   padding: 10px 12px;
 }
@@ -3579,7 +3579,7 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   background-color: #09080E;
-  border: 1px solid rgba(182, 154, 255, 0.22);
+  border: 1px solid rgba(225, 6, 0, 0.22);
   border-radius: 10px;
   padding: 10px;
   position: relative;
@@ -3597,7 +3597,7 @@ button:disabled {
   top: 14px;
   left: 14px;
   background-color: rgba(10, 8, 18, 0.85);
-  border: 1px solid rgba(182, 154, 255, 0.35);
+  border: 1px solid rgba(225, 6, 0, 0.35);
   color: #F8FAFC;
   font-size: 11px;
   font-weight: 700;
@@ -3648,7 +3648,7 @@ button:disabled {
 .pq-attempt-footer-strip {
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid rgba(182, 154, 255, 0.14);
+  border-top: 1px solid rgba(225, 6, 0, 0.14);
 }
 
 .pq-prompt-full-width {
@@ -3681,7 +3681,7 @@ button:disabled {
   margin: 14px 0 16px;
   padding: 14px;
   background: rgba(8, 8, 12, 0.72);
-  border: 1px solid rgba(182, 154, 255, 0.22);
+  border: 1px solid rgba(225, 6, 0, 0.22);
   border-radius: 12px;
 }
 
@@ -3696,7 +3696,7 @@ button:disabled {
   max-height: 380px;
   border-radius: 10px;
   object-fit: contain;
-  border: 1px solid rgba(182, 154, 255, 0.3);
+  border: 1px solid rgba(225, 6, 0, 0.3);
 }
 
 .pq-result-meta-bar {
@@ -3719,7 +3719,7 @@ button:disabled {
   min-height: 370px;
   max-height: 460px;
   background: rgba(8, 8, 12, 0.82);
-  border: 1px solid rgba(182, 154, 255, 0.2);
+  border: 1px solid rgba(225, 6, 0, 0.2);
   border-radius: 12px;
   overflow: hidden;
   padding: 10px;
@@ -3872,9 +3872,9 @@ body.pq-dark-theme {
 .screenshot-shield-box {
   padding: 36px 48px;
   background: rgba(22, 22, 38, 0.96);
-  border: 2px solid var(--aws-orange, #FF9900);
+  border: 2px solid var(--aws-orange, #E10600);
   border-radius: 16px;
-  box-shadow: 0 0 60px rgba(255, 153, 0, 0.4);
+  box-shadow: 0 0 60px rgba(225, 6, 0, 0.4);
   max-width: 500px;
   backdrop-filter: blur(12px);
 }
@@ -3894,7 +3894,7 @@ body.pq-dark-theme {
 }
 
 .screenshot-shield-desc {
-  color: #B69AFF;
+  color: #E10600;
   font-size: 14px;
   line-height: 1.5;
   margin: 0;
@@ -3922,13 +3922,124 @@ img, picture, canvas {
   align-items: center;
   gap: 8px;
   padding: 5px 12px;
-  background: rgba(182, 154, 255, 0.08);
-  border: 1px dashed rgba(182, 154, 255, 0.3);
+  background: rgba(225, 6, 0, 0.08);
+  border: 1px dashed rgba(225, 6, 0, 0.3);
   border-radius: 20px;
   font-size: 11px;
-  color: #B69AFF;
+  color: #E10600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   margin-top: 6px;
   user-select: none;
+}
+
+
+/* ==========================================================================
+   FORMULA 1 GRAND PRIX RACING OVERRIDES & RACING AESTHETICS
+   ========================================================================== */
+
+/* High-voltage F1 CTA Buttons */
+.pq-btn-orange-pill {
+  background: linear-gradient(135deg, #FF1801 0%, #E10600 60%, #B30500 100%) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 120, 115, 0.6) !important;
+  box-shadow: 0 6px 24px rgba(225, 6, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.pq-btn-orange-pill:hover:not(:disabled) {
+  background: linear-gradient(135deg, #FF3B30 0%, #FF1801 60%, #D60500 100%) !important;
+  box-shadow: 0 10px 32px rgba(225, 6, 0, 0.7), 0 0 18px rgba(255, 24, 1, 0.5) !important;
+  transform: translateY(-2px);
+  color: #FFFFFF !important;
+}
+
+/* Secondary Racing Buttons */
+.pq-btn-outline-pill {
+  background: rgba(22, 22, 31, 0.8) !important;
+  border: 1px solid rgba(225, 6, 0, 0.45) !important;
+  color: #FFFFFF !important;
+}
+
+.pq-btn-outline-pill:hover:not(:disabled) {
+  background: #22222E !important;
+  border-color: #FF1801 !important;
+  box-shadow: 0 0 18px rgba(225, 6, 0, 0.4) !important;
+}
+
+/* F1 Topbar & Glowing Neon Accent Line */
+.pq-topbar {
+  background: rgba(11, 11, 14, 0.94) !important;
+  border-bottom: 1px solid rgba(225, 6, 0, 0.3) !important;
+}
+
+.pq-topbar-glow-line {
+  background: linear-gradient(90deg, #E10600 0%, #FF1801 50%, rgba(225, 6, 0, 0.25) 80%, transparent 100%) !important;
+  box-shadow: 0 0 16px rgba(225, 6, 0, 0.65) !important;
+}
+
+.pq-topbar-sub-pill {
+  color: #FFD200 !important;
+  border-color: rgba(255, 210, 0, 0.4) !important;
+  background: rgba(22, 22, 31, 0.9) !important;
+  letter-spacing: 1px !important;
+}
+
+/* Pitstop / Auto-Generate Countdown Pill */
+.countdown-timer-pill {
+  background: #111118 !important;
+  border: 1px solid #FFD200 !important;
+  box-shadow: 0 0 14px rgba(255, 210, 0, 0.3) !important;
+}
+
+.timer-digits {
+  color: #FFD200 !important;
+  text-shadow: 0 0 8px rgba(255, 210, 0, 0.45);
+}
+
+/* Word Quest Gradient in Hero */
+.pq-word-quest {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FF2E2E 45%, #E10600 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  filter: drop-shadow(0 4px 22px rgba(225, 6, 0, 0.55)) !important;
+}
+
+/* Hero Heading */
+.pq-hero-heading {
+  font-style: italic;
+}
+
+/* Red Racing Slash Accents */
+.pq-slash {
+  color: #E10600 !important;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(225, 6, 0, 0.5);
+}
+
+/* DRS Status Green */
+.pq-green-dot {
+  background-color: #00D2BE !important;
+  box-shadow: 0 0 10px #00D2BE !important;
+}
+
+/* Input Fields on Focus */
+.awsui-text-input:focus, .awsui-textarea:focus {
+  border-color: #E10600 !important;
+  box-shadow: 0 0 0 3px rgba(225, 6, 0, 0.25) !important;
+}
+
+/* Leaderboard Racing Table Styling */
+.awsui-table th {
+  border-bottom: 2px solid rgba(225, 6, 0, 0.45) !important;
+  color: #FFD200 !important;
+  font-size: 11px !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+}
+
+.awsui-table tbody tr:hover {
+  background: rgba(225, 6, 0, 0.08) !important;
 }

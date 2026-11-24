@@ -378,7 +378,10 @@ DEFAULT_CHALLENGES = [
 
 
 class ChallengeManager:
-    def __init__(self, data_file="data/challenges.json"):
+    def __init__(self, data_file="challenges.json"):
+        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.images_dir = os.path.join(self.base_dir, "static", "images", "challenges")
+        os.makedirs(self.images_dir, exist_ok=True)
         self.data_file = data_file
         self.challenges = []
         # Non-repeating deck state
@@ -438,7 +441,7 @@ class ChallengeManager:
             item = dict(c)
             cid = item.get("id")
             for ext in [".jpg", ".jpeg", ".png", ".webp"]:
-                if os.path.exists(os.path.join("static", "images", "challenges", f"{cid}{ext}")):
+                if os.path.exists(os.path.join(self.images_dir, f"{cid}{ext}")):
                     item["static_url"] = f"/static/images/challenges/{cid}{ext}"
                     break
             results.append(item)
@@ -455,10 +458,33 @@ class ChallengeManager:
     def get_by_category(self, category):
         return [c for c in self.challenges if c.get("category") == category and c.get("is_active", True)]
 
+    def _load_image_for_challenge(self, target):
+        if not target:
+            return target
+        item = dict(target)
+        if item.get("image_data"):
+            return item
+        cid = item.get("id", "")
+        for ext in [".jpg", ".jpeg", ".png", ".webp"]:
+            local_img_path = os.path.join(self.images_dir, f"{cid}{ext}")
+            if os.path.exists(local_img_path):
+                try:
+                    with open(local_img_path, "rb") as f:
+                        b64_data = base64.b64encode(f.read()).decode("utf-8")
+                    mime = "image/png" if ext == ".png" else "image/webp" if ext == ".webp" else "image/jpeg"
+                    item["image_data"] = f"data:{mime};base64,{b64_data}"
+                    item["image_source"] = "cinematic-photo-bank"
+                    item["static_url"] = f"/static/images/challenges/{cid}{ext}"
+                    item["hidden_prompt"] = f"{item['title']}: {item['brief']}"
+                    return item
+                except Exception as e:
+                    print(f"[ChallengeManager] Error loading local image {local_img_path}: {e}")
+        return item
+
     def get_by_id(self, challenge_id):
         for c in self.challenges:
             if c.get("id") == challenge_id:
-                return dict(c)
+                return self._load_image_for_challenge(c)
         return None
 
     def get_challenge_by_id(self, challenge_id):
@@ -528,7 +554,7 @@ class ChallengeManager:
 
         # Look for local static photo asset
         for ext in [".jpg", ".jpeg", ".png", ".webp"]:
-            local_img_path = os.path.join("static", "images", "challenges", f"{challenge_id}{ext}")
+            local_img_path = os.path.join(self.images_dir, f"{challenge_id}{ext}")
             if os.path.exists(local_img_path):
                 try:
                     with open(local_img_path, "rb") as f:
@@ -559,8 +585,8 @@ class ChallengeManager:
     def save_challenge_image(self, challenge_id, image_data):
         if not image_data:
             return None
-        os.makedirs(os.path.join("static", "images", "challenges"), exist_ok=True)
-        img_path = os.path.join("static", "images", "challenges", f"{challenge_id}.jpg")
+        os.makedirs(self.images_dir, exist_ok=True)
+        img_path = os.path.join(self.images_dir, f"{challenge_id}.jpg")
         try:
             if isinstance(image_data, str) and "base64," in image_data:
                 b64_content = image_data.split("base64,")[1]
