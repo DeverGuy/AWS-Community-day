@@ -130,13 +130,18 @@ socket_to_id = {}    # socket_id -> participant_id
 submissions = {}     # submission_id -> dict
 
 
-TEAMS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "teams.json")
+BUNDLED_TEAMS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "teams.json")
+TMP_TEAMS_FILE = os.path.join(tempfile.gettempdir(), "teams.json")
+TEAMS_FILE = BUNDLED_TEAMS_FILE
 
 def _load_teams():
-    if not os.path.exists(TEAMS_FILE):
+    target = TMP_TEAMS_FILE if os.environ.get("VERCEL") and os.path.exists(TMP_TEAMS_FILE) else BUNDLED_TEAMS_FILE
+    if not os.path.exists(target):
+        target = BUNDLED_TEAMS_FILE
+    if not os.path.exists(target):
         return {"whitelist_enabled": False, "teams": []}
     try:
-        with open(TEAMS_FILE, "r", encoding="utf-8") as f:
+        with open(target, "r", encoding="utf-8") as f:
             data = json.load(f)
             if "whitelist_enabled" not in data:
                 data["whitelist_enabled"] = False
@@ -148,8 +153,9 @@ def _load_teams():
         return {"whitelist_enabled": False, "teams": []}
 
 def _save_teams(data):
+    save_path = TMP_TEAMS_FILE if os.environ.get("VERCEL") else BUNDLED_TEAMS_FILE
     try:
-        with open(TEAMS_FILE, "w", encoding="utf-8") as f:
+        with open(save_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2)
     except Exception as e:
         print(f"[Teams] Save error: {e}")
