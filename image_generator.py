@@ -19,6 +19,9 @@ from dotenv import load_dotenv, dotenv_values
 
 load_dotenv()
 
+DEFAULT_WORKER_URL = "https://prompt-battle-image-api.mokshrjain3137.workers.dev"
+DEFAULT_WORKER_API_KEY = "aws-ai-battle-2026-secret"
+
 PLACEHOLDER_URLS = {
     "",
     "your_worker_url",
@@ -30,6 +33,23 @@ PLACEHOLDER_KEYS = {
     "your_worker_api_key_here",
     "your-secret-api-key",
 }
+
+
+def _clean_worker_url(raw_url: str) -> str:
+    if not raw_url:
+        return ""
+    u = raw_url.strip()
+    while u.endswith((".0.", ".0", "..", ".")):
+        if u.endswith(".0."):
+            u = u[:-3]
+        elif u.endswith(".0"):
+            u = u[:-2]
+        else:
+            u = u.rstrip(".")
+    u = u.rstrip("/")
+    if u and not u.startswith(("http://", "https://")):
+        u = f"https://{u}"
+    return u
 
 
 def _detect_image_mime(raw_bytes: bytes, content_type_header: str = "") -> str:
@@ -56,8 +76,8 @@ def _detect_b64_mime(b64_str: str) -> str:
 
 class ImageGenerator:
     def __init__(self):
-        self.worker_url = (os.getenv("CF_WORKER_URL") or os.getenv("IMAGE_API_URL") or "").strip()
-        self.worker_api_key = (os.getenv("CF_WORKER_API_KEY") or os.getenv("IMAGE_API_KEY") or "").strip()
+        self.worker_url = _clean_worker_url(os.getenv("CF_WORKER_URL") or os.getenv("IMAGE_API_URL") or DEFAULT_WORKER_URL)
+        self.worker_api_key = (os.getenv("CF_WORKER_API_KEY") or os.getenv("IMAGE_API_KEY") or DEFAULT_WORKER_API_KEY).strip()
 
     def _get_worker_config(self) -> tuple[str, str]:
         """Reads Cloudflare Worker URL and API key dynamically so .env edits apply immediately."""
@@ -74,8 +94,9 @@ class ImageGenerator:
                     return val
             return default
 
-        url = _pick("CF_WORKER_URL", "IMAGE_API_URL", default=self.worker_url)
-        key = _pick("CF_WORKER_API_KEY", "IMAGE_API_KEY", default=self.worker_api_key)
+        url = _pick("CF_WORKER_URL", "IMAGE_API_URL", default=self.worker_url or DEFAULT_WORKER_URL)
+        key = _pick("CF_WORKER_API_KEY", "IMAGE_API_KEY", default=self.worker_api_key or DEFAULT_WORKER_API_KEY)
+        url = _clean_worker_url(url)
         return url, key
 
     def generate(self, prompt: str, category: str = "", challenge_title: str = "", seed: int = None) -> dict:
